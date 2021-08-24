@@ -1,0 +1,11 @@
+framework module smartwifi_ios_sdk {
+  umbrella header "smartwifi_ios_sdk.h"
+
+  export *
+  module * { export * }
+}
+
+module smartwifi_ios_sdk.Swift {
+    header "smartwifi_ios_sdk-Swift.h"
+    requires objc
+}

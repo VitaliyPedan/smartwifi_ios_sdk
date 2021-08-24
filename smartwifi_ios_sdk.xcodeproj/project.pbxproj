@@ -1,0 +1,555 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		64CBF28426D540EC0024B4FF /* smartwifi-Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 64CBF28726D540EC0024B4FF /* Build configuration list for PBXAggregateTarget "smartwifi-Universal" */;
+			buildPhases = (
+				64CBF28A26D541570024B4FF /* ShellScript */,
+			);
+			dependencies = (
+				64CBF28926D541480024B4FF /* PBXTargetDependency */,
+			);
+			name = "smartwifi-Universal";
+			productName = "smartwifi-Universal";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		6499D01B26CB295F007C9481 /* smartwifi_ios_sdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6499D03626CB2973007C9481 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02226CB2972007C9481 /* Constants.swift */; };
+		6499D03726CB2973007C9481 /* SWFApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02426CB2973007C9481 /* SWFApiManager.swift */; };
+		6499D03826CB2973007C9481 /* SWFSaveIdentifierResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02626CB2973007C9481 /* SWFSaveIdentifierResponse.swift */; };
+		6499D03926CB2973007C9481 /* SWFPasspointConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02726CB2973007C9481 /* SWFPasspointConfig.swift */; };
+		6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02826CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift */; };
+		6499D03B26CB2973007C9481 /* SWFWiFiConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02926CB2973007C9481 /* SWFWiFiConfig.swift */; };
+		6499D03C26CB2973007C9481 /* SWFWpa2Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02A26CB2973007C9481 /* SWFWpa2Config.swift */; };
+		6499D03D26CB2973007C9481 /* SWFAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02B26CB2973007C9481 /* SWFAPIError.swift */; };
+		6499D03E26CB2973007C9481 /* SWFNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02D26CB2973007C9481 /* SWFNavigator.swift */; };
+		6499D03F26CB2973007C9481 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02F26CB2973007C9481 /* UserDefaultsManager.swift */; };
+		6499D04026CB2973007C9481 /* SecuredStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03026CB2973007C9481 /* SecuredStorageManager.swift */; };
+		6499D04126CB2973007C9481 /* SWFService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03326CB2973007C9481 /* SWFService.swift */; };
+		6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03426CB2973007C9481 /* SWFApiService.swift */; };
+		6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */; };
+		6499D06A26CBAD4B007C9481 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D06926CBAD4B007C9481 /* SwiftyJSON.swift */; };
+		64D3A9D426D45BAD001CB552 /* SWFServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */; };
+		64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		64CBF28826D541480024B4FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6499D00D26CB295F007C9481 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6499D01526CB295F007C9481;
+			remoteInfo = smartwifi_ios_sdk;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6499D06426CBAC5E007C9481 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		6499D01626CB295F007C9481 /* smartwifi_ios_sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = smartwifi_ios_sdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = smartwifi_ios_sdk.h; sourceTree = "<group>"; };
+		6499D01A26CB295F007C9481 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6499D02226CB2972007C9481 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		6499D02426CB2973007C9481 /* SWFApiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFApiManager.swift; sourceTree = "<group>"; };
+		6499D02626CB2973007C9481 /* SWFSaveIdentifierResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFSaveIdentifierResponse.swift; sourceTree = "<group>"; };
+		6499D02726CB2973007C9481 /* SWFPasspointConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFPasspointConfig.swift; sourceTree = "<group>"; };
+		6499D02826CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWpa2EnterpriseConfig.swift; sourceTree = "<group>"; };
+		6499D02926CB2973007C9481 /* SWFWiFiConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWiFiConfig.swift; sourceTree = "<group>"; };
+		6499D02A26CB2973007C9481 /* SWFWpa2Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWpa2Config.swift; sourceTree = "<group>"; };
+		6499D02B26CB2973007C9481 /* SWFAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFAPIError.swift; sourceTree = "<group>"; };
+		6499D02D26CB2973007C9481 /* SWFNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFNavigator.swift; sourceTree = "<group>"; };
+		6499D02F26CB2973007C9481 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		6499D03026CB2973007C9481 /* SecuredStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecuredStorageManager.swift; sourceTree = "<group>"; };
+		6499D03326CB2973007C9481 /* SWFService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFService.swift; sourceTree = "<group>"; };
+		6499D03426CB2973007C9481 /* SWFApiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFApiService.swift; sourceTree = "<group>"; };
+		6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiFiConfigurationService.swift; sourceTree = "<group>"; };
+		6499D06926CBAD4B007C9481 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+		64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFServiceError.swift; sourceTree = "<group>"; };
+		64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFWiFiSession.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6499D01326CB295F007C9481 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6499D00C26CB295F007C9481 = {
+			isa = PBXGroup;
+			children = (
+				6499D01826CB295F007C9481 /* smartwifi_ios_sdk */,
+				6499D01726CB295F007C9481 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6499D01726CB295F007C9481 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6499D01626CB295F007C9481 /* smartwifi_ios_sdk.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6499D01826CB295F007C9481 /* smartwifi_ios_sdk */ = {
+			isa = PBXGroup;
+			children = (
+				6499D02126CB2972007C9481 /* Classes */,
+				6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */,
+				6499D01A26CB295F007C9481 /* Info.plist */,
+			);
+			path = smartwifi_ios_sdk;
+			sourceTree = "<group>";
+		};
+		6499D02126CB2972007C9481 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */,
+				6499D06926CBAD4B007C9481 /* SwiftyJSON.swift */,
+				6499D02226CB2972007C9481 /* Constants.swift */,
+				6499D02326CB2973007C9481 /* Networking */,
+				6499D02C26CB2973007C9481 /* Navigation */,
+				6499D02E26CB2973007C9481 /* Storage */,
+				6499D03226CB2973007C9481 /* Services */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		6499D02326CB2973007C9481 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				6499D02426CB2973007C9481 /* SWFApiManager.swift */,
+				6499D02526CB2973007C9481 /* Models */,
+				6499D02B26CB2973007C9481 /* SWFAPIError.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		6499D02526CB2973007C9481 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6499D02626CB2973007C9481 /* SWFSaveIdentifierResponse.swift */,
+				6499D02926CB2973007C9481 /* SWFWiFiConfig.swift */,
+				6499D02726CB2973007C9481 /* SWFPasspointConfig.swift */,
+				6499D02826CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift */,
+				6499D02A26CB2973007C9481 /* SWFWpa2Config.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6499D02C26CB2973007C9481 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				6499D02D26CB2973007C9481 /* SWFNavigator.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		6499D02E26CB2973007C9481 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				6499D02F26CB2973007C9481 /* UserDefaultsManager.swift */,
+				6499D03026CB2973007C9481 /* SecuredStorageManager.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		6499D03226CB2973007C9481 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				6499D03326CB2973007C9481 /* SWFService.swift */,
+				64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */,
+				6499D03426CB2973007C9481 /* SWFApiService.swift */,
+				6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		6499D01126CB295F007C9481 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6499D01B26CB295F007C9481 /* smartwifi_ios_sdk.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		6499D01526CB295F007C9481 /* smartwifi_ios_sdk */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6499D01E26CB295F007C9481 /* Build configuration list for PBXNativeTarget "smartwifi_ios_sdk" */;
+			buildPhases = (
+				6499D01126CB295F007C9481 /* Headers */,
+				6499D01226CB295F007C9481 /* Sources */,
+				6499D01326CB295F007C9481 /* Frameworks */,
+				6499D01426CB295F007C9481 /* Resources */,
+				6499D06426CBAC5E007C9481 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = smartwifi_ios_sdk;
+			productName = smartwifi_ios_sdk;
+			productReference = 6499D01626CB295F007C9481 /* smartwifi_ios_sdk.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6499D00D26CB295F007C9481 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					6499D01526CB295F007C9481 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					64CBF28426D540EC0024B4FF = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+				};
+			};
+			buildConfigurationList = 6499D01026CB295F007C9481 /* Build configuration list for PBXProject "smartwifi_ios_sdk" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6499D00C26CB295F007C9481;
+			productRefGroup = 6499D01726CB295F007C9481 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6499D01526CB295F007C9481 /* smartwifi_ios_sdk */,
+				64CBF28426D540EC0024B4FF /* smartwifi-Universal */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6499D01426CB295F007C9481 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		64CBF28A26D541570024B4FF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#! /bin/sh -e\n# This script demonstrates archive and create action on frameworks and libraries\n\n# Release dir path\nOUTPUT_DIR_PATH=\"${PROJECT_DIR}\"\n\nfunction archivePathSimulator {\n  local DIR=${OUTPUT_DIR_PATH}/archives/\"${1}-SIMULATOR\"\n  echo \"${DIR}\"\n}\n\nfunction archivePathDevice {\n  local DIR=${OUTPUT_DIR_PATH}/archives/\"${1}-DEVICE\"\n  echo \"${DIR}\"\n}\n\n# Archive takes 3 params\n#\n# 1st == SCHEME\n# 2nd == destination\n# 3rd == archivePath\nfunction archive {\n    echo \"▸ Starts archiving the scheme: ${1} for destination: ${2};\\n▸ Archive path: ${3}.xcarchive\"\n    xcodebuild clean archive \\\n    -project \"${PROJECT_NAME}.xcodeproj\" \\\n    -scheme ${1} \\\n    -configuration ${CONFIGURATION} \\\n    -destination \"${2}\" \\\n    -archivePath \"${3}\" \\\n    SKIP_INSTALL=NO \\\n    OBJROOT=\"${OBJROOT}/DependentBuilds\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES | xcpretty\n}\n\n# Builds archive for iOS simulator & device\nfunction buildArchive {\n  SCHEME=${1}\n\n  archive $SCHEME \"generic/platform=iOS Simulator\" $(archivePathSimulator $SCHEME)\n  archive $SCHEME \"generic/platform=iOS\" $(archivePathDevice $SCHEME)\n}\n\n# Creates xc framework\nfunction createXCFramework {\n  FRAMEWORK_ARCHIVE_PATH_POSTFIX=\".xcarchive/Products/Library/Frameworks\"\n  FRAMEWORK_SIMULATOR_DIR=\"$(archivePathSimulator $1)${FRAMEWORK_ARCHIVE_PATH_POSTFIX}\"\n  FRAMEWORK_DEVICE_DIR=\"$(archivePathDevice $1)${FRAMEWORK_ARCHIVE_PATH_POSTFIX}\"\n\n  xcodebuild -create-xcframework \\\n            -framework ${FRAMEWORK_SIMULATOR_DIR}/${1}.framework \\\n            -framework ${FRAMEWORK_DEVICE_DIR}/${1}.framework \\\n            -output ${OUTPUT_DIR_PATH}/${1}.xcframework\n}\n\n### Static Libraries cant be turned into frameworks\nfunction createXCFrameworkForStaticLibrary {\n\n  LIBRARY_ARCHIVE_PATH_POSTFIX=\".xcarchive/Products/usr/local/lib\"\n  LIBRARY_SIMULATOR_DIR=\"$(archivePathSimulator $1)${LIBRARY_ARCHIVE_PATH_POSTFIX}\"\n  LIBRARY_DEVICE_DIR=\"$(archivePathDevice $1)${LIBRARY_ARCHIVE_PATH_POSTFIX}\"\n\n  xcodebuild -create-xcframework \\\n            -library ${LIBRARY_SIMULATOR_DIR}/libStaticLibrary.a \\\n            -library ${LIBRARY_DEVICE_DIR}/libStaticLibrary.a \\\n            -output ${OUTPUT_DIR_PATH}/${1}.xcframework\n}\n\necho \"#####################\"\necho \"▸ Cleaning the dir: ${OUTPUT_DIR_PATH}\"\nrm -rf \"${OUTPUT_DIR_PATH}/${1}.xcframework\"\n\n#### Static Library ####\n#LIBRARY=\"${PROJECT_NAME}\"\n\n#echo \"▸ Archive $LIBRARY\"\n#buildArchive ${LIBRARY}\n\n#echo \"▸ Create $FRAMEWORK.xcframework\"\n#createXCFrameworkForStaticLibrary ${LIBRARY}\n\n#### Dynamic Framework ####\n\nDYNAMIC_FRAMEWORK=\"${PROJECT_NAME}\"\n\necho \"▸ Archive $DYNAMIC_FRAMEWORK\"\nbuildArchive ${DYNAMIC_FRAMEWORK}\n\necho \"▸ Create $DYNAMIC_FRAMEWORK.xcframework\"\ncreateXCFramework ${DYNAMIC_FRAMEWORK}\n\nrm -rf \"${OUTPUT_DIR_PATH}/archives\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6499D01226CB295F007C9481 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6499D04126CB2973007C9481 /* SWFService.swift in Sources */,
+				6499D03D26CB2973007C9481 /* SWFAPIError.swift in Sources */,
+				64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */,
+				6499D03C26CB2973007C9481 /* SWFWpa2Config.swift in Sources */,
+				6499D06A26CBAD4B007C9481 /* SwiftyJSON.swift in Sources */,
+				6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */,
+				6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */,
+				6499D04026CB2973007C9481 /* SecuredStorageManager.swift in Sources */,
+				64D3A9D426D45BAD001CB552 /* SWFServiceError.swift in Sources */,
+				6499D03826CB2973007C9481 /* SWFSaveIdentifierResponse.swift in Sources */,
+				6499D03626CB2973007C9481 /* Constants.swift in Sources */,
+				6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */,
+				6499D03E26CB2973007C9481 /* SWFNavigator.swift in Sources */,
+				6499D03F26CB2973007C9481 /* UserDefaultsManager.swift in Sources */,
+				6499D03B26CB2973007C9481 /* SWFWiFiConfig.swift in Sources */,
+				6499D03926CB2973007C9481 /* SWFPasspointConfig.swift in Sources */,
+				6499D03726CB2973007C9481 /* SWFApiManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		64CBF28926D541480024B4FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6499D01526CB295F007C9481 /* smartwifi_ios_sdk */;
+			targetProxy = 64CBF28826D541480024B4FF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		6499D01C26CB295F007C9481 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		6499D01D26CB295F007C9481 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6499D01F26CB295F007C9481 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 4S5J5M6PTP;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/smartwifi_ios_sdk",
+				);
+				INFOPLIST_FILE = smartwifi_ios_sdk/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartwifi.sdk.ios;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6499D02026CB295F007C9481 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 4S5J5M6PTP;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/smartwifi_ios_sdk",
+				);
+				INFOPLIST_FILE = smartwifi_ios_sdk/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.smartwifi.sdk.ios;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		64CBF28526D540EC0024B4FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4S5J5M6PTP;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		64CBF28626D540EC0024B4FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4S5J5M6PTP;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6499D01026CB295F007C9481 /* Build configuration list for PBXProject "smartwifi_ios_sdk" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6499D01C26CB295F007C9481 /* Debug */,
+				6499D01D26CB295F007C9481 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6499D01E26CB295F007C9481 /* Build configuration list for PBXNativeTarget "smartwifi_ios_sdk" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6499D01F26CB295F007C9481 /* Debug */,
+				6499D02026CB295F007C9481 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		64CBF28726D540EC0024B4FF /* Build configuration list for PBXAggregateTarget "smartwifi-Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64CBF28526D540EC0024B4FF /* Debug */,
+				64CBF28626D540EC0024B4FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6499D00D26CB295F007C9481 /* Project object */;
+}

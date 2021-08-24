@@ -1,0 +1,472 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.4.2 (swiftlang-1205.0.28.2 clang-1205.0.19.57)
+// swift-module-flags: -target arm64-apple-ios13.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name smartwifi_ios_sdk
+import Foundation
+import NetworkExtension
+import Swift
+import UIKit
+@_exported import smartwifi_ios_sdk
+public protocol SWFService {
+  var needToSaveWAP2Identifier: Swift.Bool { get set }
+  func configured(apiKey: Swift.String, userId: Swift.String, channelId: Swift.String, projectId: Swift.String, completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  func startSession(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  func stopSession()
+  func connectWiFiPasspoint(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  func connectWiFiWAP2Enterprise(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  func connectWiFiWAP2(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+}
+@_hasMissingDesignatedInitializers final public class SWFServiceImpl : smartwifi_ios_sdk.SWFService {
+  final public var needToSaveWAP2Identifier: Swift.Bool
+  public static var shared: smartwifi_ios_sdk.SWFService {
+    get
+  }
+  final public func configured(apiKey: Swift.String, userId: Swift.String, channelId: Swift.String, projectId: Swift.String, completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  final public func startSession(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  final public func stopSession()
+  final public func connectWiFiPasspoint(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  final public func connectWiFiWAP2Enterprise(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  final public func connectWiFiWAP2(completion: @escaping (smartwifi_ios_sdk.EmptyResult) -> Swift.Void)
+  @objc deinit
+}
+public protocol SWFWiFiSessionDelegate {
+  func willInitializing(session: smartwifi_ios_sdk.SWFWiFiSession)
+  func willRequestConfig(session: smartwifi_ios_sdk.SWFWiFiSession)
+  func didRequestConfig(session: smartwifi_ios_sdk.SWFWiFiSession, error: Swift.Error?)
+  func willConnectToWiFi(session: smartwifi_ios_sdk.SWFWiFiSession)
+  func didConnectToWiFi(session: smartwifi_ios_sdk.SWFWiFiSession, error: Swift.Error?)
+}
+final public class SWFWiFiSession {
+  public init(delegate: smartwifi_ios_sdk.SWFWiFiSessionDelegate)
+  final public func createSession(apiKey: Swift.String, userId: Swift.String, channelId: Swift.String, projectId: Swift.String)
+  final public func startSession() throws
+  final public func cancelSession()
+  @objc deinit
+}
+public struct SWFWpa2Config : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SWFWpa2Method : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum SwiftyJSONError : Swift.Int, Swift.Error {
+  case unsupportedType
+  case indexOutOfBounds
+  case elementTooDeep
+  case wrongType
+  case notExist
+  case invalidJSON
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension SwiftyJSONError : Foundation.CustomNSError {
+  public static var errorDomain: Swift.String {
+    get
+  }
+  public var errorCode: Swift.Int {
+    get
+  }
+  public var errorUserInfo: [Swift.String : Any] {
+    get
+  }
+}
+public enum Type : Swift.Int {
+  case number
+  case string
+  case bool
+  case array
+  case dictionary
+  case null
+  case unknown
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct JSON {
+  public init(data: Foundation.Data, options opt: Foundation.JSONSerialization.ReadingOptions = []) throws
+  public init(_ object: Any)
+  public init(parseJSON jsonString: Swift.String)
+  public mutating func merge(with other: smartwifi_ios_sdk.JSON) throws
+  public func merged(with other: smartwifi_ios_sdk.JSON) throws -> smartwifi_ios_sdk.JSON
+  public var type: smartwifi_ios_sdk.`Type` {
+    get
+  }
+  public var error: smartwifi_ios_sdk.SwiftyJSONError? {
+    get
+  }
+  public var object: Any {
+    get
+    set
+  }
+  @available(*, unavailable, renamed: "null")
+  public static var nullJSON: smartwifi_ios_sdk.JSON {
+    get
+  }
+  public static var null: smartwifi_ios_sdk.JSON {
+    get
+  }
+}
+public enum Index<T> : Swift.Comparable {
+  case array(Swift.Int)
+  case dictionary(Swift.DictionaryIndex<Swift.String, T>)
+  case null
+  public static func == (lhs: smartwifi_ios_sdk.Index<T>, rhs: smartwifi_ios_sdk.Index<T>) -> Swift.Bool
+  public static func < (lhs: smartwifi_ios_sdk.Index<T>, rhs: smartwifi_ios_sdk.Index<T>) -> Swift.Bool
+}
+public typealias JSONIndex = smartwifi_ios_sdk.Index<smartwifi_ios_sdk.JSON>
+public typealias JSONRawIndex = smartwifi_ios_sdk.Index<Any>
+extension JSON : Swift.Collection {
+  public typealias Index = smartwifi_ios_sdk.JSONRawIndex
+  public var startIndex: smartwifi_ios_sdk.JSON.Index {
+    get
+  }
+  public var endIndex: smartwifi_ios_sdk.JSON.Index {
+    get
+  }
+  public func index(after i: smartwifi_ios_sdk.JSON.Index) -> smartwifi_ios_sdk.JSON.Index
+  public subscript(position: smartwifi_ios_sdk.JSON.Index) -> (Swift.String, smartwifi_ios_sdk.JSON) {
+    get
+  }
+  public typealias Element = (Swift.String, smartwifi_ios_sdk.JSON)
+  public typealias Indices = Swift.DefaultIndices<smartwifi_ios_sdk.JSON>
+  public typealias Iterator = Swift.IndexingIterator<smartwifi_ios_sdk.JSON>
+  public typealias SubSequence = Swift.Slice<smartwifi_ios_sdk.JSON>
+}
+public enum JSONKey {
+  case index(Swift.Int)
+  case key(Swift.String)
+}
+public protocol JSONSubscriptType {
+  var jsonKey: smartwifi_ios_sdk.JSONKey { get }
+}
+extension Int : smartwifi_ios_sdk.JSONSubscriptType {
+  public var jsonKey: smartwifi_ios_sdk.JSONKey {
+    get
+  }
+}
+extension String : smartwifi_ios_sdk.JSONSubscriptType {
+  public var jsonKey: smartwifi_ios_sdk.JSONKey {
+    get
+  }
+}
+extension JSON {
+  public subscript(path: [smartwifi_ios_sdk.JSONSubscriptType]) -> smartwifi_ios_sdk.JSON {
+    get
+    set
+  }
+  public subscript(path: smartwifi_ios_sdk.JSONSubscriptType...) -> smartwifi_ios_sdk.JSON {
+    get
+    set
+  }
+}
+extension JSON : Swift.ExpressibleByStringLiteral {
+  public init(stringLiteral value: Swift.StringLiteralType)
+  public init(extendedGraphemeClusterLiteral value: Swift.StringLiteralType)
+  public init(unicodeScalarLiteral value: Swift.StringLiteralType)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.StringLiteralType
+  public typealias StringLiteralType = Swift.StringLiteralType
+  public typealias UnicodeScalarLiteralType = Swift.StringLiteralType
+}
+extension JSON : Swift.ExpressibleByIntegerLiteral {
+  public init(integerLiteral value: Swift.IntegerLiteralType)
+  public typealias IntegerLiteralType = Swift.IntegerLiteralType
+}
+extension JSON : Swift.ExpressibleByBooleanLiteral {
+  public init(booleanLiteral value: Swift.BooleanLiteralType)
+  public typealias BooleanLiteralType = Swift.BooleanLiteralType
+}
+extension JSON : Swift.ExpressibleByFloatLiteral {
+  public init(floatLiteral value: Swift.FloatLiteralType)
+  public typealias FloatLiteralType = Swift.FloatLiteralType
+}
+extension JSON : Swift.ExpressibleByDictionaryLiteral {
+  public init(dictionaryLiteral elements: (Swift.String, Any)...)
+  public typealias Key = Swift.String
+  public typealias Value = Any
+}
+extension JSON : Swift.ExpressibleByArrayLiteral {
+  public init(arrayLiteral elements: Any...)
+  public typealias ArrayLiteralElement = Any
+}
+extension JSON : Swift.RawRepresentable {
+  public init?(rawValue: Any)
+  public var rawValue: Any {
+    get
+  }
+  public func rawData(options opt: Foundation.JSONSerialization.WritingOptions = JSONSerialization.WritingOptions(rawValue: 0)) throws -> Foundation.Data
+  public func rawString(_ encoding: Swift.String.Encoding = .utf8, options opt: Foundation.JSONSerialization.WritingOptions = .prettyPrinted) -> Swift.String?
+  public func rawString(_ options: [smartwifi_ios_sdk.writingOptionsKeys : Any]) -> Swift.String?
+  public typealias RawValue = Any
+}
+extension JSON : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension JSON {
+  public var array: [smartwifi_ios_sdk.JSON]? {
+    get
+  }
+  public var arrayValue: [smartwifi_ios_sdk.JSON] {
+    get
+  }
+  public var arrayObject: [Any]? {
+    get
+    set
+  }
+}
+extension JSON {
+  public var dictionary: [Swift.String : smartwifi_ios_sdk.JSON]? {
+    get
+  }
+  public var dictionaryValue: [Swift.String : smartwifi_ios_sdk.JSON] {
+    get
+  }
+  public var dictionaryObject: [Swift.String : Any]? {
+    get
+    set
+  }
+}
+extension JSON {
+  public var bool: Swift.Bool? {
+    get
+    set
+  }
+  public var boolValue: Swift.Bool {
+    get
+    set
+  }
+}
+extension JSON {
+  public var string: Swift.String? {
+    get
+    set
+  }
+  public var stringValue: Swift.String {
+    get
+    set
+  }
+}
+extension JSON {
+  public var number: Foundation.NSNumber? {
+    get
+    set
+  }
+  public var numberValue: Foundation.NSNumber {
+    get
+    set
+  }
+}
+extension JSON {
+  public var null: Foundation.NSNull? {
+    get
+    set
+  }
+  public func exists() -> Swift.Bool
+}
+extension JSON {
+  public var url: Foundation.URL? {
+    get
+    set
+  }
+}
+extension JSON {
+  public var double: Swift.Double? {
+    get
+    set
+  }
+  public var doubleValue: Swift.Double {
+    get
+    set
+  }
+  public var float: Swift.Float? {
+    get
+    set
+  }
+  public var floatValue: Swift.Float {
+    get
+    set
+  }
+  public var int: Swift.Int? {
+    get
+    set
+  }
+  public var intValue: Swift.Int {
+    get
+    set
+  }
+  public var uInt: Swift.UInt? {
+    get
+    set
+  }
+  public var uIntValue: Swift.UInt {
+    get
+    set
+  }
+  public var int8: Swift.Int8? {
+    get
+    set
+  }
+  public var int8Value: Swift.Int8 {
+    get
+    set
+  }
+  public var uInt8: Swift.UInt8? {
+    get
+    set
+  }
+  public var uInt8Value: Swift.UInt8 {
+    get
+    set
+  }
+  public var int16: Swift.Int16? {
+    get
+    set
+  }
+  public var int16Value: Swift.Int16 {
+    get
+    set
+  }
+  public var uInt16: Swift.UInt16? {
+    get
+    set
+  }
+  public var uInt16Value: Swift.UInt16 {
+    get
+    set
+  }
+  public var int32: Swift.Int32? {
+    get
+    set
+  }
+  public var int32Value: Swift.Int32 {
+    get
+    set
+  }
+  public var uInt32: Swift.UInt32? {
+    get
+    set
+  }
+  public var uInt32Value: Swift.UInt32 {
+    get
+    set
+  }
+  public var int64: Swift.Int64? {
+    get
+    set
+  }
+  public var int64Value: Swift.Int64 {
+    get
+    set
+  }
+  public var uInt64: Swift.UInt64? {
+    get
+    set
+  }
+  public var uInt64Value: Swift.UInt64 {
+    get
+    set
+  }
+}
+extension JSON : Swift.Comparable {
+}
+public func == (lhs: smartwifi_ios_sdk.JSON, rhs: smartwifi_ios_sdk.JSON) -> Swift.Bool
+public func <= (lhs: smartwifi_ios_sdk.JSON, rhs: smartwifi_ios_sdk.JSON) -> Swift.Bool
+public func >= (lhs: smartwifi_ios_sdk.JSON, rhs: smartwifi_ios_sdk.JSON) -> Swift.Bool
+public func > (lhs: smartwifi_ios_sdk.JSON, rhs: smartwifi_ios_sdk.JSON) -> Swift.Bool
+public func < (lhs: smartwifi_ios_sdk.JSON, rhs: smartwifi_ios_sdk.JSON) -> Swift.Bool
+public enum writingOptionsKeys {
+  case jsonSerialization
+  case castNilToNSNull
+  case maxObjextDepth
+  case encoding
+  public static func == (a: smartwifi_ios_sdk.writingOptionsKeys, b: smartwifi_ios_sdk.writingOptionsKeys) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension JSON : Swift.Codable {
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct SWFWpa2EnterpriseConfig : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SWFWpa2EnterpriseMethod : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum SWFServiceError : Swift.Error, Foundation.LocalizedError {
+  case confirmationTypeNotSelected
+  case cantFindCredentials
+  case phoneNotSelected
+  case cantFindRootVC
+  case needConfigure
+  case needSetup
+  case needAuth
+  case needCheckOnWiFiModule
+  public var errorDescription: Swift.String? {
+    get
+  }
+  public static func == (a: smartwifi_ios_sdk.SWFServiceError, b: smartwifi_ios_sdk.SWFServiceError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct SWFSaveIdentifierResponse : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum Result<T> {
+  case success(T)
+  case failure(Swift.Error)
+}
+public enum Result3<T, D, F> {
+  case success(T, D, F)
+  case failure(Swift.Error)
+}
+public enum EmptyResult {
+  case success
+  case failure(Swift.Error)
+}
+public func == (lhs: smartwifi_ios_sdk.EmptyResult, rhs: smartwifi_ios_sdk.EmptyResult) -> Swift.Bool
+public func mainThreadResultCompletion<T>(_ completion: @escaping smartwifi_ios_sdk.ResultCompletion<T>) -> smartwifi_ios_sdk.ResultCompletion<T>
+public typealias ConfigsResultCompletion<T, D, F> = (smartwifi_ios_sdk.Result3<T, D, F>) -> Swift.Void
+public typealias ResultCompletion<T> = (smartwifi_ios_sdk.Result<T>) -> Swift.Void
+public typealias VoidCompletion = () -> Swift.Void
+public typealias EmptyCompletion = (smartwifi_ios_sdk.EmptyResult) -> Swift.Void
+public typealias IntHandler = (Swift.Int) -> Swift.Void
+public struct SWFWiFiConfig<Config> : Swift.Codable where Config : Swift.Decodable, Config : Swift.Encodable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SWFPasspointConfig : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SWFPasspointMethod : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension smartwifi_ios_sdk.SwiftyJSONError : Swift.Equatable {}
+extension smartwifi_ios_sdk.SwiftyJSONError : Swift.Hashable {}
+extension smartwifi_ios_sdk.SwiftyJSONError : Swift.RawRepresentable {}
+extension smartwifi_ios_sdk.`Type` : Swift.Equatable {}
+extension smartwifi_ios_sdk.`Type` : Swift.Hashable {}
+extension smartwifi_ios_sdk.`Type` : Swift.RawRepresentable {}
+extension smartwifi_ios_sdk.writingOptionsKeys : Swift.Equatable {}
+extension smartwifi_ios_sdk.writingOptionsKeys : Swift.Hashable {}
+extension smartwifi_ios_sdk.SWFServiceError : Swift.Equatable {}
+extension smartwifi_ios_sdk.SWFServiceError : Swift.Hashable {}
