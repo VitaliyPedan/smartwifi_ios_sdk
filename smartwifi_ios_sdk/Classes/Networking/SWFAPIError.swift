@@ -29,6 +29,12 @@ struct ErrorKey {
     static let additionalInfo = "AdditionalInfo"
 }
 
+struct ConfigError: Codable {
+    let detail: String
+    let status: Int
+    let title: String
+}
+
 // MARK: TECHDEBT: this class is usless. We can split it into variables or struct, smthng
 class SWFAPIError {
     
@@ -92,6 +98,15 @@ class SWFAPIError {
         )
     }
     
+    static func configError(domain: String, configError: ConfigError) -> Error {
+        return self.error(
+            domain: domain,
+            code: configError.status,
+            description: configError.title,
+            additionalInfo: configError.detail
+        )
+    }
+
     // MARK: TECHDEBT: temporary solution before error handling would be more advanced
     static func unknownError() -> Error {
         return self.error(domain: "Unknown error", code: 999, description: "Unknown error appeared")
