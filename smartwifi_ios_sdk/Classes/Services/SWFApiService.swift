@@ -302,6 +302,9 @@ extension SWFApiServiceImpl {
                 } else if let wpa2Config = try? JSONDecoder().decode(SWFWiFiConfig<SWFWpa2Config>.self, from: data) {
                     completion(.success(nil, nil, wpa2Config))
                     
+                } else if let configError = try? JSONDecoder().decode(ConfigError.self, from: data) {
+                    completion(.failure(SWFAPIError.configError(domain: #function, configError: configError)))
+                    
                 } else {
                     completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
                 }
