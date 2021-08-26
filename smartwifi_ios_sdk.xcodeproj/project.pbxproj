@@ -37,7 +37,6 @@
 		6499D04126CB2973007C9481 /* SWFService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03326CB2973007C9481 /* SWFService.swift */; };
 		6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03426CB2973007C9481 /* SWFApiService.swift */; };
 		6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */; };
-		6499D06A26CBAD4B007C9481 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D06926CBAD4B007C9481 /* SwiftyJSON.swift */; };
 		64D3A9D426D45BAD001CB552 /* SWFServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */; };
 		64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */; };
 /* End PBXBuildFile section */
@@ -83,7 +82,6 @@
 		6499D03326CB2973007C9481 /* SWFService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFService.swift; sourceTree = "<group>"; };
 		6499D03426CB2973007C9481 /* SWFApiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFApiService.swift; sourceTree = "<group>"; };
 		6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiFiConfigurationService.swift; sourceTree = "<group>"; };
-		6499D06926CBAD4B007C9481 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFServiceError.swift; sourceTree = "<group>"; };
 		64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFWiFiSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -129,7 +127,6 @@
 			isa = PBXGroup;
 			children = (
 				64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */,
-				6499D06926CBAD4B007C9481 /* SwiftyJSON.swift */,
 				6499D02226CB2972007C9481 /* Constants.swift */,
 				6499D02326CB2973007C9481 /* Networking */,
 				6499D02C26CB2973007C9481 /* Navigation */,
@@ -296,7 +293,6 @@
 				6499D03D26CB2973007C9481 /* SWFAPIError.swift in Sources */,
 				64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */,
 				6499D03C26CB2973007C9481 /* SWFWpa2Config.swift in Sources */,
-				6499D06A26CBAD4B007C9481 /* SwiftyJSON.swift in Sources */,
 				6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */,
 				6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */,
 				6499D04026CB2973007C9481 /* SecuredStorageManager.swift in Sources */,
@@ -465,9 +461,11 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.smartwifi.sdk.ios;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -493,9 +491,11 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.smartwifi.sdk.ios;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
