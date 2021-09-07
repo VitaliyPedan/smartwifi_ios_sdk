@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias APIManagerRequestCallback = ((Result<Data>) -> Void)
+typealias APIManagerRequestCallback = ((Result<Data, Error>) -> Void)
 
 final class SWFApiManager {
     

@@ -7,11 +7,6 @@
 
 import Foundation
 
-public enum Result<T> {
-    case success(T)
-    case failure(Error)
-}
-
 public enum Result3<T,D,F> {
     case success(T,D,F)
     case failure(Error)
@@ -42,7 +37,7 @@ public func mainThreadResultCompletion<T>(_ completion: @escaping ResultCompleti
 
 public typealias ConfigsResultCompletion<T,D,F> = (Result3<T,D,F>) -> Void
 
-public typealias ResultCompletion<T> = (Result<T>) -> Void
+public typealias ResultCompletion<T> = (Result<T,Error>) -> Void
 public typealias VoidCompletion  = () -> Void
 public typealias EmptyCompletion = (EmptyResult) -> Void
 public typealias IntHandler = (Int) -> Void
