@@ -64,7 +64,7 @@ Pod::Spec.new do |spec|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  # spec.platform     = :ios
+  spec.platform     = :ios
   # spec.platform     = :ios, "11.0"
 
   #  When using multiple platforms
@@ -79,7 +79,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/VitaliyPedan/smartwifi_ios_sdk.git", :tag => "1.0.0" }
+  spec.source = { :git => "https://github.com/VitaliyPedan/smartwifi_ios_sdk.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -91,7 +91,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.source_files  = "smartwifi_ios_sdk/Classes/*.{swift}", "smartwifi_ios_sdk/Classes/**/*.{swift}", "smartwifi_ios_sdk/Classes/Networking/**/*.{swift}"
-  spec.exclude_files = "Classes/Exclude"
+  #spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
 
