@@ -100,12 +100,12 @@ public final class SWFWiFiSession {
         self.apiDomain = apiDomain
     }
 
-    public func getSessionConfig() throws {
+    public func getSessionConfig(completion: @escaping (EmptyResult) -> Void) throws {
         guard isWiFiOn() else {
             throw SWFServiceError.needCheckOnWiFiModule
         }
         
-        getConfig()
+        getConfig(completion: completion)
     }
     
     public func startSession() throws {
@@ -122,7 +122,7 @@ public final class SWFWiFiSession {
     
     // MARK: - Private Methods
     
-    private func getConfig() {
+    private func getConfig(completion: @escaping (EmptyResult) -> Void) {
         
         status = .requestConfigs
         
@@ -135,6 +135,7 @@ public final class SWFWiFiSession {
         ) { [weak self] (result) in
             
             self?.status = .requestConfigsResult(result)
+            completion(result)
         }
     }
     
