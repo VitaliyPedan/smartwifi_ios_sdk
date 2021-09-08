@@ -100,22 +100,20 @@ public final class SWFWiFiSession {
         self.apiDomain = apiDomain
     }
 
-    public func startSession() throws {
-        
+    public func getSessionConfig() throws {
         guard isWiFiOn() else {
             throw SWFServiceError.needCheckOnWiFiModule
         }
         
-        getConfig(completion: { [weak self] (result) in
-            switch result {
-            case .success:
-                self?.startConnection()
-            case .failure(let error) where (error as NSError).code == -1020: // no internet connection
-                self?.startConnection()
-            default:
-                break
-            }
-        })
+        getConfig()
+    }
+    
+    public func startSession() throws {
+        guard isWiFiOn() else {
+            throw SWFServiceError.needCheckOnWiFiModule
+        }
+
+        startConnection()
     }
     
     public func cancelSession() {
@@ -124,7 +122,7 @@ public final class SWFWiFiSession {
     
     // MARK: - Private Methods
     
-    private func getConfig(completion: @escaping (EmptyResult) -> Void) {
+    private func getConfig() {
         
         status = .requestConfigs
         
@@ -137,7 +135,6 @@ public final class SWFWiFiSession {
         ) { [weak self] (result) in
             
             self?.status = .requestConfigsResult(result)
-            completion(result)
         }
     }
     
