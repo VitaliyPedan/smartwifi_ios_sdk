@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/smartwifi_ios_sdk-Swift.h</key>
 		<data>
-		SKng6DAa6rUtBQaLVkaVDNO6x3w=
+		YkhYhNQnUJDddnPZbKpLW7Nh2VM=
 		</data>
 		<key>Headers/smartwifi_ios_sdk.h</key>
 		<data>
@@ -14,7 +14,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		iuS7evBofngwdMQOMqa7lpgkeZk=
+		/uadCG6CLOIVUs8Og42cfstEgTM=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -22,27 +22,27 @@
 		</data>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		NXjWAIw3upN+fQFKya2rQtssVrI=
+		FlWx7S+HlqZR4ExpnqLmjaRMkF0=
 		</data>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		VO+T9WMM1LX9PvHr7ImjBIxoaDE=
+		VUNjVrObYj3pZZjH5laJs6eBrKY=
 		</data>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		ok1Kx4lZ9uV7qwKPBls+aiSej1s=
+		k6AseM9hyb33keaFIAzMpIyNbHE=
 		</data>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		NXjWAIw3upN+fQFKya2rQtssVrI=
+		FlWx7S+HlqZR4ExpnqLmjaRMkF0=
 		</data>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		VO+T9WMM1LX9PvHr7ImjBIxoaDE=
+		VUNjVrObYj3pZZjH5laJs6eBrKY=
 		</data>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		ok1Kx4lZ9uV7qwKPBls+aiSej1s=
+		k6AseM9hyb33keaFIAzMpIyNbHE=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -51,7 +51,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			uTYTCGrT/F++B7WKoIXvHQ2jTwQCtDfJiIYf15PdSlk=
+			MmfbI3EulRl8e8bEP0y2/l5/TvHavXhdFUTj/eXc/tA=
 			</data>
 		</dict>
 		<key>Headers/smartwifi_ios_sdk.h</key>
@@ -72,42 +72,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			FyDRrY9WWBpDsPHO1nh5U2rkDioqCdqlEsC/1lzb3WM=
+			rd+GntIw5YhR+y7o1Ll+EZIvVdZu66TxsRpARkRq6zU=
 			</data>
 		</dict>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			oypldInFCRiD2XPS1wkwgWmrdm+7TLg9LVsakgAdAFE=
+			X9QRulIh2K2a0GSnWo5X11G8rqzkTz9A14vU+6LxVFM=
 			</data>
 		</dict>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			YalPSxIV2j1FIBQ0JWAMTMK2nUzFTu/dZzCIoNT4FPw=
+			f9yw8Jkchvsu44O6Cly2mLPgnV6dxGw07EQ1uAlHW8o=
 			</data>
 		</dict>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FyDRrY9WWBpDsPHO1nh5U2rkDioqCdqlEsC/1lzb3WM=
+			rd+GntIw5YhR+y7o1Ll+EZIvVdZu66TxsRpARkRq6zU=
 			</data>
 		</dict>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			oypldInFCRiD2XPS1wkwgWmrdm+7TLg9LVsakgAdAFE=
+			X9QRulIh2K2a0GSnWo5X11G8rqzkTz9A14vU+6LxVFM=
 			</data>
 		</dict>
 		<key>Modules/smartwifi_ios_sdk.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			YalPSxIV2j1FIBQ0JWAMTMK2nUzFTu/dZzCIoNT4FPw=
+			f9yw8Jkchvsu44O6Cly2mLPgnV6dxGw07EQ1uAlHW8o=
 			</data>
 		</dict>
 	</dict>

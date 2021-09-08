@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6469CE1326E7FA8900C12C1E"
-               BuildableName = "smartwifi-Universal"
-               BlueprintName = "smartwifi-Universal"
+               BlueprintIdentifier = "6499D01526CB295F007C9481"
+               BuildableName = "smartwifi_ios_sdk.framework"
+               BlueprintName = "smartwifi_ios_sdk"
                ReferencedContainer = "container:smartwifi_ios_sdk.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6469CE1326E7FA8900C12C1E"
-            BuildableName = "smartwifi-Universal"
-            BlueprintName = "smartwifi-Universal"
+            BlueprintIdentifier = "6499D01526CB295F007C9481"
+            BuildableName = "smartwifi_ios_sdk.framework"
+            BlueprintName = "smartwifi_ios_sdk"
             ReferencedContainer = "container:smartwifi_ios_sdk.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

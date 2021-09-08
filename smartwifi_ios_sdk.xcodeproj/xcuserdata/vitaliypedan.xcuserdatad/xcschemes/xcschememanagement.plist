@@ -7,16 +7,23 @@
 		<key>smartwifi-Universal.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<key>smartwifi_ios_sdk.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<true/>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>6469CE1326E7FA8900C12C1E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>64CBF28426D540EC0024B4FF</key>
 		<dict>
 			<key>primary</key>
