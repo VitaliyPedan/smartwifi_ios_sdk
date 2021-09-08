@@ -30,6 +30,8 @@ enum WiFiSessionStatus {
 
 public final class SWFWiFiSession {
     
+    // MARK: - Properties
+
     private let wifiService: SWFService
     
     private var delegate: SWFWiFiSessionDelegate
@@ -79,11 +81,15 @@ public final class SWFWiFiSession {
     private(set) var projectId: String = ""
     private(set) var apiDomain: String = ""
 
+    // MARK: - Init
+
     public init(delegate: SWFWiFiSessionDelegate) {
         self.wifiService = SWFServiceImpl.shared
         self.delegate = delegate
     }
     
+    // MARK: - Public Methods
+
     public func createSession(
         apiKey: String,
         userId: String,
@@ -100,19 +106,11 @@ public final class SWFWiFiSession {
         self.apiDomain = apiDomain
     }
 
-    public func getSessionConfig(completion: @escaping (EmptyResult) -> Void) throws {
-        guard isWiFiOn() else {
-            throw SWFServiceError.needCheckOnWiFiModule
-        }
-        
+    public func getSessionConfig(completion: @escaping (EmptyResult) -> Void) {
         getConfig(completion: completion)
     }
     
-    public func startSession() throws {
-        guard isWiFiOn() else {
-            throw SWFServiceError.needCheckOnWiFiModule
-        }
-
+    public func startSession() {
         startConnection()
     }
     
@@ -123,9 +121,13 @@ public final class SWFWiFiSession {
     // MARK: - Private Methods
     
     private func getConfig(completion: @escaping (EmptyResult) -> Void) {
-        
         status = .requestConfigs
         
+        guard isWiFiOn() else {
+            status = .requestConfigsResult(.failure(SWFServiceError.needCheckOnWiFiModule))
+            return
+        }
+
         wifiService.configure(
             apiKey: apiKey,
             userId: userId,
@@ -142,6 +144,11 @@ public final class SWFWiFiSession {
     private func startConnection() {
         status = .connecting
         
+        guard isWiFiOn() else {
+            status = .connectionResult(.failure(SWFServiceError.needCheckOnWiFiModule))
+            return
+        }
+
         wifiService.startSession(completion: { [weak self] (result) in
             self?.status = .connectionResult(result)
         })
