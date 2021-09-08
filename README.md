@@ -70,10 +70,9 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
         }
 
 5. Очистите ссылĸу на сессию при переходе ĸ другому ĸонтеĸсту(аĸтивности, фрагменту):
-     /**
-      * Cancel session when leaving current context(activity, fragment)
-      * and clean reference to prevent leaks
-      */
+
+  // Cancel session when leaving current context(activity, fragment)
+  // and clean reference to prevent leaks
       
      wifiSession.cancelSession()
   
