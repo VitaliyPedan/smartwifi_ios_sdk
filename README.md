@@ -36,7 +36,8 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
             apiDomain: apiDomain //Доменной имя сервеа API
         )
     
-3. Запросите ĸонфигурацию:
+3. Запросите ĸонфигурацию: (при успешном ответе, конфигурация кэшируется).
+  
         do {
             try wifiSession.getSessionConfig()
             
@@ -51,7 +52,8 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
             }
         }
   
-4. Запустите сессию Wi-Fi (подĸлючитесь ĸ Wi-Fi):
+4. Запустите сессию Wi-Fi (подĸлючитесь ĸ Wi-Fi): При подключении конфигурация берется из кэша, ранее сохраненная при вызове метода getSessionConfig(), в противном случае получаем ошибку отсутствия конфигурации.
+  
      /**
       * Start session if session instance present
       */
