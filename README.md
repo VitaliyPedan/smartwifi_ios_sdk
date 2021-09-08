@@ -37,37 +37,13 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
   
   // Create new session instance
   
-        do {
-            try wifiSession.getSessionConfig()
-            
-        } catch {
-            switch error {
-            case SWFServiceError.needCheckOnWiFiModule:
-                DispatchQueue.main.async { [weak self] in
-                    self?.openWiFiSettings()
-                }
-            default:
-                break
-            }
-        }
+   wifiSession.getSessionConfig()
   
 4. Запустите сессию Wi-Fi (подĸлючитесь ĸ Wi-Fi): При подключении конфигурация берется из кэша, ранее сохраненная при вызове метода getSessionConfig(), в противном случае получаем ошибку отсутствия конфигурации.
   
   // Start session if session instance present
   
-       do {
-            try wifiSession.startSession()
-            
-       } catch {
-            switch error {
-            case SWFServiceError.needCheckOnWiFiModule:
-              //open settings
-            case SWFServiceError.needConfigure:
-              //create instance of session
-            default:
-                break
-            }
-        }
+   wifiSession.startSession()
 
 5. Очистите ссылĸу на сессию при переходе ĸ другому ĸонтеĸсту(аĸтивности, фрагменту):
 
@@ -79,7 +55,6 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
 6. Этапы и статусы подключения:
 
 public protocol SWFWiFiSessionDelegate {
-    
     func willInitializing(session: SWFWiFiSession)
 
     func willRequestConfig(session: SWFWiFiSession)
@@ -87,5 +62,4 @@ public protocol SWFWiFiSessionDelegate {
 
     func willConnectToWiFi(session: SWFWiFiSession)
     func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
-    
 }
