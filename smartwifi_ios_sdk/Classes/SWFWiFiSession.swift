@@ -107,8 +107,13 @@ public final class SWFWiFiSession {
         }
         
         getConfig(completion: { [weak self] (result) in
-            if result == .success {
+            switch result {
+            case .success:
                 self?.startConnection()
+            case .failure(let error) where (error as NSError).code == -1020: // no internet connection
+                self?.startConnection()
+            default:
+                break
             }
         })
     }
