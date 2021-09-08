@@ -17,7 +17,7 @@ public protocol SWFService {
 
     var needToSaveWAP2Identifier: Bool { get set }
     
-    func configured(
+    func configure(
         apiKey: String,
         userId: String,
         channelId: String,
@@ -80,7 +80,7 @@ public final class SWFServiceImpl: SWFService {
         registrationCounter += 1
     }
     
-    public func configured(
+    public func configure(
         apiKey: String,
         userId: String,
         channelId: String,
@@ -112,7 +112,7 @@ public final class SWFServiceImpl: SWFService {
             processWAP2Config(wpa2Config, completion: completion)
             
         } else {
-            let error = SWFAPIError.restoreSavedData(domain: "getWiFiSettings")
+            let error = SWFAPIError.emptyConfigMethod(domain: "getWiFiSettings")
             completion(.failure(error))
         }
     }

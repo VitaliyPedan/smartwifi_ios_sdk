@@ -126,7 +126,7 @@ public final class SWFWiFiSession {
         
         status = .requestConfigs
         
-        wifiService.configured(
+        wifiService.configure(
             apiKey: apiKey,
             userId: userId,
             channelId: channelId,
