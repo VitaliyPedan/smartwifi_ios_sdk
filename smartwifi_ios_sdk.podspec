@@ -92,7 +92,9 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "smartwifi_ios_sdk/Classes/*.{swift}", "smartwifi_ios_sdk/Classes/**/*.{swift}", "smartwifi_ios_sdk/Classes/Networking/**/*.{swift}"
+  #spec.source_files  = "smartwifi_ios_sdk/Classes/*.{swift}", "smartwifi_ios_sdk/Classes/**/*.{swift}", "smartwifi_ios_sdk/Classes/Networking/**/*.{swift}"
+  spec.source_files = 'smartwifi_ios_sdk/**/*.{swift,h,m}'
+  
   #spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"
