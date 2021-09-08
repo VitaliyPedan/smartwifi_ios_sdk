@@ -36,7 +36,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
             apiDomain: apiDomain //Доменной имя сервеа API
         )
     
-3. ЗапуститесессиюWi-Fi(запроситеĸонфигурациюиподĸлючитесьĸWi-Fi):
+3. Запустите сессию Wi-Fi(запросите ĸонфигурацию и подĸлючитесь ĸ Wi-Fi):
      /**
       * Start session if session instance present
       */
