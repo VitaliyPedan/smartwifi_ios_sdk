@@ -54,7 +54,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
   
 6. Этапы и статусы подключения:
 
-   public protocol SWFWiFiSessionDelegate {
+  public protocol SWFWiFiSessionDelegate {
   
      func willInitializing(session: SWFWiFiSession)
 
@@ -64,4 +64,4 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
      func willConnectToWiFi(session: SWFWiFiSession)
      func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
   
-   }
+  }
