@@ -6,7 +6,7 @@ IOS SmartWiFi Connect library
 
 CocoaPods
 
-pod 'smartwifi_ios_sdk'
+pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_sdk.git'
 
   
 Подĸлючение ĸ WiFi:
