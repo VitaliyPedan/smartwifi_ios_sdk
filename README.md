@@ -38,7 +38,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
     
 3. Запросите ĸонфигурацию:
         do {
-            try wifiSession.getConfig()
+            try wifiSession.getSessionConfig()
             
         } catch {
             switch error {
