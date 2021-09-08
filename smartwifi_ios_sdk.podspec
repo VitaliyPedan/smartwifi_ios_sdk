@@ -19,6 +19,8 @@ Pod::Spec.new do |spec|
   spec.version      = "1.0.1"
   spec.summary      = "smartwifi_ios_sdk framework used for connecting to wifi points"
 
+  spec.cocoapods_version = '>= 1.0.0'
+
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
   #   * Try to keep it short, snappy and to the point.
@@ -129,7 +131,7 @@ Pod::Spec.new do |spec|
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-  # spec.requires_arc = true
+  spec.requires_arc = true
 
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # spec.dependency "JSONKit", "~> 1.4"
