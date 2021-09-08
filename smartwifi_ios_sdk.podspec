@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "smartwifi_ios_sdk"
-  spec.version      = "1.0.0"
+  spec.version      = "1.0.1"
   spec.summary      = "smartwifi_ios_sdk framework used for connecting to wifi points"
 
   # This description is used to generate tags and improve search results.
