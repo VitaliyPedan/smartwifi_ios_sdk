@@ -19,6 +19,7 @@ protocol SWFApiService {
         userId: String,
         channelId: String,
         projectId: String,
+        apiDomain: String,
         completion: @escaping ConfigsResultCompletion<SWFWiFiConfig<SWFPasspointConfig>?,
                                                       SWFWiFiConfig<SWFWpa2EnterpriseConfig>?,
                                                       SWFWiFiConfig<SWFWpa2Config>?>
@@ -233,22 +234,25 @@ extension SWFApiServiceImpl {
         private let userId: String
         private let channelId: String
         private let projectId: String
+        private let apiDomain: String
 
         init(
             apiKey: String,
             userId: String,
             channelId: String,
-            projectId: String
+            projectId: String,
+            apiDomain: String
         ) {
             self.apiKey = apiKey
             self.userId = userId
             self.channelId = channelId
             self.projectId = projectId
+            self.apiDomain = apiDomain
         }
         
         func urlRequest() -> URLRequest? {
-            
-            let urlString: String = "https://api.smartregion.online/project/\(projectId)/channel/\(channelId)/get_wifi_settings"
+            //https://api.smartregion.online - apiDomain
+            let urlString: String = "\(apiDomain)/project/\(projectId)/channel/\(channelId)/get_wifi_settings"
             
             guard let requestUrl = URL(string: urlString) else {
                 return nil
@@ -273,6 +277,7 @@ extension SWFApiServiceImpl {
         userId: String,
         channelId: String,
         projectId: String,
+        apiDomain: String,
         completion: @escaping ConfigsResultCompletion<SWFWiFiConfig<SWFPasspointConfig>?,
                                                       SWFWiFiConfig<SWFWpa2EnterpriseConfig>?,
                                                       SWFWiFiConfig<SWFWpa2Config>?>
@@ -281,7 +286,8 @@ extension SWFApiServiceImpl {
             apiKey: apiKey,
             userId: userId,
             channelId: channelId,
-            projectId: projectId
+            projectId: projectId,
+            apiDomain: apiDomain
         )
         
         guard let urlRequest = request.urlRequest() else {

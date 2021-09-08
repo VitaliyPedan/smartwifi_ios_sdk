@@ -77,6 +77,7 @@ public final class SWFWiFiSession {
     private(set) var userId: String = ""
     private(set) var channelId: String = ""
     private(set) var projectId: String = ""
+    private(set) var apiDomain: String = ""
 
     public init(delegate: SWFWiFiSessionDelegate) {
         self.wifiService = SWFServiceImpl.shared
@@ -87,7 +88,8 @@ public final class SWFWiFiSession {
         apiKey: String,
         userId: String,
         channelId: String,
-        projectId: String
+        projectId: String,
+        apiDomain: String
     ) {
         status = .initializing
         
@@ -95,6 +97,7 @@ public final class SWFWiFiSession {
         self.userId = userId
         self.channelId = channelId
         self.projectId = projectId
+        self.apiDomain = apiDomain
     }
 
     public func startSession() throws {
@@ -124,7 +127,8 @@ public final class SWFWiFiSession {
             apiKey: apiKey,
             userId: userId,
             channelId: channelId,
-            projectId: projectId
+            projectId: projectId,
+            apiDomain: apiDomain
         ) { [weak self] (result) in
             
             self?.status = .requestConfigsResult(result)

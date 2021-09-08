@@ -22,6 +22,7 @@ public protocol SWFService {
         userId: String,
         channelId: String,
         projectId: String,
+        apiDomain: String,
         completion: @escaping (EmptyResult) -> Void
     )
     
@@ -84,6 +85,7 @@ public final class SWFServiceImpl: SWFService {
         userId: String,
         channelId: String,
         projectId: String,
+        apiDomain: String,
         completion: @escaping (EmptyResult) -> Void
     ) {
         getWiFiSettings(
@@ -91,6 +93,7 @@ public final class SWFServiceImpl: SWFService {
             userId: userId,
             channelId: channelId,
             projectId: projectId,
+            apiDomain: apiDomain,
             completion: completion
         )
     }
@@ -327,13 +330,15 @@ private extension SWFServiceImpl {
         userId: String,
         channelId: String,
         projectId: String,
+        apiDomain: String,
         completion: @escaping (EmptyResult) -> Void
     ) {
         smartWifiApiService.getWiFiSettings(
             apiKey: apiKey,
             userId: userId,
             channelId: channelId,
-            projectId: projectId
+            projectId: projectId,
+            apiDomain: apiDomain
         ) { [weak self] (result) in
             
             switch result {
