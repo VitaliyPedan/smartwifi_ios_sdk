@@ -19,21 +19,43 @@ enum UserDefaultsError: Error, LocalizedError {
 /**
  Коллекция ключей для работы с UserDefaultsManager
  */
-enum UserDefaultsKey: String, CaseIterable {
-    case properties
-    case confirmationType
-    case configurationDate
+enum UserDefaultsKey {
+    static var allCases: [UserDefaultsKey] {
+        return [
+            .userId,
+            .host,
+            .passpointConfiguration,
+            .wap2EnterpriseConfiguration,
+            .wap2Configuration,
+            .dynamicKey("")]
+    }
+    
     case userId
-    
     case host
-    case basePath
-    
-    case state
-    case configurationType
     
     case passpointConfiguration
     case wap2EnterpriseConfiguration
     case wap2Configuration
+    
+    case dynamicKey(String)
+    
+    var value: String {
+        switch self {
+        case .userId:
+            return "userId"
+        case .host:
+            return "host"
+        case .passpointConfiguration:
+            return "passpointConfiguration"
+        case .wap2EnterpriseConfiguration:
+            return "wap2EnterpriseConfiguration"
+        case .wap2Configuration:
+            return "wap2Configuration"
+            
+        case .dynamicKey(let dynamicKey):
+            return dynamicKey
+        }
+    }
 }
 
 /**
@@ -86,7 +108,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
     func storeEncodable<T: Encodable>(data: T?, key: UserDefaultsKey) throws {
         do {
             let encodedData = try JSONEncoder().encode(data)
-            container.setValue(encodedData, forKey: key.rawValue)
+            container.setValue(encodedData, forKey: key.value)
         } catch {
             throw UserDefaultsError.encodingError(message: error.localizedDescription)
         }
@@ -108,7 +130,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         Выполняется синхронно
     */
     func getDecodable<T: Decodable>(by key: UserDefaultsKey) throws -> T {
-        guard let data = container.data(forKey: key.rawValue) else {
+        guard let data = container.data(forKey: key.value) else {
             throw UserDefaultsError.notFound
         }
         
@@ -128,7 +150,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         - key: Ключ, по которому будет сохранена строка
      */
     func store(string: String, key: UserDefaultsKey) {
-        container.set(string, forKey: key.rawValue)
+        container.set(string, forKey: key.value)
     }
     
     /**
@@ -141,7 +163,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         - Строка, хранящаяся по указонному ключу. Возвращает nil, если строка по указанному ключу существует
      */
     func getString(by key: UserDefaultsKey) -> String? {
-        container.string(forKey: key.rawValue)
+        container.string(forKey: key.value)
     }
     
     /**
@@ -152,7 +174,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         - key: Ключ, по которому будет получено число строка
      */
     func store(int: Int, key: UserDefaultsKey) {
-        container.set(int, forKey: key.rawValue)
+        container.set(int, forKey: key.value)
     }
     
     /**
@@ -165,27 +187,48 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         - Число, хранящееся по указонному ключу. Возвращает nil, если числа по указанному ключу существует
      */
     func getInt(by key: UserDefaultsKey) -> Int? {
-        container.integer(forKey: key.rawValue)
+        container.integer(forKey: key.value)
     }
     
     func store(date: Date, key: UserDefaultsKey) {
-        container.set(date, forKey: key.rawValue)
+        container.set(date, forKey: key.value)
     }
     
     func getDate(key: UserDefaultsKey) -> Date? {
-        container.object(forKey: key.rawValue) as? Date
+        container.object(forKey: key.value) as? Date
     }
     
     func store(bool: Bool, key: UserDefaultsKey) {
-        container.set(bool, forKey: key.rawValue)
+        container.set(bool, forKey: key.value)
     }
     
     func getBool(by key: UserDefaultsKey) -> Bool {
-        container.bool(forKey: key.rawValue)
+        container.bool(forKey: key.value)
     }
     
     /**
-    Удаляет все значения по всем ключам
+    Удаляет  значения по динамическому ключу
+     
+     - parameters:
+        - completion: @escaping замыкание, которое выполнится после очистки базы
+        - key: ключ по которому будет удалено значение
+     
+     - Important: Выполняется асинхронно
+     */
+    func removeValues(by keys: [String], completion: @escaping () -> ()) {
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            keys.forEach { key in
+                let _key = UserDefaultsKey.dynamicKey(key)
+                self.container.removeObject(forKey: _key.value)
+            }
+            
+            completion()
+        }
+    }
+    
+    /**
+    Удаляет все значения по всем ключам кроме динамических
      
      - parameters:
         - completion: @escaping замыкание, которое выполнится после очистки базы
@@ -196,12 +239,11 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         
         DispatchQueue.global(qos: .userInitiated).async {
             UserDefaultsKey.allCases.forEach { key in
-                if key != .configurationType {
-                    self.container.removeObject(forKey: key.rawValue)
-                }
+                self.container.removeObject(forKey: key.value)
             }
             
             completion()
         }
     }
+
 }

@@ -57,6 +57,8 @@ public final class SWFServiceImpl: SWFService {
     private var saveIdentifierCounter: Int = 0
     private var registrationCounter: Int = 1
 
+    private var configKey: String?
+
     public var needToSaveWAP2Identifier: Bool = true
     
     public internal(set) static var shared: SWFService = SWFServiceImpl(
@@ -88,6 +90,8 @@ public final class SWFServiceImpl: SWFService {
         apiDomain: String,
         completion: @escaping (EmptyResult) -> Void
     ) {
+        configKey = apiDomain + projectId + channelId
+        
         getWiFiSettings(
             apiKey: apiKey,
             userId: userId,
@@ -100,15 +104,21 @@ public final class SWFServiceImpl: SWFService {
 
     public func startSession(completion: @escaping (EmptyResult) -> Void) {
         
+        guard let configKey = configKey else {
+            let error = SWFAPIError.errorWith(text: "Need to configure session")
+            completion(.failure(error))
+            return
+        }
+        
         let storage: UserDefaultsManagerType = UserDefaultsManager.shared
         
-        if let passpointConfig: SWFWiFiConfig<SWFPasspointConfig> = try? storage.getDecodable(by: .passpointConfiguration) {
+        if let passpointConfig: SWFWiFiConfig<SWFPasspointConfig> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
             processPasspointConfig(passpointConfig, completion: completion)
             
-        } else if let wpa2EnterpriseConfig: SWFWiFiConfig<SWFWpa2EnterpriseConfig> = try? storage.getDecodable(by: .wap2EnterpriseConfiguration) {
+        } else if let wpa2EnterpriseConfig: SWFWiFiConfig<SWFWpa2EnterpriseConfig> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
             processWAP2EnterpriseConfig(wpa2EnterpriseConfig, completion: completion)
             
-        } else if let wpa2Config: SWFWiFiConfig<SWFWpa2Config> = try? storage.getDecodable(by: .wap2Configuration) {
+        } else if let wpa2Config: SWFWiFiConfig<SWFWpa2Config> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
             processWAP2Config(wpa2Config, completion: completion)
             
         } else {
@@ -333,6 +343,7 @@ private extension SWFServiceImpl {
         apiDomain: String,
         completion: @escaping (EmptyResult) -> Void
     ) {
+        
         smartWifiApiService.getWiFiSettings(
             apiKey: apiKey,
             userId: userId,
@@ -355,13 +366,13 @@ private extension SWFServiceImpl {
 
                         do {
                             if let passpointConfig = passpointConfig {
-                                try self.saveConfig(passpointConfig)
+                                try self.saveConfig(passpointConfig, key: self.configKey!)
 
                             } else if let wpa2EnterpriseConfig = wpa2EnterpriseConfig {
-                                try self.saveConfig(wpa2EnterpriseConfig)
+                                try self.saveConfig(wpa2EnterpriseConfig, key: self.configKey!)
 
                             } else if let wpa2Config = wpa2Config {
-                                try self.saveConfig(wpa2Config)
+                                try self.saveConfig(wpa2Config, key: self.configKey!)
                             }
                     
                             if passpointConfig != nil || wpa2EnterpriseConfig != nil || wpa2Config != nil {
@@ -384,16 +395,19 @@ private extension SWFServiceImpl {
         }
     }
  
-    func saveConfig(_ config: SWFWiFiConfig<SWFPasspointConfig>) throws {
-        try UserDefaultsManager.shared.storeEncodable(data: config, key: .passpointConfiguration)
+    func saveConfig(_ config: SWFWiFiConfig<SWFPasspointConfig>, key: String) throws {
+//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .passpointConfiguration)
+        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
     }
     
-    func saveConfig(_ config: SWFWiFiConfig<SWFWpa2EnterpriseConfig>) throws {
-        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2EnterpriseConfiguration)
+    func saveConfig(_ config: SWFWiFiConfig<SWFWpa2EnterpriseConfig>, key: String) throws {
+//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2EnterpriseConfiguration)
+        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
     }
 
-    func saveConfig(_ config: SWFWiFiConfig<SWFWpa2Config>) throws {
-        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2Configuration)
+    func saveConfig(_ config: SWFWiFiConfig<SWFWpa2Config>, key: String) throws {
+//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2Configuration)
+        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
     }
 
     func processPasspointConfig(
