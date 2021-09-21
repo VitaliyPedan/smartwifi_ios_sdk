@@ -39,7 +39,8 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
   
      wifiSession.getSessionConfig()
   
-4. Запустите сессию Wi-Fi (подĸлючитесь ĸ Wi-Fi): При подключении конфигурация берется из кэша, ранее сохраненная при вызове метода getSessionConfig(), в противном случае получаем ошибку отсутствия конфигурации.
+4. Запустите сессию Wi-Fi (подĸлючитесь ĸ Wi-Fi): При подключении конфигурация берется из кэша, ранее сохраненная при вызове метода getSessionConfig(), в противном случае получаем ошибку отсутствия конфигурации. Подключение происходит в два 
+  этапа, сперва приминяеться конфигурация, после приходит подключение. Делегат будет проинформирован в соответсвующих методах.
   
   // Start session if session instance present
   
@@ -60,6 +61,9 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
 
      func willRequestConfig(session: SWFWiFiSession)
      func didRequestConfig(session: SWFWiFiSession, error: Error?)
+
+     func willApplyConfig(session: SWFWiFiSession)
+     func didApplyConfig(session: SWFWiFiSession, error: Error?)
 
      func willConnectToWiFi(session: SWFWiFiSession)
      func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
