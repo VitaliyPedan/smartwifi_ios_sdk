@@ -57,8 +57,6 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
 
   public protocol SWFWiFiSessionDelegate {
   
-     func willInitializing(session: SWFWiFiSession)
-
      func willRequestConfig(session: SWFWiFiSession)
      func didRequestConfig(session: SWFWiFiSession, error: Error?)
 
