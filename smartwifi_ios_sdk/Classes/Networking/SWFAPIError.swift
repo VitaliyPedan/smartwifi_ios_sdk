@@ -14,6 +14,7 @@ struct ErrorDescription {
     static let savingData = "Saving data procces error"
     static let restoreSavedData = "Restore saved data error"
     static let emptyConfigMethod = "Empty config method"
+    static let unableToJoinNetwork = "Unable to Join the Network"
 }
 
 struct ErrorCode {
@@ -23,6 +24,7 @@ struct ErrorCode {
     static let savingData = 3
     static let restoreSavedData = 4
     static let emptyConfigMethod = 5
+    static let unableToJoinNetwork = 6
 }
 
 struct ErrorKey {
@@ -104,6 +106,14 @@ class SWFAPIError {
             code: configError.status,
             description: configError.title,
             additionalInfo: configError.detail
+        )
+    }
+
+    static func unableToJoinNetwork(domain: String) -> Error {
+        return self.error(
+            domain: domain,
+            code: ErrorCode.unableToJoinNetwork,
+            description: ErrorDescription.unableToJoinNetwork
         )
     }
 

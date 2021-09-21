@@ -14,6 +14,9 @@ public protocol SWFWiFiSessionDelegate {
     func willRequestConfig(session: SWFWiFiSession)
     func didRequestConfig(session: SWFWiFiSession, error: Error?)
 
+    func willApplyConfig(session: SWFWiFiSession)
+    func didApplyConfig(session: SWFWiFiSession, error: Error?)
+
     func willConnectToWiFi(session: SWFWiFiSession)
     func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
     
@@ -23,6 +26,8 @@ enum WiFiSessionStatus {
     case initializing
     case requestConfigs
     case requestConfigsResult(EmptyResult)
+    case applyConfigs
+    case applyConfigsResult(EmptyResult)
     case connecting
     case connectionResult(EmptyResult)
 }
@@ -58,7 +63,18 @@ public final class SWFWiFiSession {
                     case .failure(let error):
                         self.delegate.didRequestConfig(session: self, error: error)
                     }
+                
+                case .applyConfigs:
+                    self.delegate.willApplyConfig(session: self)
                     
+                case .applyConfigsResult(let result):
+                    switch result {
+                    case .success:
+                        self.delegate.didApplyConfig(session: self, error: nil)
+                    case .failure(let error):
+                        self.delegate.didApplyConfig(session: self, error: error)
+                    }
+
                 case .connecting:
                     self.delegate.willConnectToWiFi(session: self)
                     
@@ -142,16 +158,19 @@ public final class SWFWiFiSession {
     }
     
     private func startConnection() {
-        status = .connecting
+        status = .applyConfigs
         
         guard isWiFiOn() else {
-            status = .connectionResult(.failure(SWFServiceError.needCheckOnWiFiModule))
+            status = .applyConfigsResult(.failure(SWFServiceError.needCheckOnWiFiModule))
             return
         }
 
-        wifiService.startSession(completion: { [weak self] (result) in
+        wifiService.startSession { [weak self] (result) in
+            self?.status = .applyConfigsResult(result)
+            self?.status = .connecting
+        } connectionCompletion: { [weak self] (result) in
             self?.status = .connectionResult(result)
-        })
+        }
     }
     
     private func isWiFiOn() -> Bool {

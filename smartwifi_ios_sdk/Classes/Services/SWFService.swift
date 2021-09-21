@@ -26,12 +26,15 @@ public protocol SWFService {
         completion: @escaping (EmptyResult) -> Void
     )
     
-    func startSession(completion: @escaping (EmptyResult) -> Void)
+    func startSession(
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    )
     func stopSession()
     
-    func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void)
-    func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void)
-    func connectWiFiWAP2(completion: @escaping (EmptyResult) -> Void)
+//    func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void)
+//    func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void)
+//    func connectWiFiWAP2(completion: @escaping (EmptyResult) -> Void)
     
 }
 
@@ -102,28 +105,43 @@ public final class SWFServiceImpl: SWFService {
         )
     }
 
-    public func startSession(completion: @escaping (EmptyResult) -> Void) {
+    public func startSession(
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    ) {
         
         guard let configKey = configKey else {
             let error = SWFAPIError.errorWith(text: "Need to configure session")
-            completion(.failure(error))
+            applyConfigCompletion(.failure(error))
             return
         }
         
         let storage: UserDefaultsManagerType = UserDefaultsManager.shared
         
         if let passpointConfig: SWFWiFiConfig<SWFPasspointConfig> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
-            processPasspointConfig(passpointConfig, completion: completion)
+            processPasspointConfig(
+                passpointConfig,
+                applyConfigCompletion: applyConfigCompletion,
+                connectionCompletion: connectionCompletion
+            )
             
         } else if let wpa2EnterpriseConfig: SWFWiFiConfig<SWFWpa2EnterpriseConfig> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
-            processWAP2EnterpriseConfig(wpa2EnterpriseConfig, completion: completion)
+            processWAP2EnterpriseConfig(
+                wpa2EnterpriseConfig,
+                applyConfigCompletion: applyConfigCompletion,
+                connectionCompletion: connectionCompletion
+            )
             
         } else if let wpa2Config: SWFWiFiConfig<SWFWpa2Config> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
-            processWAP2Config(wpa2Config, completion: completion)
+            processWAP2Config(
+                wpa2Config,
+                applyConfigCompletion: applyConfigCompletion,
+                connectionCompletion: connectionCompletion
+            )
             
         } else {
             let error = SWFAPIError.emptyConfigMethod(domain: "getWiFiSettings")
-            completion(.failure(error))
+            applyConfigCompletion(.failure(error))
         }
     }
     
@@ -135,95 +153,100 @@ public final class SWFServiceImpl: SWFService {
         }
     }
 
-    public func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void) {
-        
-        let domainName: String = "vm-cbcc.smartregion.local"
-        let username: String = "79267000000"
-        let password: String = "2GhaLdT8Rk"
-        
-        let trustedServerName: String = "hs20.smartregion.moscow"
-
-        let passpointMethod = SWFPasspointMethod(
-            username: username,
-            password: password,
-            fqdn: trustedServerName,
-            eapType: "21",
-            nonEapInnerMethod: "MS-CHAP-V2",
-            friendlyName: "SmartWiFi HS20 Operator",
-            realm: domainName,
-            caCertificate: ""
-        )
-        
-        self.connectToWiFiPasspoint(method: passpointMethod) { (result) in
-            
-            switch result {
-            case .success:
-                completion(.success)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    public func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void) {
-        
-        let ssid: String = "HS20-AP"
-        let username: String = "79267000000"
-        let password: String = "2GhaLdT8Rk"
-        
-        let wpa2EnterpriseMethod = SWFWpa2EnterpriseMethod(
-            ssid: ssid,
-            password: password,
-            identity: username,
-            caCertificate: ""
-        )
-        
-        self.connectToWiFiWap2Enterprise(method: wpa2EnterpriseMethod) { (result) in
-            
-            switch result {
-            case .success:
-                completion(.success)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    public func connectWiFiWAP2(completion: @escaping (EmptyResult) -> Void) {
-        
-        let ssid: String = "Smart UMICO"
-        let password: String = "19130717"
-        let ccUrl: String = "https://wifi-reg.smartcityinterface.com/user_id=pntr54355430-dfbdb43-43t34mmljbdf&project_id=1&channel_id=1"
-
-        let wpa2Method = SWFWpa2Method(
-            ssid: ssid,
-            password: password,
-            ccUrl: ccUrl
-        )
-        
-        self.connectToWiFiWap2(method: wpa2Method) { [weak self] (result) in
-            guard let self = self else {
-                return
-            }
-
-            switch result {
-            case .success:
-                completion(.success)
-                if self.needToSaveWAP2Identifier {
-                    self.saveIdentifier(with: wpa2Method.ccUrl)
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-
-    }
+//    public func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void) {
+//
+//        let domainName: String = "vm-cbcc.smartregion.local"
+//        let username: String = "79267000000"
+//        let password: String = "2GhaLdT8Rk"
+//
+//        let trustedServerName: String = "hs20.smartregion.moscow"
+//
+//        let passpointMethod = SWFPasspointMethod(
+//            username: username,
+//            password: password,
+//            fqdn: trustedServerName,
+//            eapType: "21",
+//            nonEapInnerMethod: "MS-CHAP-V2",
+//            friendlyName: "SmartWiFi HS20 Operator",
+//            realm: domainName,
+//            caCertificate: ""
+//        )
+//
+//        self.connectToWiFiPasspoint(method: passpointMethod) { (result) in
+//
+//            switch result {
+//            case .success:
+//                completion(.success)
+//            case .failure(let error):
+//                completion(.failure(error))
+//            }
+//        }
+//    }
+//
+//    public func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void) {
+//
+//        let ssid: String = "HS20-AP"
+//        let username: String = "79267000000"
+//        let password: String = "2GhaLdT8Rk"
+//
+//        let wpa2EnterpriseMethod = SWFWpa2EnterpriseMethod(
+//            ssid: ssid,
+//            password: password,
+//            identity: username,
+//            caCertificate: ""
+//        )
+//
+//        self.connectToWiFiWap2Enterprise(method: wpa2EnterpriseMethod) { (result) in
+//
+//            switch result {
+//            case .success:
+//                completion(.success)
+//            case .failure(let error):
+//                completion(.failure(error))
+//            }
+//        }
+//    }
+//
+//    public func connectWiFiWAP2(completion: @escaping (EmptyResult) -> Void) {
+//
+//        let ssid: String = "Smart UMICO"
+//        let password: String = "19130717"
+//        let ccUrl: String = "https://wifi-reg.smartcityinterface.com/user_id=pntr54355430-dfbdb43-43t34mmljbdf&project_id=1&channel_id=1"
+//
+//        let wpa2Method = SWFWpa2Method(
+//            ssid: ssid,
+//            password: password,
+//            ccUrl: ccUrl
+//        )
+//
+//        self.connectToWiFiWap2(method: wpa2Method) { [weak self] (result) in
+//            guard let self = self else {
+//                return
+//            }
+//
+//            switch result {
+//            case .success:
+//                if self.needToSaveWAP2Identifier {
+//                    self.saveIdentifier(with: wpa2Method.ccUrl, completion: completion)
+//                } else {
+//                    completion(.success)
+//                }
+//            case .failure(let error):
+//                completion(.failure(error))
+//            }
+//        }
+//
+//    }
 
 }
 
 private extension SWFServiceImpl {
         
-    func connectToWiFiPasspoint(method: SWFPasspointMethod, completion: @escaping (EmptyResult) -> Void) {
+    func connectToWiFiPasspoint(
+        method: SWFPasspointMethod,
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    ) {
 
         let hotspotSettings = HotspotSettings(
             username: method.username,
@@ -236,11 +259,16 @@ private extension SWFServiceImpl {
         wifiConfigurationService.connect(
             domainName: method.realm,
             hotspotSettings: hotspotSettings,
-            result: completion
+            applyResult: applyConfigCompletion,
+            connectionResult: connectionCompletion
         )
     }
 
-    func connectToWiFiWap2Enterprise(method: SWFWpa2EnterpriseMethod, completion: @escaping (EmptyResult) -> Void) {
+    func connectToWiFiWap2Enterprise(
+        method: SWFWpa2EnterpriseMethod,
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    ) {
 
         let hotspotSettings = HotspotSettings(
             username: method.identity,
@@ -253,16 +281,22 @@ private extension SWFServiceImpl {
         wifiConfigurationService.connect(
             ssid: method.ssid,
             hotspotSettings: hotspotSettings,
-            result: completion
+            applyResult: applyConfigCompletion,
+            connectionResult: connectionCompletion
         )
     }
 
-    func connectToWiFiWap2(method: SWFWpa2Method, completion: @escaping (EmptyResult) -> Void) {
+    func connectToWiFiWap2(
+        method: SWFWpa2Method,
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    ) {
 
         wifiConfigurationService.connect(
             ssid: method.ssid,
             password: method.password,
-            result: completion
+            applyResult: applyConfigCompletion,
+            connectionResult: connectionCompletion
         )
     }
 
@@ -309,7 +343,7 @@ private extension SWFServiceImpl {
     
     
 //    2) Запрос на сохранение идентификатора:
-    func saveIdentifier(with url: String) {
+    func saveIdentifier(with url: String, completion: @escaping (EmptyResult) -> Void) {
         
         saveIdentifierCounter += 1
         let currentSaveIdentifierCounter = saveIdentifierCounter
@@ -318,9 +352,11 @@ private extension SWFServiceImpl {
             
             switch result {
             case .success(_):
-                break
+                completion(.success)
             case .failure(_):
                 guard currentSaveIdentifierCounter < 3 else {
+                    let error = SWFAPIError.emptyData(domain: "saveIdentifier")
+                    completion(.failure(error))
                     return //{ self?.saveIdentifierCounter = 0 }()
                 }
                 DispatchQueue.global(
@@ -328,7 +364,7 @@ private extension SWFServiceImpl {
                 ).asyncAfter(
                     deadline: .now() + LocalConstants.saveIdentifierDelay
                 ) { [weak self] in
-                    self?.saveIdentifier(with: url)
+                    self?.saveIdentifier(with: url, completion: completion)
                 }
             }
         }
@@ -412,58 +448,80 @@ private extension SWFServiceImpl {
 
     func processPasspointConfig(
         _ config: SWFWiFiConfig<SWFPasspointConfig>,
-        completion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
         guard let passpointMethod = config.wifiConfig?.passpointMethod else {
             let error = SWFAPIError.emptyConfigMethod(domain: "connectToWiFiPasspoint")
-            completion(.failure(error))
+            applyConfigCompletion(.failure(error))
             return
         }
 
-        self.connectToWiFiPasspoint(method: passpointMethod, completion: completion)
+        self.connectToWiFiPasspoint(
+            method: passpointMethod,
+            applyConfigCompletion: applyConfigCompletion,
+            connectionCompletion: connectionCompletion
+        )
     }
     
     func processWAP2EnterpriseConfig(
         _ config: SWFWiFiConfig<SWFWpa2EnterpriseConfig>,
-        completion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
         guard let wpa2EnterpriseMethod = config.wifiConfig?.wpa2EnterpriseMethod else {
             let error = SWFAPIError.emptyConfigMethod(domain: "connectToWiFiWap2Enterprise")
-            completion(.failure(error))
+            applyConfigCompletion(.failure(error))
             return
         }
         
-        self.connectToWiFiWap2Enterprise(method: wpa2EnterpriseMethod, completion: completion)
+        self.connectToWiFiWap2Enterprise(
+            method: wpa2EnterpriseMethod,
+            applyConfigCompletion: applyConfigCompletion,
+            connectionCompletion: connectionCompletion
+        )
     }
 
     func processWAP2Config(
         _ config: SWFWiFiConfig<SWFWpa2Config>,
-        completion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
         guard let wpa2Method = config.wifiConfig?.wpa2Method else {
             let error = SWFAPIError.emptyConfigMethod(domain: "connectToWiFiWap2")
-            completion(.failure(error))
+            applyConfigCompletion(.failure(error))
             return
         }
         
-        self.connectToWiFiWap2(method: wpa2Method) { [weak self] (result) in
-            guard let self = self else {
-                let error = SWFAPIError.resourceDoNotExist(domain: "connectToWiFiWap2")
-                completion(.failure(error))
-                return
-            }
-
-            switch result {
-            case .success:
-                completion(.success)
-                if self.needToSaveWAP2Identifier {
-                    self.saveIdentifier(with: wpa2Method.ccUrl)
+        self.connectToWiFiWap2(
+            method: wpa2Method,
+            applyConfigCompletion: applyConfigCompletion,
+            connectionCompletion: { [weak self] (result) in
+                guard let self = self else {
+                    let error = SWFAPIError.resourceDoNotExist(domain: "connectToWiFiWap2")
+                    connectionCompletion(.failure(error))
+                    return
                 }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
 
+                switch result {
+                case .success:
+                    if self.needToSaveWAP2Identifier {
+                        self.saveIdentifier(with: wpa2Method.ccUrl, completion: connectionCompletion)
+                    } else {
+                        connectionCompletion(.success)
+                    }
+                case .failure(let error):
+                    if self.needToSaveWAP2Identifier {
+                        self.saveIdentifier(with: wpa2Method.ccUrl, completion: connectionCompletion)
+                    } else {
+                        connectionCompletion(.success)
+                    }
+
+//                    connectionCompletion(.failure(error))
+                }
+            }
+        )
+        
     }
 
 }

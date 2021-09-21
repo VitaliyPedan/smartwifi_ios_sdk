@@ -20,10 +20,27 @@ protocol WiFiConfigurationService {
     
     typealias SSID = String
     
-    func connect(ssid: SSID, password: String, result: @escaping (EmptyResult) -> Void)
-    func connect(ssid: SSID, hotspotSettings: HotspotSettings, result: @escaping (EmptyResult) -> Void)
-    func connect(domainName: String, hotspotSettings: HotspotSettings, result: @escaping (EmptyResult) -> Void)
+    func connect(
+        ssid: SSID,
+        password: String,
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
+    )
 
+    func connect(
+        ssid: SSID,
+        hotspotSettings: HotspotSettings,
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
+    )
+
+    func connect(
+        domainName: String,
+        hotspotSettings: HotspotSettings,
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
+    )
+    
     func disconnect(ssid: SSID, _ completion: @escaping (WiFiDisconnectResult) -> Void)
     func disconnect(domainName: String, _ completion: @escaping (WiFiDisconnectResult) -> Void)
     func removeConnections()
@@ -33,13 +50,36 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     
     private func apply(
         _ hotspotConfig: NEHotspotConfiguration,
-        result: @escaping (EmptyResult) -> Void
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
     ) {
+//        NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (wifiList) in
+//            wifiList.forEach { NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: $0) }
+//            // ... from here you can use your usual approach to autoconnect to your network
+//        }
         NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
+            
             if let error = error {
-                return result(.failure(error))
+                return applyResult(.failure(error))
+                
             } else {
-                return result(.success)
+                
+                DispatchQueue.global(
+                    qos: .utility
+                ).asyncAfter(
+                    deadline: .now() + 3
+                ) {
+                    NEHotspotNetwork.fetchCurrent { network in
+                        if network?.ssid == hotspotConfig.ssid {
+                            return connectionResult(.success)
+                        } else {
+                            let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+                            return connectionResult(.failure(error))
+                        }
+                    }
+                }
+                
+                return applyResult(.success)
             }
         }
     }
@@ -47,33 +87,36 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     func connect(
         ssid: SSID,
         password: String,
-        result: @escaping (EmptyResult) -> Void
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
     ) {
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
-        apply(hotspotConfig, result: result)
+        apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
     
     func connect(
         ssid: SSID,
         hotspotSettings: HotspotSettings,
-        result: @escaping (EmptyResult) -> Void
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
     ) {
         let eapSettings = hotspotSettings.hotspotEAPSettings()
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, eapSettings: eapSettings)
-        apply(hotspotConfig, result: result)
+        apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
     
     func connect(
         domainName: String,
         hotspotSettings: HotspotSettings,
-        result: @escaping (EmptyResult) -> Void
+        applyResult: @escaping (EmptyResult) -> Void,
+        connectionResult: @escaping (EmptyResult) -> Void
     ) {
         let hs20Settings = NEHotspotHS20Settings(domainName: domainName, roamingEnabled: false)
         hs20Settings.naiRealmNames = [domainName]
         
         let eapSettings = hotspotSettings.hotspotEAPSettings()
         let hotspotConfig = NEHotspotConfiguration(hs20Settings: hs20Settings, eapSettings: eapSettings)
-        apply(hotspotConfig, result: result)
+        apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
 
     func disconnect(ssid: SSID, _ completion: @escaping (WiFiDisconnectResult) -> Void) {
