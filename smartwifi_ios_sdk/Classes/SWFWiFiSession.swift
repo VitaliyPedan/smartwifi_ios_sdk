@@ -9,8 +9,6 @@ import Foundation
 
 public protocol SWFWiFiSessionDelegate {
     
-    func willInitializing(session: SWFWiFiSession)
-
     func willRequestConfig(session: SWFWiFiSession)
     func didRequestConfig(session: SWFWiFiSession, error: Error?)
 
@@ -51,8 +49,7 @@ public final class SWFWiFiSession {
                 
                 switch self.status {
                 case .initializing:
-                    self.delegate.willInitializing(session: self)
-                    
+                    break
                 case .requestConfigs:
                     self.delegate.willRequestConfig(session: self)
                     
