@@ -12,7 +12,7 @@ protocol SWFApiService {
     func register(userId: String, phoneNumber: String, _ completion: @escaping () -> Void)
     func register(userId: String, channelId: String, projectId: String, _ completion: @escaping APIManagerRequestCallback)
     
-    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<Data>)
+    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>)
     
     func getWiFiSettings(
         apiKey: String,
@@ -192,7 +192,7 @@ extension SWFApiServiceImpl {
         }
     }
     
-    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<Data>) {
+    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>) {
         
         let request = SmartWiFiSaveIdentifierRequest(urlString: urlString)
         
@@ -201,11 +201,11 @@ extension SWFApiServiceImpl {
                 switch result {
                 case .success(let data):
                     
-//                    guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
-//                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
-//                        return
-//                    }
-                    completion(.success(data))
+                    guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
+                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
+                        return
+                    }
+                    completion(.success(saveIdentifierResponse))
                     
                 case .failure(let error):
                     completion(.failure(error))

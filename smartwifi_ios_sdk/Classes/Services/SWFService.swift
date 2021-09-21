@@ -351,8 +351,14 @@ private extension SWFServiceImpl {
         smartWifiApiService.saveIdentifier(with: url) { result in
             
             switch result {
-            case .success(_):
-                completion(.success)
+            case .success(let identifierResponse):
+                if identifierResponse.isSuccess {
+                    completion(.success)
+                } else {
+                    let error = SWFAPIError.errorWith(text: identifierResponse.details ?? "unknown error")
+                    completion(.failure(error))
+                }
+                
             case .failure(_):
                 guard currentSaveIdentifierCounter < 3 else {
                     let error = SWFAPIError.emptyData(domain: "saveIdentifier")
@@ -511,13 +517,7 @@ private extension SWFServiceImpl {
                         connectionCompletion(.success)
                     }
                 case .failure(let error):
-                    if self.needToSaveWAP2Identifier {
-                        self.saveIdentifier(with: wpa2Method.ccUrl, completion: connectionCompletion)
-                    } else {
-                        connectionCompletion(.success)
-                    }
-
-//                    connectionCompletion(.failure(error))
+                    connectionCompletion(.failure(error))
                 }
             }
         )
