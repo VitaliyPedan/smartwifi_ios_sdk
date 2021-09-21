@@ -11,12 +11,29 @@ typealias APIManagerRequestCallback = ((Result<Data, Error>) -> Void)
 
 final class SWFApiManager {
     
+    // MARK: - Properties
+
+    private let urlSession: URLSession
+
+    // MARK: - Init
+
+    init() {
+        let config = URLSessionConfiguration.default
+        config.allowsCellularAccess = true
+        config.httpShouldUsePipelining = true
+        
+        urlSession = URLSession(configuration: config)
+    }
+    
+    deinit {
+        urlSession.finishTasksAndInvalidate()
+    }
+
+    // MARK: - Send methods
+
     func sendRequest(urlRequest: URLRequest, data: Data?, completion: @escaping APIManagerRequestCallback) {
         
-        let config = URLSessionConfiguration.default
-        let session = URLSession(configuration: config)
-        
-        let task = session.uploadTask(with: urlRequest, from: data) { (data2, respons, error) in
+        let task = urlSession.uploadTask(with: urlRequest, from: data) { (data2, respons, error) in
             if let error = error {
                 completion(.failure(error))
             } else if let data2 = data2 {
@@ -28,4 +45,18 @@ final class SWFApiManager {
         task.resume()
     }
     
+    func sendRequest(urlRequest: URLRequest, completion: @escaping APIManagerRequestCallback) {
+        
+        let task = urlSession.dataTask(with: urlRequest) { (data, respons, error) in
+            if let error = error {
+                completion(.failure(error))
+            } else if let data = data {
+                completion(.success(data))
+            } else {
+//                completion(.failure(nil))
+            }
+        }
+        task.resume()
+    }
+
 }

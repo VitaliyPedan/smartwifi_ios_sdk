@@ -12,7 +12,7 @@ protocol SWFApiService {
     func register(userId: String, phoneNumber: String, _ completion: @escaping () -> Void)
     func register(userId: String, channelId: String, projectId: String, _ completion: @escaping APIManagerRequestCallback)
     
-    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>)
+    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<Data>)
     
     func getWiFiSettings(
         apiKey: String,
@@ -92,8 +92,7 @@ extension SWFApiServiceImpl {
         )
         
         if let urlRequest = request.urlRequest() {
-            let body = "Hello Cruel World!".data(using: .utf8)
-            apiManager.sendRequest(urlRequest: urlRequest, data: body) { result in
+            apiManager.sendRequest(urlRequest: urlRequest) { result in
                 completion(result)
             }
         }
@@ -193,20 +192,20 @@ extension SWFApiServiceImpl {
         }
     }
     
-    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>) {
+    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<Data>) {
         
         let request = SmartWiFiSaveIdentifierRequest(urlString: urlString)
         
         if let urlRequest = request.urlRequest() {
-            apiManager.sendRequest(urlRequest: urlRequest, data: nil) { result in
+            apiManager.sendRequest(urlRequest: urlRequest) { result in
                 switch result {
                 case .success(let data):
                     
-                    guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
-                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
-                        return
-                    }
-                    completion(.success(saveIdentifierResponse))
+//                    guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
+//                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
+//                        return
+//                    }
+                    completion(.success(data))
                     
                 case .failure(let error):
                     completion(.failure(error))
