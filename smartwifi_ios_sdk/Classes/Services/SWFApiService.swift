@@ -264,7 +264,7 @@ extension SWFApiServiceImpl {
             request.httpBody = try? JSONSerialization.data(withJSONObject: [
                 "user_id": userId,
                 "user_field": ["platform": UIDevice.current.systemName,
-                               "platform_version": "14.7", //UIDevice.current.systemVersion,
+                               "platform_version": "14.1", //UIDevice.current.systemVersion,
                                "model": UIDevice.current.model]
             ])
             return request

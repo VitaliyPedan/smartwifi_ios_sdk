@@ -6,6 +6,7 @@
 //
 
 import NetworkExtension
+import SystemConfiguration.CaptiveNetwork
 
 enum WiFiDisconnectResult {
     case success
@@ -69,8 +70,18 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
                 ).asyncAfter(
                     deadline: .now() + 3
                 ) {
-                    NEHotspotNetwork.fetchCurrent { network in
-                        if network?.ssid == hotspotConfig.ssid {
+                    if #available(iOS 14.0, *) {
+                        NEHotspotNetwork.fetchCurrent { network in
+                            if network?.ssid == hotspotConfig.ssid {
+                                return connectionResult(.success)
+                            } else {
+                                let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+                                return connectionResult(.failure(error))
+                            }
+                        }
+                    } else {
+                        let networkSsid = self.currentWifiInfo()
+                        if networkSsid == hotspotConfig.ssid {
                             return connectionResult(.success)
                         } else {
                             let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
@@ -84,6 +95,29 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         }
     }
 
+    private func currentWifiInfo() -> String? {
+        
+        guard let interface = CNCopySupportedInterfaces() else {
+            return nil
+        }
+        
+        for i in 0..<CFArrayGetCount(interface) {
+            let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interface, i)
+            let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
+            if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString),
+                let interfaceData = unsafeInterfaceData as? [String : AnyObject]
+            {
+                // connected wifi
+//                print("BSSID: \(interfaceData["BSSID"]), SSID: \(interfaceData["SSID"]), SSIDDATA: \(interfaceData["SSIDDATA"])")
+                return interfaceData["SSID"] as? String
+            } else {
+                return nil
+            }
+        }
+        
+        return nil
+    }
+    
     func connect(
         ssid: SSID,
         password: String,
