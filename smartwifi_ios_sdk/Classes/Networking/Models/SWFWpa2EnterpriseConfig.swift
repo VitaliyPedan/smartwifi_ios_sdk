@@ -7,9 +7,10 @@
 
 import Foundation
 
-public struct SWFWpa2EnterpriseConfig: Codable {
+public struct SWFWpa2EnterpriseConfig: SWFConfigPriority, Codable {
     
     let wpa2EnterpriseMethod: SWFWpa2EnterpriseMethod
+    public var priority: Int = -1
     
     private enum CodingKeys: String, CodingKey {
         case wpa2EnterpriseMethod = "wpa2_enterprise_eap_ttls_method"

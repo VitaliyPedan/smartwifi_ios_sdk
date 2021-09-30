@@ -7,9 +7,10 @@
 
 import Foundation
 
-public struct SWFPasspointConfig: Codable {
+public struct SWFPasspointConfig: SWFConfigPriority, Codable {
     
     let passpointMethod: SWFPasspointMethod
+    public var priority: Int = -1
     
     private enum CodingKeys: String, CodingKey {
         case passpointMethod = "passpoint_method"

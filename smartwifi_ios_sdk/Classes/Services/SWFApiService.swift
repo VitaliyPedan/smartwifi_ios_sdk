@@ -20,9 +20,7 @@ protocol SWFApiService {
         channelId: String,
         projectId: String,
         apiDomain: String,
-        completion: @escaping ConfigsResultCompletion<SWFWiFiConfig<SWFPasspointConfig>?,
-                                                      SWFWiFiConfig<SWFWpa2EnterpriseConfig>?,
-                                                      SWFWiFiConfig<SWFWpa2Config>?>
+        completion: @escaping ResultCompletion<SWFWiFiConfigs>
     )
 }
 
@@ -277,9 +275,7 @@ extension SWFApiServiceImpl {
         channelId: String,
         projectId: String,
         apiDomain: String,
-        completion: @escaping ConfigsResultCompletion<SWFWiFiConfig<SWFPasspointConfig>?,
-                                                      SWFWiFiConfig<SWFWpa2EnterpriseConfig>?,
-                                                      SWFWiFiConfig<SWFWpa2Config>?>
+        completion: @escaping ResultCompletion<SWFWiFiConfigs>
     ) {
         let request = SmartWiFiSettingsRequest(
             apiKey: apiKey,
@@ -298,14 +294,8 @@ extension SWFApiServiceImpl {
             switch result {
             case .success(let data):
                 
-                if let passpointConfig = try? JSONDecoder().decode(SWFWiFiConfig<SWFPasspointConfig>.self, from: data) {
-                    completion(.success(passpointConfig, nil, nil))
-                    
-                } else if let wpa2EnterpriseConfig = try? JSONDecoder().decode(SWFWiFiConfig<SWFWpa2EnterpriseConfig>.self, from: data) {
-                    completion(.success(nil, wpa2EnterpriseConfig, nil))
-                    
-                } else if let wpa2Config = try? JSONDecoder().decode(SWFWiFiConfig<SWFWpa2Config>.self, from: data) {
-                    completion(.success(nil, nil, wpa2Config))
+                if let configs = try? JSONDecoder().decode(SWFWiFiConfigs.self, from: data) {
+                    completion(.success(configs))
                     
                 } else if let configError = try? JSONDecoder().decode(ConfigError.self, from: data) {
                     completion(.failure(SWFAPIError.configError(domain: #function, configError: configError)))

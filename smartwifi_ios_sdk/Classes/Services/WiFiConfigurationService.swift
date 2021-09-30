@@ -68,7 +68,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
                 DispatchQueue.global(
                     qos: .utility
                 ).asyncAfter(
-                    deadline: .now() + 3
+                    deadline: .now() + 5
                 ) {
                     if #available(iOS 14.0, *) {
                         NEHotspotNetwork.fetchCurrent { network in

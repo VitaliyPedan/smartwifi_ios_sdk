@@ -118,30 +118,96 @@ public final class SWFServiceImpl: SWFService {
         
         let storage: UserDefaultsManagerType = UserDefaultsManager.shared
         
-        if let passpointConfig: SWFWiFiConfig<SWFPasspointConfig> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
-            processPasspointConfig(
-                passpointConfig,
-                applyConfigCompletion: applyConfigCompletion,
-                connectionCompletion: connectionCompletion
-            )
-            
-        } else if let wpa2EnterpriseConfig: SWFWiFiConfig<SWFWpa2EnterpriseConfig> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
-            processWAP2EnterpriseConfig(
-                wpa2EnterpriseConfig,
-                applyConfigCompletion: applyConfigCompletion,
-                connectionCompletion: connectionCompletion
-            )
-            
-        } else if let wpa2Config: SWFWiFiConfig<SWFWpa2Config> = try? storage.getDecodable(by: .dynamicKey(configKey)) {
-            processWAP2Config(
-                wpa2Config,
-                applyConfigCompletion: applyConfigCompletion,
-                connectionCompletion: connectionCompletion
-            )
-            
-        } else {
+        guard let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey)) else {
             let error = SWFAPIError.emptyConfigMethod(domain: "getWiFiSettings")
             applyConfigCompletion(.failure(error))
+            return
+        }
+        
+        acceptConfigs(
+            configs,
+            priority: 0,
+            error: nil,
+            applyConfigCompletion: applyConfigCompletion,
+            connectionCompletion: connectionCompletion
+        )
+    }
+    
+    private func acceptConfigs(
+        _ configs: SWFWiFiConfigs,
+        priority: Int,
+        error: Error?,
+        applyConfigCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    ) {
+        var _priority = priority
+        
+        if let passpointConfig = configs.passpointConfig, priority == passpointConfig.priority {
+            
+            processPasspointConfig(
+                passpointConfig,
+                applyConfigCompletion:applyConfigCompletion,
+                connectionCompletion: { [weak self] (result) in
+                    switch result {
+                    case .success:
+                        connectionCompletion(.success)
+                    case .failure(let error):
+                        _priority += 1
+                        self?.acceptConfigs(
+                            configs,
+                            priority: _priority,
+                            error: error,
+                            applyConfigCompletion: applyConfigCompletion,
+                            connectionCompletion: connectionCompletion
+                        )
+                    }
+                }
+            )
+        } else if let wpa2EnterpriseConfig = configs.wpa2EnterpriseConfig, priority == wpa2EnterpriseConfig.priority {
+            
+            processWAP2EnterpriseConfig(
+                wpa2EnterpriseConfig,
+                applyConfigCompletion:applyConfigCompletion,
+                connectionCompletion: { [weak self] (result) in
+                    switch result {
+                    case .success:
+                        connectionCompletion(.success)
+                    case .failure(let error):
+                        _priority += 1
+                        self?.acceptConfigs(
+                            configs,
+                            priority: _priority,
+                            error: error,
+                            applyConfigCompletion: applyConfigCompletion,
+                            connectionCompletion: connectionCompletion
+                        )
+                    }
+                }
+            )
+        } else if let wpa2Config = configs.wpa2Config, priority == wpa2Config.priority {
+            
+            processWAP2Config(
+                wpa2Config,
+                applyConfigCompletion:applyConfigCompletion,
+                connectionCompletion: { [weak self] (result) in
+                    switch result {
+                    case .success:
+                        connectionCompletion(.success)
+                    case .failure(let error):
+                        _priority += 1
+                        self?.acceptConfigs(
+                            configs,
+                            priority: _priority,
+                            error: error,
+                            applyConfigCompletion: applyConfigCompletion,
+                            connectionCompletion: connectionCompletion
+                        )
+                    }
+                }
+            )
+        } else {
+            let _error = error ?? SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+            connectionCompletion(.failure(_error))
         }
     }
     
@@ -355,7 +421,7 @@ private extension SWFServiceImpl {
                 if identifierResponse.isSuccess {
                     completion(.success)
                 } else {
-                    let error = SWFAPIError.errorWith(text: identifierResponse.details ?? "unknown error")
+                    let error = SWFAPIError.errorWith(text: identifierResponse.details ?? "saveIdentifier error")
                     completion(.failure(error))
                 }
                 
@@ -395,7 +461,7 @@ private extension SWFServiceImpl {
         ) { [weak self] (result) in
             
             switch result {
-            case .success(let passpointConfig, let wpa2EnterpriseConfig, let wpa2Config):
+            case .success(let configs):
                 
 //                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + LocalConstants.timerDelay) {
 //                    DispatchQueue.main.async { [weak self] in
@@ -407,17 +473,19 @@ private extension SWFServiceImpl {
                         }
 
                         do {
-                            if let passpointConfig = passpointConfig {
-                                try self.saveConfig(passpointConfig, key: self.configKey!)
-
-                            } else if let wpa2EnterpriseConfig = wpa2EnterpriseConfig {
-                                try self.saveConfig(wpa2EnterpriseConfig, key: self.configKey!)
-
-                            } else if let wpa2Config = wpa2Config {
-                                try self.saveConfig(wpa2Config, key: self.configKey!)
-                            }
+                            try self.saveConfigs(configs, key: self.configKey!)
+                            
+//                            if let passpointConfig = configs?.passpointConfig {
+//                                try self.saveConfig(passpointConfig, key: self.configKey!)
+//
+//                            } else if let wpa2EnterpriseConfig = configs?.wpa2EnterpriseConfig {
+//                                try self.saveConfig(wpa2EnterpriseConfig, key: self.configKey!)
+//
+//                            } else if let wpa2Config = configs?.wpa2Config {
+//                                try self.saveConfig(wpa2Config, key: self.configKey!)
+//                            }
                     
-                            if passpointConfig != nil || wpa2EnterpriseConfig != nil || wpa2Config != nil {
+                            if configs.passpointConfig != nil || configs.wpa2EnterpriseConfig != nil || configs.wpa2Config != nil {
                                 completion(.success)
                             } else {
                                 let error = SWFAPIError.emptyData(domain: "getWiFiSettings")
@@ -437,70 +505,57 @@ private extension SWFServiceImpl {
         }
     }
  
-    func saveConfig(_ config: SWFWiFiConfig<SWFPasspointConfig>, key: String) throws {
+    func saveConfigs(_ config: SWFWiFiConfigs, key: String) throws {
 //        try UserDefaultsManager.shared.storeEncodable(data: config, key: .passpointConfiguration)
         try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
     }
-    
-    func saveConfig(_ config: SWFWiFiConfig<SWFWpa2EnterpriseConfig>, key: String) throws {
-//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2EnterpriseConfiguration)
-        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
-    }
 
-    func saveConfig(_ config: SWFWiFiConfig<SWFWpa2Config>, key: String) throws {
-//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2Configuration)
-        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
-    }
+//    func saveConfig(_ config: SWFPasspointConfig, key: String) throws {
+////        try UserDefaultsManager.shared.storeEncodable(data: config, key: .passpointConfiguration)
+//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
+//    }
+//
+//    func saveConfig(_ config: SWFWpa2EnterpriseConfig, key: String) throws {
+////        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2EnterpriseConfiguration)
+//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
+//    }
+//
+//    func saveConfig(_ config: SWFWpa2Config, key: String) throws {
+////        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2Configuration)
+//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
+//    }
 
     func processPasspointConfig(
-        _ config: SWFWiFiConfig<SWFPasspointConfig>,
+        _ config: SWFPasspointConfig,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
-        guard let passpointMethod = config.wifiConfig?.passpointMethod else {
-            let error = SWFAPIError.emptyConfigMethod(domain: "connectToWiFiPasspoint")
-            applyConfigCompletion(.failure(error))
-            return
-        }
-
         self.connectToWiFiPasspoint(
-            method: passpointMethod,
+            method: config.passpointMethod,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: connectionCompletion
         )
     }
     
     func processWAP2EnterpriseConfig(
-        _ config: SWFWiFiConfig<SWFWpa2EnterpriseConfig>,
+        _ config: SWFWpa2EnterpriseConfig,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
-        guard let wpa2EnterpriseMethod = config.wifiConfig?.wpa2EnterpriseMethod else {
-            let error = SWFAPIError.emptyConfigMethod(domain: "connectToWiFiWap2Enterprise")
-            applyConfigCompletion(.failure(error))
-            return
-        }
-        
         self.connectToWiFiWap2Enterprise(
-            method: wpa2EnterpriseMethod,
+            method: config.wpa2EnterpriseMethod,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: connectionCompletion
         )
     }
 
     func processWAP2Config(
-        _ config: SWFWiFiConfig<SWFWpa2Config>,
+        _ config: SWFWpa2Config,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
-        guard let wpa2Method = config.wifiConfig?.wpa2Method else {
-            let error = SWFAPIError.emptyConfigMethod(domain: "connectToWiFiWap2")
-            applyConfigCompletion(.failure(error))
-            return
-        }
-        
         self.connectToWiFiWap2(
-            method: wpa2Method,
+            method: config.wpa2Method,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: { [weak self] (result) in
                 guard let self = self else {
@@ -512,7 +567,7 @@ private extension SWFServiceImpl {
                 switch result {
                 case .success:
                     if self.needToSaveWAP2Identifier {
-                        self.saveIdentifier(with: wpa2Method.ccUrl, completion: connectionCompletion)
+                        self.saveIdentifier(with: config.wpa2Method.ccUrl, completion: connectionCompletion)
                     } else {
                         connectionCompletion(.success)
                     }
