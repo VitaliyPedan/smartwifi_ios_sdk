@@ -42,8 +42,8 @@ protocol WiFiConfigurationService {
         connectionResult: @escaping (EmptyResult) -> Void
     )
     
-    func disconnect(ssid: SSID, _ completion: @escaping (WiFiDisconnectResult) -> Void)
-    func disconnect(domainName: String, _ completion: @escaping (WiFiDisconnectResult) -> Void)
+    func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void)
+    func disconnect(domainName: String, completion: @escaping (WiFiDisconnectResult) -> Void)
     func removeConnections()
 }
 
@@ -153,7 +153,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
 
-    func disconnect(ssid: SSID, _ completion: @escaping (WiFiDisconnectResult) -> Void) {
+    func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void) {
         NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (ssids) in
             guard ssids.contains(ssid) else { return completion(.failure(.notConnected)) }
             NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: ssid)
@@ -161,7 +161,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         }
     }
     
-    func disconnect(domainName: String, _ completion: @escaping (WiFiDisconnectResult) -> Void) {
+    func disconnect(domainName: String, completion: @escaping (WiFiDisconnectResult) -> Void) {
         NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (domainNames) in
             guard domainNames.contains(domainName) else { return completion(.failure(.notConnected)) }
             NEHotspotConfigurationManager.shared.removeConfiguration(forHS20DomainName: domainName)

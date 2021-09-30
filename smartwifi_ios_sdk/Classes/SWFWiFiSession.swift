@@ -18,6 +18,7 @@ public protocol SWFWiFiSessionDelegate {
     func willConnectToWiFi(session: SWFWiFiSession)
     func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
     
+    func didStopWiFi(session: SWFWiFiSession)
 }
 
 enum WiFiSessionStatus {
@@ -28,6 +29,7 @@ enum WiFiSessionStatus {
     case applyConfigsResult(EmptyResult)
     case connecting
     case connectionResult(EmptyResult)
+    case cancel
 }
 
 
@@ -143,8 +145,17 @@ public final class SWFWiFiSession {
                             self.delegate.didConnectToWiFi(session: self, error: error)
                         }
                     }
-
                 }
+            case .cancel:
+                if Thread.isMainThread {
+                    self.delegate.didStopWiFi(session: self)
+                } else {
+                    DispatchQueue.main.sync { [weak self] in
+                        guard let self = self else { return }
+                        self.delegate.didStopWiFi(session: self)
+                    }
+                }
+
             }
         }
     }
@@ -189,7 +200,9 @@ public final class SWFWiFiSession {
     }
     
     public func cancelSession() {
-        wifiService.stopSession()
+        wifiService.stopSession() { [weak self] _ in
+            self?.status = .cancel
+        }
     }
     
     // MARK: - Private Methods
