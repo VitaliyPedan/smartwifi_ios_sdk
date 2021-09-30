@@ -46,11 +46,8 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
   
      wifiSession.startSession()
 
-5. Очистите ссылĸу на сессию при переходе ĸ другому ĸонтеĸсту(аĸтивности, фрагменту):
+5. Метод cancelSession удаляет конфигурации и выполняет дисконнект сети:
 
-  // Cancel session when leaving current context(activity, fragment)
-  // and clean reference to prevent leaks
-      
      wifiSession.cancelSession()
   
 6. Этапы и статусы подключения:
@@ -65,5 +62,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
 
      func willConnectToWiFi(session: SWFWiFiSession)
      func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
+  
+     func didStopWiFi(session: SWFWiFiSession)
   
   }
