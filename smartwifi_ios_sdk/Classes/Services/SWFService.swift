@@ -30,7 +30,7 @@ public protocol SWFService {
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     )
-    func stopSession()
+    func stopSession(completion: @escaping (EmptyResult) -> Void)
     
 //    func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void)
 //    func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void)
@@ -211,12 +211,45 @@ public final class SWFServiceImpl: SWFService {
         }
     }
     
-    public func stopSession() {
+    public func stopSession(completion: @escaping (EmptyResult) -> Void) {
         let storage: UserDefaultsManagerType = UserDefaultsManager.shared
         
-        storage.removeAll { [weak self] in
-            self?.wifiConfigurationService.removeConnections()
+        guard let configKey = configKey,
+                let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey))
+        else {
+            let error = SWFAPIError.emptyConfigMethod(domain: "stopSession")
+            completion(.failure(error))
+            return
         }
+
+        if let passpointConfig = configs.passpointConfig {
+            wifiConfigurationService.disconnect(domainName: passpointConfig.passpointMethod.realm) { (result) in
+                completion(.success)
+            }
+        }
+        
+        if let wpa2EnterpriseConfig = configs.wpa2EnterpriseConfig {
+            wifiConfigurationService.disconnect(ssid: wpa2EnterpriseConfig.wpa2EnterpriseMethod.ssid) { (result) in
+                completion(.success)
+            }
+        }
+        
+        if let wpa2Config = configs.wpa2Config {
+            wifiConfigurationService.disconnect(ssid: wpa2Config.wpa2Method.ssid) { (result) in
+                completion(.success)
+            }
+        }
+
+        if configs.passpointConfig == nil &&
+            configs.wpa2EnterpriseConfig == nil &&
+            configs.wpa2Config == nil
+        {
+            let error = SWFAPIError.emptyConfigMethod(domain: "stopSession")
+            completion(.failure(error))
+        }
+//        storage.removeAll { [weak self] in
+//            self?.wifiConfigurationService.removeConnections()
+//        }
     }
 
 //    public func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void) {
