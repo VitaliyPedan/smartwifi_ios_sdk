@@ -219,7 +219,7 @@ struct HotspotSettings {
         if !caCertificate.isEmpty {
             
             if let certificateData = Data(base64Encoded: caCertificate),
-               let certificate = storeIntoKeychainCertData(certificateData, teamId: teamId)
+               let certificate = storeCertData(certificateData, teamId: teamId)
             {
                 settings.setTrustedServerCertificates([certificate])
             }
@@ -228,7 +228,7 @@ struct HotspotSettings {
             
             if let url = URL(string: "https://smartregion.moscow/lab/passpoint/lerca.der"),
                let certificateData = try? Data(contentsOf: url),
-               let certificate = storeIntoKeychainCertData(certificateData, teamId: teamId)
+               let certificate = storeCertData(certificateData, teamId: teamId)
             {
                 settings.setTrustedServerCertificates([certificate])
             }
@@ -237,7 +237,7 @@ struct HotspotSettings {
         return settings
     }
     
-    func storeIntoKeychainCertData(_ certData: Data, teamId: String) -> SecCertificate? {
+    func storeCertData(_ certData: Data, teamId: String) -> SecCertificate? {
         let documentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fileURL = documentDirURL.appendingPathComponent("lerca").appendingPathExtension("der")
         
@@ -253,29 +253,36 @@ struct HotspotSettings {
             if let certificateData = try? Data(contentsOf: fileURL) as CFData,
                let certificate = SecCertificateCreateWithData(nil, certificateData)
             {
-                var keychainQueryDictionary = [String : Any]()
-                
-                let accessGroup = teamId + ".com.apple.networkextensionsharing"
-                keychainQueryDictionary = [kSecClass as String : kSecClassCertificate,
-                                           kSecValueRef as String : certificate,
-                                           kSecAttrAccessGroup as String: accessGroup,
-                                           kSecAttrLabel as String: "CaCertificate"]
-                
-                let summary = SecCertificateCopySubjectSummary(certificate)! as String
-                print("Cert summary: \(summary)")
-                
-                let status = SecItemAdd(keychainQueryDictionary as CFDictionary, nil)
-                
-                guard status == errSecSuccess else {
+                if addCertIntoKeychain(certificate: certificate, teamId: teamId) {
                     return certificate
+                    
+                } else {
+                    try? FileManager.default.removeItem(at: fileURL)
+                    return certificate //try set cert without storing into keychain
                 }
-                
-                return certificate
                 
             } else {
                 return nil
             }
         }
+    }
+    
+    func addCertIntoKeychain(certificate: SecCertificate, teamId: String) -> Bool {
+        var keychainQueryDictionary = [String : Any]()
+        
+        let accessGroup = teamId + ".com.apple.networkextensionsharing"
+        keychainQueryDictionary = [kSecClass as String : kSecClassCertificate,
+                                   kSecValueRef as String : certificate,
+                                   kSecAttrAccessGroup as String: accessGroup,
+                                   kSecAttrLabel as String: "CaCertificate"]
+        
+        let summary = SecCertificateCopySubjectSummary(certificate)! as String
+        print("Cert summary: \(summary)")
+        
+        let _ = SecItemDelete(keychainQueryDictionary as CFDictionary)
+        let status = SecItemAdd(keychainQueryDictionary as CFDictionary, nil)
+        
+        return status == errSecSuccess
     }
     
     func authenticationType() -> NEHotspotEAPSettings.TTLSInnerAuthenticationType? {
