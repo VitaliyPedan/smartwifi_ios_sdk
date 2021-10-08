@@ -41,6 +41,8 @@ public final class SWFWiFiSession {
     
     private var delegate: SWFWiFiSessionDelegate
     
+    private var teamId: String
+
     private let concurrentContactQueue = DispatchQueue(label: "com.test.contacts", attributes: .concurrent)
 
     private var status: WiFiSessionStatus = .initializing {
@@ -168,9 +170,10 @@ public final class SWFWiFiSession {
 
     // MARK: - Init
 
-    public init(delegate: SWFWiFiSessionDelegate) {
+    public init(teamId: String, delegate: SWFWiFiSessionDelegate) {
         self.wifiService = SWFServiceImpl.shared
         self.delegate = delegate
+        self.teamId = teamId
     }
     
     // MARK: - Public Methods
@@ -236,7 +239,7 @@ public final class SWFWiFiSession {
             return
         }
 
-        wifiService.startSession { [weak self] (result) in
+        wifiService.startSession(teamId: teamId) { [weak self] (result) in
             self?.status = .applyConfigsResult(result)
 
             if result == .success {

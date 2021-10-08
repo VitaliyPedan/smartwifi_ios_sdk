@@ -27,6 +27,7 @@ public protocol SWFService {
     )
     
     func startSession(
+        teamId: String,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     )
@@ -106,6 +107,7 @@ public final class SWFServiceImpl: SWFService {
     }
 
     public func startSession(
+        teamId: String,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
@@ -126,6 +128,7 @@ public final class SWFServiceImpl: SWFService {
         
         acceptConfigs(
             configs,
+            teamId: teamId,
             priority: 0,
             error: nil,
             applyConfigCompletion: applyConfigCompletion,
@@ -135,6 +138,7 @@ public final class SWFServiceImpl: SWFService {
     
     private func acceptConfigs(
         _ configs: SWFWiFiConfigs,
+        teamId: String,
         priority: Int,
         error: Error?,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
@@ -146,6 +150,7 @@ public final class SWFServiceImpl: SWFService {
             
             processPasspointConfig(
                 passpointConfig,
+                teamId: teamId,
                 applyConfigCompletion:applyConfigCompletion,
                 connectionCompletion: { [weak self] (result) in
                     switch result {
@@ -155,6 +160,7 @@ public final class SWFServiceImpl: SWFService {
                         _priority += 1
                         self?.acceptConfigs(
                             configs,
+                            teamId: teamId,
                             priority: _priority,
                             error: error,
                             applyConfigCompletion: applyConfigCompletion,
@@ -167,6 +173,7 @@ public final class SWFServiceImpl: SWFService {
             
             processWAP2EnterpriseConfig(
                 wpa2EnterpriseConfig,
+                teamId: teamId,
                 applyConfigCompletion:applyConfigCompletion,
                 connectionCompletion: { [weak self] (result) in
                     switch result {
@@ -176,6 +183,7 @@ public final class SWFServiceImpl: SWFService {
                         _priority += 1
                         self?.acceptConfigs(
                             configs,
+                            teamId: teamId,
                             priority: _priority,
                             error: error,
                             applyConfigCompletion: applyConfigCompletion,
@@ -197,6 +205,7 @@ public final class SWFServiceImpl: SWFService {
                         _priority += 1
                         self?.acceptConfigs(
                             configs,
+                            teamId: teamId,
                             priority: _priority,
                             error: error,
                             applyConfigCompletion: applyConfigCompletion,
@@ -358,6 +367,7 @@ private extension SWFServiceImpl {
         
     func connectToWiFiPasspoint(
         method: SWFPasspointMethod,
+        teamId: String,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
@@ -367,12 +377,14 @@ private extension SWFServiceImpl {
             password: method.password,
             trustedServerNames: [method.fqdn],
             caCertificate: method.caCertificate,
-            eapType: Int(method.eapType) ?? 0
+            eapType: Int(method.eapType) ?? 0,
+            nonEapInnerMethod: method.nonEapInnerMethod
         )
 
         wifiConfigurationService.connect(
             domainName: method.realm,
             hotspotSettings: hotspotSettings,
+            teamId: teamId,
             applyResult: applyConfigCompletion,
             connectionResult: connectionCompletion
         )
@@ -380,6 +392,7 @@ private extension SWFServiceImpl {
 
     func connectToWiFiWap2Enterprise(
         method: SWFWpa2EnterpriseMethod,
+        teamId: String,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
@@ -389,12 +402,14 @@ private extension SWFServiceImpl {
             password: method.password,
             trustedServerNames: ["hs20.smartregion.moscow"],
             caCertificate: method.caCertificate,
-            eapType: 0
+            eapType: 0,
+            nonEapInnerMethod: ""
         )
 
         wifiConfigurationService.connect(
             ssid: method.ssid,
             hotspotSettings: hotspotSettings,
+            teamId: teamId,
             applyResult: applyConfigCompletion,
             connectionResult: connectionCompletion
         )
@@ -575,11 +590,13 @@ private extension SWFServiceImpl {
 
     func processPasspointConfig(
         _ config: SWFPasspointConfig,
+        teamId: String,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
         self.connectToWiFiPasspoint(
             method: config.passpointMethod,
+            teamId: teamId,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: connectionCompletion
         )
@@ -587,11 +604,13 @@ private extension SWFServiceImpl {
     
     func processWAP2EnterpriseConfig(
         _ config: SWFWpa2EnterpriseConfig,
+        teamId: String,
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
         self.connectToWiFiWap2Enterprise(
             method: config.wpa2EnterpriseMethod,
+            teamId: teamId,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: connectionCompletion
         )

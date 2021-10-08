@@ -31,6 +31,7 @@ protocol WiFiConfigurationService {
     func connect(
         ssid: SSID,
         hotspotSettings: HotspotSettings,
+        teamId: String,
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     )
@@ -38,6 +39,7 @@ protocol WiFiConfigurationService {
     func connect(
         domainName: String,
         hotspotSettings: HotspotSettings,
+        teamId: String,
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     )
@@ -74,8 +76,12 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
                         NEHotspotNetwork.fetchCurrent { network in
                             if network?.ssid == hotspotConfig.ssid {
                                 return connectionResult(.success)
+                                
+                            } else if hotspotConfig.ssid.isEmpty { //passpoint
+                                return connectionResult(.success)
+                                
                             } else {
-                                let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+                                let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios > 14.0")
                                 return connectionResult(.failure(error))
                             }
                         }
@@ -83,8 +89,12 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
                         let networkSsid = self.currentWifiInfo()
                         if networkSsid == hotspotConfig.ssid {
                             return connectionResult(.success)
+                            
+                        } else if hotspotConfig.ssid.isEmpty { //passpoint
+                            return connectionResult(.success)
+                            
                         } else {
-                            let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+                            let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios < 14.0")
                             return connectionResult(.failure(error))
                         }
                     }
@@ -131,10 +141,11 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     func connect(
         ssid: SSID,
         hotspotSettings: HotspotSettings,
+        teamId: String,
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     ) {
-        let eapSettings = hotspotSettings.hotspotEAPSettings()
+        let eapSettings = hotspotSettings.hotspotEAPSettings(teamId: teamId)
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, eapSettings: eapSettings)
         apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
@@ -142,13 +153,14 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     func connect(
         domainName: String,
         hotspotSettings: HotspotSettings,
+        teamId: String,
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     ) {
         let hs20Settings = NEHotspotHS20Settings(domainName: domainName, roamingEnabled: false)
         hs20Settings.naiRealmNames = [domainName]
         
-        let eapSettings = hotspotSettings.hotspotEAPSettings()
+        let eapSettings = hotspotSettings.hotspotEAPSettings(teamId: teamId)
         let hotspotConfig = NEHotspotConfiguration(hs20Settings: hs20Settings, eapSettings: eapSettings)
         apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
@@ -184,8 +196,9 @@ struct HotspotSettings {
     let trustedServerNames: [String]
     let caCertificate: String
     let eapType: Int
+    let nonEapInnerMethod: String
 
-    func hotspotEAPSettings() -> NEHotspotEAPSettings {
+    func hotspotEAPSettings(teamId: String) -> NEHotspotEAPSettings {
         let settings = NEHotspotEAPSettings()
         settings.username = username
         settings.password = password
@@ -196,23 +209,88 @@ struct HotspotSettings {
             settings.supportedEAPTypes = [NSNumber(value: NEHotspotEAPSettings.EAPType.EAPTTLS.rawValue)]
         }
         
-        settings.ttlsInnerAuthenticationType = NEHotspotEAPSettings.TTLSInnerAuthenticationType.eapttlsInnerAuthenticationMSCHAPv2
+        if let authenticationType = authenticationType() {
+            settings.ttlsInnerAuthenticationType = authenticationType
+        }
         settings.trustedServerNames = trustedServerNames
         
-        if caCertificate.count > 0 {
-            settings.setTrustedServerCertificates([caCertificate])
+        settings.isTLSClientCertificateRequired = true
+        
+        if !caCertificate.isEmpty {
             
+            if let certificateData = Data(base64Encoded: caCertificate),
+               let certificate = storeIntoKeychainCertData(certificateData, teamId: teamId) {
+                settings.setTrustedServerCertificates([certificate])
+            }
+
         } else {
+            
             if let url = URL(string: "https://smartregion.moscow/lab/passpoint/lerca.der"),
                let certificateData = try? Data(contentsOf: url),
-               let certificate = SecCertificateCreateWithData(nil, certificateData as CFData)
+               let certificate = storeIntoKeychainCertData(certificateData, teamId: teamId)
             {
                 settings.setTrustedServerCertificates([certificate])
-            } else {
-                
             }
         }
         
         return settings
+    }
+    
+    func storeIntoKeychainCertData(_ certData: Data, teamId: String) -> SecCertificate? {
+        let documentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let fileURL = documentDirURL.appendingPathComponent("lerca").appendingPathExtension("der")
+
+        if let certificateData = try? Data(contentsOf: fileURL) as CFData,
+           let certificate = SecCertificateCreateWithData(nil, certificateData)
+        {
+            return certificate
+            
+        } else {
+            
+            try? certData.write(to: fileURL)
+            
+            if let certificateData = try? Data(contentsOf: fileURL) as CFData,
+               let certificate = SecCertificateCreateWithData(nil, certificateData)
+            {
+                var keychainQueryDictionary = [String : Any]()
+
+                let accessGroup = teamId + ".com.apple.networkextensionsharing"
+                keychainQueryDictionary = [kSecClass as String : kSecClassCertificate,
+                                           kSecValueRef as String : certificate,
+                                            kSecAttrAccessGroup as String: accessGroup,
+                                           kSecAttrLabel as String: "CaCertificate"]
+
+                let summary = SecCertificateCopySubjectSummary(certificate)! as String
+                print("Cert summary: \(summary)")
+
+                let status = SecItemAdd(keychainQueryDictionary as CFDictionary, nil)
+
+                guard status == errSecSuccess else {
+                    return certificate
+                }
+
+                return certificate
+                
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    func authenticationType() -> NEHotspotEAPSettings.TTLSInnerAuthenticationType? {
+        
+        if nonEapInnerMethod == "PAP" {
+            return .eapttlsInnerAuthenticationPAP
+        } else if nonEapInnerMethod == "CHAP" {
+            return .eapttlsInnerAuthenticationCHAP
+        } else if nonEapInnerMethod == "MS-CHAP" {
+            return .eapttlsInnerAuthenticationMSCHAP
+        } else if nonEapInnerMethod == "MS-CHAP-V2" {
+            return .eapttlsInnerAuthenticationMSCHAPv2
+        } else if nonEapInnerMethod == "EAP" {
+            return .eapttlsInnerAuthenticationEAP
+        } else {
+            return nil
+        }
     }
 }
