@@ -27,7 +27,7 @@ protocol WiFiConfigurationService {
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     )
-
+    
     func connect(
         ssid: SSID,
         hotspotSettings: HotspotSettings,
@@ -35,7 +35,7 @@ protocol WiFiConfigurationService {
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     )
-
+    
     func connect(
         domainName: String,
         hotspotSettings: HotspotSettings,
@@ -56,10 +56,10 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     ) {
-//        NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (wifiList) in
-//            wifiList.forEach { NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: $0) }
-//            // ... from here you can use your usual approach to autoconnect to your network
-//        }
+        //        NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (wifiList) in
+        //            wifiList.forEach { NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: $0) }
+        //            // ... from here you can use your usual approach to autoconnect to your network
+        //        }
         NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
             
             if let error = error {
@@ -104,7 +104,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
             }
         }
     }
-
+    
     private func currentWifiInfo() -> String? {
         
         guard let interface = CNCopySupportedInterfaces() else {
@@ -115,10 +115,10 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
             let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interface, i)
             let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
             if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString),
-                let interfaceData = unsafeInterfaceData as? [String : AnyObject]
+               let interfaceData = unsafeInterfaceData as? [String : AnyObject]
             {
                 // connected wifi
-//                print("BSSID: \(interfaceData["BSSID"]), SSID: \(interfaceData["SSID"]), SSIDDATA: \(interfaceData["SSIDDATA"])")
+                //                print("BSSID: \(interfaceData["BSSID"]), SSID: \(interfaceData["SSID"]), SSIDDATA: \(interfaceData["SSIDDATA"])")
                 return interfaceData["SSID"] as? String
             } else {
                 return nil
@@ -164,7 +164,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         let hotspotConfig = NEHotspotConfiguration(hs20Settings: hs20Settings, eapSettings: eapSettings)
         apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
     }
-
+    
     func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void) {
         NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (ssids) in
             guard ssids.contains(ssid) else { return completion(.failure(.notConnected)) }
@@ -197,7 +197,7 @@ struct HotspotSettings {
     let caCertificate: String
     let eapType: Int
     let nonEapInnerMethod: String
-
+    
     func hotspotEAPSettings(teamId: String) -> NEHotspotEAPSettings {
         let settings = NEHotspotEAPSettings()
         settings.username = username
@@ -219,10 +219,11 @@ struct HotspotSettings {
         if !caCertificate.isEmpty {
             
             if let certificateData = Data(base64Encoded: caCertificate),
-               let certificate = storeIntoKeychainCertData(certificateData, teamId: teamId) {
+               let certificate = storeIntoKeychainCertData(certificateData, teamId: teamId)
+            {
                 settings.setTrustedServerCertificates([certificate])
             }
-
+            
         } else {
             
             if let url = URL(string: "https://smartregion.moscow/lab/passpoint/lerca.der"),
@@ -239,7 +240,7 @@ struct HotspotSettings {
     func storeIntoKeychainCertData(_ certData: Data, teamId: String) -> SecCertificate? {
         let documentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fileURL = documentDirURL.appendingPathComponent("lerca").appendingPathExtension("der")
-
+        
         if let certificateData = try? Data(contentsOf: fileURL) as CFData,
            let certificate = SecCertificateCreateWithData(nil, certificateData)
         {
@@ -253,22 +254,22 @@ struct HotspotSettings {
                let certificate = SecCertificateCreateWithData(nil, certificateData)
             {
                 var keychainQueryDictionary = [String : Any]()
-
+                
                 let accessGroup = teamId + ".com.apple.networkextensionsharing"
                 keychainQueryDictionary = [kSecClass as String : kSecClassCertificate,
                                            kSecValueRef as String : certificate,
-                                            kSecAttrAccessGroup as String: accessGroup,
+                                           kSecAttrAccessGroup as String: accessGroup,
                                            kSecAttrLabel as String: "CaCertificate"]
-
+                
                 let summary = SecCertificateCopySubjectSummary(certificate)! as String
                 print("Cert summary: \(summary)")
-
+                
                 let status = SecItemAdd(keychainQueryDictionary as CFDictionary, nil)
-
+                
                 guard status == errSecSuccess else {
                     return certificate
                 }
-
+                
                 return certificate
                 
             } else {
