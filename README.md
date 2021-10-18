@@ -2,6 +2,8 @@
 
 IOS SmartWiFi Connect library
 
+Для роаботы SDK необходимо добавить в таргет приложения Capability - Access WiFi Information and Hotspot Configuration.
+
 SDK использует сертификат для проверки сервера, в приложении необходимо включить/добавить Keychain Sharing capability in Xcode - com.apple.networkextensionsharing, что бы положить туда сертификат.
 
 Добавление SDK в ваш проеĸт:
