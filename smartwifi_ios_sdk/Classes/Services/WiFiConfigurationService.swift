@@ -51,93 +51,12 @@ protocol WiFiConfigurationService {
 
 final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     
-    let reachability = try! Reachability()
-    
-    private func apply(
-        _ hotspotConfig: NEHotspotConfiguration,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
-    ) {
+    // MARK: - Properties
 
-        reachability.whenReachable = { reachability in
-            if reachability.connection == .wifi {
-                print("Reachable via WiFi")
-            } else {
-                print("Reachable via Cellular")
-            }
-        }
-        reachability.whenUnreachable = { _ in
-            print("Not reachable")
-        }
+    private let tryConnectCount: Int = 6
 
-        NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
-            
-            if let error = error {
-                return applyResult(.failure(error))
-                
-            } else {
-                
-                DispatchQueue.global(
-                    qos: .utility
-                ).asyncAfter(
-                    deadline: .now() + 20
-                ) {
-                    if #available(iOS 14.0, *) {
-                        NEHotspotNetwork.fetchCurrent { network in
-                            if network?.ssid == hotspotConfig.ssid {
-                                return connectionResult(.success)
-                                
-                            } else if hotspotConfig.ssid.isEmpty { //passpoint
-                                return connectionResult(.success)
-                                
-                            } else {
-                                let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios > 14.0")
-                                return connectionResult(.failure(error))
-                            }
-                        }
-                    } else {
-                        let networkSsid = self.currentWifiInfo()
-                        if networkSsid == hotspotConfig.ssid {
-                            return connectionResult(.success)
-                            
-                        } else if hotspotConfig.ssid.isEmpty { //passpoint
-                            return connectionResult(.success)
-                            
-                        } else {
-                            let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios < 14.0")
-                            return connectionResult(.failure(error))
-                        }
-                    }
-                }
-                
-                return applyResult(.success)
-            }
-        }
-    }
-        
-    private func currentWifiInfo() -> String? {
-        
-        guard let interface = CNCopySupportedInterfaces() else {
-            return nil
-        }
-        
-        for i in 0..<CFArrayGetCount(interface) {
-            let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interface, i)
-            let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
-            if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString),
-               let interfaceData = unsafeInterfaceData as? [String : AnyObject]
-            {
-                // connected wifi
-                //                print("BSSID: \(interfaceData["BSSID"]), SSID: \(interfaceData["SSID"]), SSIDDATA: \(interfaceData["SSIDDATA"])")
-                return interfaceData["SSID"] as? String
-            } else {
-                return nil
-            }
-        }
-        
-        return nil
-    }
-    
+    // MARK: - Public methods
+
     func connect(
         ssid: SSID,
         password: String,
@@ -145,7 +64,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         connectionResult: @escaping (EmptyResult) -> Void
     ) {
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
-        apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
+        applyAndConnect(hotspotConfig, applyCompletion: applyResult, connectionCompletion: connectionResult)
     }
     
     func connect(
@@ -157,7 +76,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     ) {
         let eapSettings = hotspotSettings.hotspotEAPSettings(teamId: teamId)
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, eapSettings: eapSettings)
-        apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
+        applyAndConnect(hotspotConfig, applyCompletion: applyResult, connectionCompletion: connectionResult)
     }
     
     func connect(
@@ -172,7 +91,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         
         let eapSettings = hotspotSettings.hotspotEAPSettings(teamId: teamId)
         let hotspotConfig = NEHotspotConfiguration(hs20Settings: hs20Settings, eapSettings: eapSettings)
-        apply(hotspotConfig, applyResult: applyResult, connectionResult: connectionResult)
+        applyAndConnect(hotspotConfig, applyCompletion: applyResult, connectionCompletion: connectionResult)
     }
     
     func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void) {
@@ -196,7 +115,111 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
             ssids.forEach { NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: $0) }
         }
     }
-    
+
+    // MARK: - Private methods
+
+    private func applyAndConnect(
+        _ hotspotConfig: NEHotspotConfiguration,
+        applyCompletion: @escaping (EmptyResult) -> Void,
+        connectionCompletion: @escaping (EmptyResult) -> Void
+    ) {
+        apply(hotspotConfig, completion: { [weak self] (result) in
+            applyCompletion(result)
+            
+            if result == .success {
+                self?.checkConnection(hotspotConfig, tryNumber: 0, completion: connectionCompletion)
+            }
+        })
+    }
+
+    // MARK: - Help methods
+
+    private func apply(
+        _ hotspotConfig: NEHotspotConfiguration,
+        completion: @escaping (EmptyResult) -> Void
+    ) {
+        NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
+            
+            if let error = error {
+                return completion(.failure(error))
+            } else {
+                return completion(.success)
+            }
+        }
+    }
+
+    private func checkConnection(
+        _ hotspotConfig: NEHotspotConfiguration,
+        tryNumber: Int,
+        completion: @escaping (EmptyResult) -> Void
+    ) {
+        
+        func checkNetworkName(_ ssid: String?) {
+            
+            if ssid == hotspotConfig.ssid {
+                return completion(.success)
+                
+            } else if hotspotConfig.ssid.isEmpty { //passpoint
+                return completion(.success)
+                
+            } else {
+                DispatchQueue.global(
+                    qos: .utility
+                ).asyncAfter(
+                    deadline: .now() + 2
+                ) {
+                    self.checkConnection(hotspotConfig, tryNumber: tryNumber + 1, completion: completion)
+                }
+            }
+        }
+        
+        if #available(iOS 14.0, *) {
+            
+            NEHotspotNetwork.fetchCurrent { [weak self] (network) in
+                
+                guard let self = self, tryNumber < self.tryConnectCount else {
+                    let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios > 14.0")
+                    return completion(.failure(error))
+                }
+                
+                checkNetworkName(network?.ssid)
+            }
+            
+        } else {
+            
+            guard tryNumber < tryConnectCount else {
+                let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios < 14.0")
+                return completion(.failure(error))
+            }
+
+            let networkSsid = currentWifiInfo()
+            checkNetworkName(networkSsid)
+        }
+    }
+            
+    private func currentWifiInfo() -> String? {
+        
+        guard let interface = CNCopySupportedInterfaces() else {
+            return nil
+        }
+        
+        for i in 0..<CFArrayGetCount(interface) {
+            let interfaceName: UnsafeRawPointer = CFArrayGetValueAtIndex(interface, i)
+            let rec = unsafeBitCast(interfaceName, to: AnyObject.self)
+            if let unsafeInterfaceData = CNCopyCurrentNetworkInfo("\(rec)" as CFString),
+               let interfaceData = unsafeInterfaceData as? [String : AnyObject]
+            {
+                // connected wifi
+                // print("BSSID: \(interfaceData["BSSID"]), SSID: \(interfaceData["SSID"]), SSIDDATA: \(interfaceData["SSIDDATA"])")
+                return interfaceData["SSID"] as? String
+            } else {
+                return nil
+            }
+        }
+        
+        return nil
+    }
+        
 }
 
 struct HotspotSettings {
@@ -311,49 +334,4 @@ struct HotspotSettings {
             return nil
         }
     }
-}
-
-private extension WiFiConfigurationServiceImpl {
-    
-    func startReachabilityNotifier() {
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(reachabilityChanged(note:)),
-            name: .reachabilityChanged,
-            object: reachability
-        )
-        
-        do {
-            try reachability.startNotifier()
-        } catch {
-            print("could not start reachability notifier")
-        }
-    }
-    
-    func stopReachabilityNotifi() {
-        
-        reachability.stopNotifier()
-        
-        NotificationCenter.default.removeObserver(
-            self,
-            name: .reachabilityChanged,
-            object: reachability
-        )
-    }
-    
-    @objc func reachabilityChanged(note: Notification) {
-        
-        let reachability = note.object as! Reachability
-        
-        switch reachability.connection {
-        case .wifi:
-            print("Reachable via WiFi")
-        case .cellular:
-            print("Reachable via Cellular")
-        case .unavailable:
-            print("Network not reachable")
-        }
-    }
-
 }
