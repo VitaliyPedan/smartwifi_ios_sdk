@@ -51,15 +51,25 @@ protocol WiFiConfigurationService {
 
 final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     
+    let reachability = try! Reachability()
+    
     private func apply(
         _ hotspotConfig: NEHotspotConfiguration,
         applyResult: @escaping (EmptyResult) -> Void,
         connectionResult: @escaping (EmptyResult) -> Void
     ) {
-        //        NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (wifiList) in
-        //            wifiList.forEach { NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: $0) }
-        //            // ... from here you can use your usual approach to autoconnect to your network
-        //        }
+
+        reachability.whenReachable = { reachability in
+            if reachability.connection == .wifi {
+                print("Reachable via WiFi")
+            } else {
+                print("Reachable via Cellular")
+            }
+        }
+        reachability.whenUnreachable = { _ in
+            print("Not reachable")
+        }
+
         NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
             
             if let error = error {
@@ -104,7 +114,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
             }
         }
     }
-    
+        
     private func currentWifiInfo() -> String? {
         
         guard let interface = CNCopySupportedInterfaces() else {
@@ -301,4 +311,49 @@ struct HotspotSettings {
             return nil
         }
     }
+}
+
+private extension WiFiConfigurationServiceImpl {
+    
+    func startReachabilityNotifier() {
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(reachabilityChanged(note:)),
+            name: .reachabilityChanged,
+            object: reachability
+        )
+        
+        do {
+            try reachability.startNotifier()
+        } catch {
+            print("could not start reachability notifier")
+        }
+    }
+    
+    func stopReachabilityNotifi() {
+        
+        reachability.stopNotifier()
+        
+        NotificationCenter.default.removeObserver(
+            self,
+            name: .reachabilityChanged,
+            object: reachability
+        )
+    }
+    
+    @objc func reachabilityChanged(note: Notification) {
+        
+        let reachability = note.object as! Reachability
+        
+        switch reachability.connection {
+        case .wifi:
+            print("Reachable via WiFi")
+        case .cellular:
+            print("Reachable via Cellular")
+        case .unavailable:
+            print("Network not reachable")
+        }
+    }
+
 }
