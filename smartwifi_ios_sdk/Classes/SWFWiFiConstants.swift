@@ -1,5 +1,5 @@
 //
-//  Constants.swift
+//  SWFWiFiConstants.swift
 //  smartwifi-ios-sdk
 //
 //  Created by Vitaliy Pedan on 11.08.2021.

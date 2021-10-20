@@ -259,10 +259,14 @@ extension SWFApiServiceImpl {
             request.httpMethod = method
             request.allHTTPHeaderFields = headers
             
+            let iosVersionComponents: [String] = UIDevice.current.systemVersion.components(separatedBy: ".")
+            
+            let iosVersion: String = iosVersionComponents.prefix(2).joined(separator: ".")
+            
             request.httpBody = try? JSONSerialization.data(withJSONObject: [
                 "user_id": userId,
                 "user_field": ["platform": UIDevice.current.systemName,
-                               "platform_version": "14.1", //UIDevice.current.systemVersion,
+                               "platform_version": iosVersion,
                                "model": UIDevice.current.model]
             ])
             return request

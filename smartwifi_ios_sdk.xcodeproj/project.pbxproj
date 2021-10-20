@@ -22,10 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		6416B6FC2720261500D2433B /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6416B6F92720261500D2433B /* Reachability.swift */; };
-		6416B6FD2720261500D2433B /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 6416B6FA2720261500D2433B /* Reachability.h */; };
 		6499D01B26CB295F007C9481 /* smartwifi_ios_sdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6499D03626CB2973007C9481 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02226CB2972007C9481 /* Constants.swift */; };
+		6499D03626CB2973007C9481 /* SWFWiFiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02226CB2972007C9481 /* SWFWiFiConstants.swift */; };
 		6499D03726CB2973007C9481 /* SWFApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02426CB2973007C9481 /* SWFApiManager.swift */; };
 		6499D03826CB2973007C9481 /* SWFSaveIdentifierResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02626CB2973007C9481 /* SWFSaveIdentifierResponse.swift */; };
 		6499D03926CB2973007C9481 /* SWFPasspointConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02726CB2973007C9481 /* SWFPasspointConfig.swift */; };
@@ -69,12 +67,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6416B6F92720261500D2433B /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
-		6416B6FA2720261500D2433B /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		6499D01626CB295F007C9481 /* smartwifi_ios_sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = smartwifi_ios_sdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = smartwifi_ios_sdk.h; sourceTree = "<group>"; };
 		6499D01A26CB295F007C9481 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6499D02226CB2972007C9481 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		6499D02226CB2972007C9481 /* SWFWiFiConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWiFiConstants.swift; sourceTree = "<group>"; };
 		6499D02426CB2973007C9481 /* SWFApiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFApiManager.swift; sourceTree = "<group>"; };
 		6499D02626CB2973007C9481 /* SWFSaveIdentifierResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFSaveIdentifierResponse.swift; sourceTree = "<group>"; };
 		6499D02726CB2973007C9481 /* SWFPasspointConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFPasspointConfig.swift; sourceTree = "<group>"; };
@@ -103,15 +99,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6416B6F82720261500D2433B /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				6416B6F92720261500D2433B /* Reachability.swift */,
-				6416B6FA2720261500D2433B /* Reachability.h */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
 		6499D00C26CB295F007C9481 = {
 			isa = PBXGroup;
 			children = (
@@ -132,7 +119,6 @@
 		6499D01826CB295F007C9481 /* smartwifi_ios_sdk */ = {
 			isa = PBXGroup;
 			children = (
-				6416B6F82720261500D2433B /* Sources */,
 				6499D02126CB2972007C9481 /* Classes */,
 				6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */,
 				6499D01A26CB295F007C9481 /* Info.plist */,
@@ -144,7 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */,
-				6499D02226CB2972007C9481 /* Constants.swift */,
+				6499D02226CB2972007C9481 /* SWFWiFiConstants.swift */,
 				6499D02326CB2973007C9481 /* Networking */,
 				6499D02C26CB2973007C9481 /* Navigation */,
 				6499D02E26CB2973007C9481 /* Storage */,
@@ -218,7 +204,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6499D01B26CB295F007C9481 /* smartwifi_ios_sdk.h in Headers */,
-				6416B6FD2720261500D2433B /* Reachability.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,11 +309,10 @@
 				6499D03C26CB2973007C9481 /* SWFWpa2Config.swift in Sources */,
 				6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */,
 				6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */,
-				6416B6FC2720261500D2433B /* Reachability.swift in Sources */,
 				6499D04026CB2973007C9481 /* SecuredStorageManager.swift in Sources */,
 				64D3A9D426D45BAD001CB552 /* SWFServiceError.swift in Sources */,
 				6499D03826CB2973007C9481 /* SWFSaveIdentifierResponse.swift in Sources */,
-				6499D03626CB2973007C9481 /* Constants.swift in Sources */,
+				6499D03626CB2973007C9481 /* SWFWiFiConstants.swift in Sources */,
 				6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */,
 				6499D03E26CB2973007C9481 /* SWFNavigator.swift in Sources */,
 				6499D03F26CB2973007C9481 /* UserDefaultsManager.swift in Sources */,

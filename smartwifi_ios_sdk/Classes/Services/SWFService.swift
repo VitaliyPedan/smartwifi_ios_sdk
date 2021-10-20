@@ -43,14 +43,17 @@ private extension SWFServiceImpl {
     
     struct LocalConstants {
         
-        static var timerDelay: TimeInterval { 2 }
-        static var saveIdentifierDelay: TimeInterval { 5 }
-        
+        static var saveIdentifierWaitingConnectionDelay: TimeInterval { 3 }
+        static var saveIdentifierWaitingConnectionTryCount: Int { 5 }
+
+        static var saveIdentifierFailureDelay: TimeInterval { 5 }
+        static var saveIdentifierFailureTryCount: Int { 5 }
+
         static var registrationTryCount: Int { 10 }
         static var registrationTryDelay: TimeInterval { 5 }
 
     }
-    
+
 }
 
 public final class SWFServiceImpl: SWFService {
@@ -58,7 +61,6 @@ public final class SWFServiceImpl: SWFService {
     private let smartWifiApiService: SWFApiService
     private let wifiConfigurationService: WiFiConfigurationService
     
-    private var saveIdentifierCounter: Int = 0
     private var registrationCounter: Int = 1
 
     private var configKey: String?
@@ -471,35 +473,62 @@ private extension SWFServiceImpl {
     }
     
     
-//    2) Запрос на сохранение идентификатора:
-    func saveIdentifier(with url: String, completion: @escaping (EmptyResult) -> Void) {
-        
-        saveIdentifierCounter += 1
-        let currentSaveIdentifierCounter = saveIdentifierCounter
+    //    2) Запрос на сохранение идентификатора:
+    func saveIdentifier(
+        with url: String,
+        waitingConnectionTryNumber: Int = 0,
+        failureTryNumber: Int = 0,
+        completion: @escaping (EmptyResult) -> Void
+    ) {
         
         smartWifiApiService.saveIdentifier(with: url) { result in
             
             switch result {
             case .success(let identifierResponse):
+                
                 if identifierResponse.isSuccess {
                     completion(.success)
+                    
                 } else {
-                    let error = SWFAPIError.errorWith(text: identifierResponse.details ?? "saveIdentifier error")
-                    completion(.failure(error))
+                    guard waitingConnectionTryNumber < LocalConstants.saveIdentifierWaitingConnectionTryCount else {
+                        let error = SWFAPIError.errorWith(text: identifierResponse.details ?? "saveIdentifier error")
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    DispatchQueue.global(
+                        qos: .utility
+                    ).asyncAfter(
+                        deadline: .now() + LocalConstants.saveIdentifierWaitingConnectionDelay
+                    ) { [weak self] in
+                        
+                        self?.saveIdentifier(
+                            with: url,
+                            waitingConnectionTryNumber: waitingConnectionTryNumber + 1,
+                            completion: completion
+                        )
+                    }
                 }
                 
             case .failure(_):
-                guard currentSaveIdentifierCounter < 3 else {
+                
+                guard failureTryNumber < LocalConstants.saveIdentifierFailureTryCount else {
                     let error = SWFAPIError.emptyData(domain: "saveIdentifier")
                     completion(.failure(error))
-                    return //{ self?.saveIdentifierCounter = 0 }()
+                    return
                 }
+                
                 DispatchQueue.global(
                     qos: .utility
                 ).asyncAfter(
-                    deadline: .now() + LocalConstants.saveIdentifierDelay
+                    deadline: .now() + LocalConstants.saveIdentifierFailureDelay
                 ) { [weak self] in
-                    self?.saveIdentifier(with: url, completion: completion)
+                    
+                    self?.saveIdentifier(
+                        with: url,
+                        failureTryNumber: failureTryNumber + 1,
+                        completion: completion
+                    )
                 }
             }
         }
@@ -526,68 +555,37 @@ private extension SWFServiceImpl {
             switch result {
             case .success(let configs):
                 
-//                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + LocalConstants.timerDelay) {
-//                    DispatchQueue.main.async { [weak self] in
-//
-                        guard let self = self else {
-                            let error = SWFAPIError.resourceDoNotExist(domain: "getWiFiSettings")
-                            completion(.failure(error))
-                            return
-                        }
-
-                        do {
-                            try self.saveConfigs(configs, key: self.configKey!)
-                            
-//                            if let passpointConfig = configs?.passpointConfig {
-//                                try self.saveConfig(passpointConfig, key: self.configKey!)
-//
-//                            } else if let wpa2EnterpriseConfig = configs?.wpa2EnterpriseConfig {
-//                                try self.saveConfig(wpa2EnterpriseConfig, key: self.configKey!)
-//
-//                            } else if let wpa2Config = configs?.wpa2Config {
-//                                try self.saveConfig(wpa2Config, key: self.configKey!)
-//                            }
+                guard let self = self else {
+                    let error = SWFAPIError.resourceDoNotExist(domain: "getWiFiSettings")
+                    completion(.failure(error))
+                    return
+                }
+                
+                do {
+                    try self.saveConfigs(configs, key: self.configKey!)
                     
-                            if configs.passpointConfig != nil || configs.wpa2EnterpriseConfig != nil || configs.wpa2Config != nil {
-                                completion(.success)
-                            } else {
-                                let error = SWFAPIError.emptyData(domain: "getWiFiSettings")
-                                completion(.failure(error))
-                            }
-                            
-                        } catch {
-                            let error = SWFAPIError.savingData(domain: "getWiFiSettings")
-                            completion(.failure(error))
-                        }
-//                    }
-//                }
+                    if configs.passpointConfig != nil || configs.wpa2EnterpriseConfig != nil || configs.wpa2Config != nil {
+                        completion(.success)
+                    } else {
+                        let error = SWFAPIError.emptyData(domain: "getWiFiSettings")
+                        completion(.failure(error))
+                    }
+                    
+                } catch {
+                    let error = SWFAPIError.savingData(domain: "getWiFiSettings")
+                    completion(.failure(error))
+                }
                 
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
- 
+    
     func saveConfigs(_ config: SWFWiFiConfigs, key: String) throws {
-//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .passpointConfiguration)
         try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
     }
-
-//    func saveConfig(_ config: SWFPasspointConfig, key: String) throws {
-////        try UserDefaultsManager.shared.storeEncodable(data: config, key: .passpointConfiguration)
-//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
-//    }
-//
-//    func saveConfig(_ config: SWFWpa2EnterpriseConfig, key: String) throws {
-////        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2EnterpriseConfiguration)
-//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
-//    }
-//
-//    func saveConfig(_ config: SWFWpa2Config, key: String) throws {
-////        try UserDefaultsManager.shared.storeEncodable(data: config, key: .wap2Configuration)
-//        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
-//    }
-
+    
     func processPasspointConfig(
         _ config: SWFPasspointConfig,
         teamId: String,
@@ -634,7 +632,10 @@ private extension SWFServiceImpl {
                 switch result {
                 case .success:
                     if self.needToSaveWAP2Identifier {
-                        self.saveIdentifier(with: config.wpa2Method.ccUrl, completion: connectionCompletion)
+                        self.saveIdentifier(
+                            with: config.wpa2Method.ccUrl,
+                            completion: connectionCompletion
+                        )
                     } else {
                         connectionCompletion(.success)
                     }
