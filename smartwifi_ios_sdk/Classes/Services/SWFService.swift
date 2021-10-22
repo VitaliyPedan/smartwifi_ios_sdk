@@ -535,6 +535,25 @@ private extension SWFServiceImpl {
         
     }
     
+    //    3) Запрос на полный доступ к интернету:
+    func fullWifiAccess(completion: @escaping (EmptyResult) -> Void) {
+
+        smartWifiApiService.fullWifiAccess(
+            time: 3600,
+            comment: "from_mobile_app",
+            pass: "96wImExVQPmJvd46",
+            downBw: "1gbit",
+            upBw: "1gbit"
+        ) { _ in
+//            switch result {
+//            case .success(let data):
+//                break
+//            case .failure(let error):
+//                break
+//            }
+        }
+    }
+
     func getWiFiSettings(
         apiKey: String,
         userId: String,
@@ -632,10 +651,16 @@ private extension SWFServiceImpl {
                 switch result {
                 case .success:
                     if self.needToSaveWAP2Identifier {
-                        self.saveIdentifier(
-                            with: config.wpa2Method.ccUrl,
-                            completion: connectionCompletion
-                        )
+                        self.saveIdentifier(with: config.wpa2Method.ccUrl) { [weak self] (result) in
+                            switch result {
+                            case .success:
+                                connectionCompletion(.success)
+                                self?.fullWifiAccess(completion: { _ in })
+                                
+                            case .failure(let error):
+                                connectionCompletion(.failure(error))
+                            }
+                        }
                     } else {
                         connectionCompletion(.success)
                     }

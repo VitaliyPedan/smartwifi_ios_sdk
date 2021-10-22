@@ -13,7 +13,15 @@ protocol SWFApiService {
     func register(userId: String, channelId: String, projectId: String, _ completion: @escaping APIManagerRequestCallback)
     
     func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>)
-    
+    func fullWifiAccess(
+        time: Int,
+        comment: String,
+        pass: String,
+        downBw: String,
+        upBw: String,
+        completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>
+    )
+
     func getWiFiSettings(
         apiKey: String,
         userId: String,
@@ -213,6 +221,93 @@ extension SWFApiServiceImpl {
     }
     
 }
+
+
+extension SWFApiServiceImpl {
+    
+    private struct FullWifiAccessRequest {
+
+        private var headers: [String: String] {
+            [
+                "Content-Type": "application/json",
+                "X-API-KEY": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJwaWQiOiIxIiwic3ViIjoiZGM4ZDI4NGUtOWU3Mi00NmExLTk5YTctNDRhZmM2NjAzZjk5IiwiaWF0IjoxNjIxODc4MjY3LCJzY29wZXMiOlsicmVnaXN0cmF0aW9uX2dldF93aWZpX3NldHRpbmdzIl19.yfWqqg_zg_TjH0tyIWkU_8agcSSemCDOYBA4bqApOhi8Ygji5lC5Yf3-tU2kt-zT"
+            ]
+        }
+
+        private let method: String = "GET"
+        
+        private let time: Int
+        private let comment: String
+        private let pass: String
+        private let downBw: String
+        private let upBw: String
+
+        init(
+            time: Int,
+            comment: String,
+            pass: String,
+            downBw: String,
+            upBw: String
+        ) {
+            self.time = time
+            self.comment = comment
+            self.pass = pass
+            self.downBw = downBw
+            self.upBw = upBw
+        }
+
+        func urlRequest() -> URLRequest? {
+            
+            let urlString = "https://smartwf.ru:40443/open/full/?time=\(time)&comment=\(comment)&pass=\(pass)&down_bw=\(downBw)&up_bw=\(upBw)"
+            
+            guard let requestUrl = URL(string: urlString) else {
+                return nil
+            }
+            
+            var request = URLRequest(url: requestUrl)
+            request.httpMethod = method
+//            request.allHTTPHeaderFields = headers
+            
+            return request
+        }
+    }
+    
+    func fullWifiAccess(
+        time: Int,
+        comment: String,
+        pass: String,
+        downBw: String,
+        upBw: String,
+        completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>
+    ) {
+        let request = FullWifiAccessRequest(
+            time: time,
+            comment: comment,
+            pass: pass,
+            downBw: downBw,
+            upBw: upBw
+        )
+        
+        if let urlRequest = request.urlRequest() {
+            apiManager.sendRequest(urlRequest: urlRequest) { result in
+                switch result {
+                case .success(let data):
+                    
+                    guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
+                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
+                        return
+                    }
+                    completion(.success(saveIdentifierResponse))
+                    
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+}
+
 
 extension SWFApiServiceImpl {
     
