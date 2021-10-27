@@ -9,14 +9,14 @@ import Foundation
 
 public protocol SWFWiFiSessionDelegate {
     
-    func willRequestConfig(session: SWFWiFiSession)
-    func didRequestConfig(session: SWFWiFiSession, error: Error?)
+    func willRequestConfigs(session: SWFWiFiSession)
+    func didRequestConfigs(session: SWFWiFiSession, error: Error?)
 
     func willApplyConfig(session: SWFWiFiSession)
-    func didApplyConfig(session: SWFWiFiSession, error: Error?)
+    func didApplyConfig(type: SWFConfigType?, session: SWFWiFiSession, error: Error?)
 
-    func willConnectToWiFi(session: SWFWiFiSession)
-    func didConnectToWiFi(session: SWFWiFiSession, error: Error?)
+    func willConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession)
+    func didConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession, error: Error?)
     
     func didStopWiFi(session: SWFWiFiSession)
 }
@@ -25,10 +25,10 @@ enum WiFiSessionStatus {
     case initializing
     case requestConfigs
     case requestConfigsResult(EmptyResult)
-    case applyConfigs
-    case applyConfigsResult(EmptyResult)
-    case connecting
-    case connectionResult(EmptyResult)
+    case applyConfig
+    case applyConfigResult(SWFConfigType?, EmptyResult)
+    case connecting(SWFConfigType?)
+    case connectionResult(SWFConfigType?, EmptyResult)
     case cancel
 }
 
@@ -42,6 +42,7 @@ public final class SWFWiFiSession {
     private var delegate: SWFWiFiSessionDelegate
     
     private var teamId: String
+    private var priority: Int = 0
 
     private let concurrentContactQueue = DispatchQueue(label: "com.test.contacts", attributes: .concurrent)
 
@@ -52,11 +53,11 @@ public final class SWFWiFiSession {
                 break
             case .requestConfigs:
                 if Thread.isMainThread {
-                    self.delegate.willRequestConfig(session: self)
+                    self.delegate.willRequestConfigs(session: self)
                 } else {
                     DispatchQueue.main.sync { [weak self] in
                         guard let self = self else { return }
-                        self.delegate.willRequestConfig(session: self)
+                        self.delegate.willRequestConfigs(session: self)
                     }
                 }
                 
@@ -64,26 +65,26 @@ public final class SWFWiFiSession {
                 switch result {
                 case .success:
                     if Thread.isMainThread {
-                        self.delegate.didRequestConfig(session: self, error: nil)
+                        self.delegate.didRequestConfigs(session: self, error: nil)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didRequestConfig(session: self, error: nil)
+                            self.delegate.didRequestConfigs(session: self, error: nil)
                         }
                     }
 
                 case .failure(let error):
                     if Thread.isMainThread {
-                        self.delegate.didRequestConfig(session: self, error: error)
+                        self.delegate.didRequestConfigs(session: self, error: error)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didRequestConfig(session: self, error: error)
+                            self.delegate.didRequestConfigs(session: self, error: error)
                         }
                     }
                 }
             
-            case .applyConfigs:
+            case .applyConfig:
                 if Thread.isMainThread {
                     self.delegate.willApplyConfig(session: self)
                 } else {
@@ -93,58 +94,58 @@ public final class SWFWiFiSession {
                     }
                 }
                 
-            case .applyConfigsResult(let result):
+            case .applyConfigResult(let type, let result):
                 switch result {
                 case .success:
                     if Thread.isMainThread {
-                        self.delegate.didApplyConfig(session: self, error: nil)
+                        self.delegate.didApplyConfig(type: type, session: self, error: nil)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didApplyConfig(session: self, error: nil)
+                            self.delegate.didApplyConfig(type: type, session: self, error: nil)
                         }
                     }
 
                 case .failure(let error):
                     if Thread.isMainThread {
-                        self.delegate.didApplyConfig(session: self, error: error)
+                        self.delegate.didApplyConfig(type: type, session: self, error: error)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didApplyConfig(session: self, error: error)
+                            self.delegate.didApplyConfig(type: type, session: self, error: error)
                         }
                     }
                 }
 
-            case .connecting:
+            case .connecting(let configType):
                 if Thread.isMainThread {
-                    self.delegate.willConnectToWiFi(session: self)
+                    self.delegate.willConnectToWiFi(via: configType, session: self)
                 } else {
                     DispatchQueue.main.sync { [weak self] in
                         guard let self = self else { return }
-                        self.delegate.willConnectToWiFi(session: self)
+                        self.delegate.willConnectToWiFi(via: configType, session: self)
                     }
                 }
                 
-            case .connectionResult(let result):
+            case .connectionResult(let configType, let result):
                 switch result {
                 case .success:
                     if Thread.isMainThread {
-                        self.delegate.didConnectToWiFi(session: self, error: nil)
+                        self.delegate.didConnectToWiFi(via: configType, session: self, error: nil)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didConnectToWiFi(session: self, error: nil)
+                            self.delegate.didConnectToWiFi(via: configType, session: self, error: nil)
                         }
                     }
 
                 case .failure(let error):
                     if Thread.isMainThread {
-                        self.delegate.didConnectToWiFi(session: self, error: error)
+                        self.delegate.didConnectToWiFi(via: configType, session: self, error: error)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didConnectToWiFi(session: self, error: error)
+                            self.delegate.didConnectToWiFi(via: configType, session: self, error: error)
                         }
                     }
                 }
@@ -232,22 +233,33 @@ public final class SWFWiFiSession {
     }
     
     private func startConnection() {
-        status = .applyConfigs
+        status = .applyConfig
         
         guard isWiFiOn() else {
-            status = .applyConfigsResult(.failure(SWFServiceError.needCheckOnWiFiModule))
+            status = .applyConfigResult(nil, .failure(SWFServiceError.needCheckOnWiFiModule))
             return
         }
 
-        wifiService.startSession(teamId: teamId) { [weak self] (result) in
-            self?.status = .applyConfigsResult(result)
+        wifiService.startSession(
+            teamId: teamId,
+            priority: priority
+        ) { [weak self] (configType, result)  in
+            
+            self?.status = .applyConfigResult(configType, result)
 
             if result == .success {
-                self?.status = .connecting
+                self?.status = .connecting(configType)
             }
 
-        } connectionCompletion: { [weak self] (result) in
-            self?.status = .connectionResult(result)
+        } connectionCompletion: { [weak self] (configType, result) in
+            self?.status = .connectionResult(configType, result)
+            
+            if result == .success {
+                self?.priority = 0
+            } else {
+                self?.priority += 1
+                self?.startConnection()
+            }
         }
     }
     

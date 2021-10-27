@@ -28,8 +28,9 @@ public protocol SWFService {
     
     func startSession(
         teamId: String,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        priority: Int,
+        applyConfigCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void,
+        connectionCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void
     )
     func stopSession(completion: @escaping (EmptyResult) -> Void)
     
@@ -110,13 +111,14 @@ public final class SWFServiceImpl: SWFService {
 
     public func startSession(
         teamId: String,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        priority: Int,
+        applyConfigCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void,
+        connectionCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void
     ) {
         
         guard let configKey = configKey else {
             let error = SWFAPIError.errorWith(text: "Need to configure session")
-            applyConfigCompletion(.failure(error))
+            applyConfigCompletion(nil, .failure(error))
             return
         }
         
@@ -124,15 +126,14 @@ public final class SWFServiceImpl: SWFService {
         
         guard let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey)) else {
             let error = SWFAPIError.emptyConfigMethod(domain: "getWiFiSettings")
-            applyConfigCompletion(.failure(error))
+            applyConfigCompletion(nil, .failure(error))
             return
         }
         
         acceptConfigs(
             configs,
             teamId: teamId,
-            priority: 0,
-            error: nil,
+            priority: priority,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: connectionCompletion
         )
@@ -142,83 +143,47 @@ public final class SWFServiceImpl: SWFService {
         _ configs: SWFWiFiConfigs,
         teamId: String,
         priority: Int,
-        error: Error?,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void,
+        connectionCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void
     ) {
-        var _priority = priority
-        
         if let passpointConfig = configs.passpointConfig, priority == passpointConfig.priority {
-            
             processPasspointConfig(
                 passpointConfig,
                 teamId: teamId,
-                applyConfigCompletion:applyConfigCompletion,
-                connectionCompletion: { [weak self] (result) in
-                    switch result {
-                    case .success:
-                        connectionCompletion(.success)
-                    case .failure(let error):
-                        _priority += 1
-                        self?.acceptConfigs(
-                            configs,
-                            teamId: teamId,
-                            priority: _priority,
-                            error: error,
-                            applyConfigCompletion: applyConfigCompletion,
-                            connectionCompletion: connectionCompletion
-                        )
-                    }
+                applyConfigCompletion: { (result) in
+                    applyConfigCompletion(.passpoint, result)
+                },
+                connectionCompletion: { (result) in
+                    connectionCompletion(.passpoint, result)
                 }
             )
-        } else if let wpa2EnterpriseConfig = configs.wpa2EnterpriseConfig, priority == wpa2EnterpriseConfig.priority {
             
+        } else if let wpa2EnterpriseConfig = configs.wpa2EnterpriseConfig, priority == wpa2EnterpriseConfig.priority {
             processWAP2EnterpriseConfig(
                 wpa2EnterpriseConfig,
                 teamId: teamId,
-                applyConfigCompletion:applyConfigCompletion,
-                connectionCompletion: { [weak self] (result) in
-                    switch result {
-                    case .success:
-                        connectionCompletion(.success)
-                    case .failure(let error):
-                        _priority += 1
-                        self?.acceptConfigs(
-                            configs,
-                            teamId: teamId,
-                            priority: _priority,
-                            error: error,
-                            applyConfigCompletion: applyConfigCompletion,
-                            connectionCompletion: connectionCompletion
-                        )
-                    }
+                applyConfigCompletion: { (result) in
+                    applyConfigCompletion(.wpa2Enterprise, result)
+                },
+                connectionCompletion: { (result) in
+                    connectionCompletion(.wpa2Enterprise, result)
                 }
             )
+
         } else if let wpa2Config = configs.wpa2Config, priority == wpa2Config.priority {
-            
             processWAP2Config(
                 wpa2Config,
-                applyConfigCompletion:applyConfigCompletion,
-                connectionCompletion: { [weak self] (result) in
-                    switch result {
-                    case .success:
-                        connectionCompletion(.success)
-                    case .failure(let error):
-                        _priority += 1
-                        self?.acceptConfigs(
-                            configs,
-                            teamId: teamId,
-                            priority: _priority,
-                            error: error,
-                            applyConfigCompletion: applyConfigCompletion,
-                            connectionCompletion: connectionCompletion
-                        )
-                    }
+                applyConfigCompletion: { (result) in
+                    applyConfigCompletion(.wpa2, result)
+                },
+                connectionCompletion: { (result) in
+                    connectionCompletion(.wpa2, result)
                 }
             )
+
         } else {
-            let _error = error ?? SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
-            connectionCompletion(.failure(_error))
+            let _error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+            connectionCompletion(nil, .failure(_error))
         }
     }
     
@@ -545,12 +510,6 @@ private extension SWFServiceImpl {
             downBw: "1gbit",
             upBw: "1gbit"
         ) { _ in
-//            switch result {
-//            case .success(let data):
-//                break
-//            case .failure(let error):
-//                break
-//            }
         }
     }
 

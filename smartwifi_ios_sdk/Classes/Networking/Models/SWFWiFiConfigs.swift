@@ -7,8 +7,18 @@
 
 import Foundation
 
-public protocol SWFConfigPriority {
+public protocol SWFConfigPriorityProtocol {
     var priority: Int { get set }
+}
+
+public enum SWFConfigType {
+    case passpoint
+    case wpa2Enterprise
+    case wpa2
+}
+
+public protocol SWFConfigTypeProtocol {
+    var type: SWFConfigType { get }
 }
 
 public struct SWFWiFiConfigs: Codable {

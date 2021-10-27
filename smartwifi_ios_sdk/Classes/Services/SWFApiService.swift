@@ -13,6 +13,7 @@ protocol SWFApiService {
     func register(userId: String, channelId: String, projectId: String, _ completion: @escaping APIManagerRequestCallback)
     
     func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>)
+    
     func fullWifiAccess(
         time: Int,
         comment: String,
