@@ -249,6 +249,8 @@ public final class SWFWiFiSession {
 
             if result == .success {
                 self?.status = .connecting(configType)
+            } else {
+                self?.priority = 0
             }
 
         } connectionCompletion: { [weak self] (configType, result) in
