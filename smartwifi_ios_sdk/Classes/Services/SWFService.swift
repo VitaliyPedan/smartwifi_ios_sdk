@@ -570,7 +570,11 @@ private extension SWFServiceImpl {
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
-        self.connectToWiFiPasspoint(
+        guard !wifiConfigurationService.checkForAlreadyAssociated(config: config) else {
+            return connectionCompletion(.success)
+        }
+
+        connectToWiFiPasspoint(
             method: config.passpointMethod,
             teamId: teamId,
             applyConfigCompletion: applyConfigCompletion,
@@ -584,7 +588,11 @@ private extension SWFServiceImpl {
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
-        self.connectToWiFiWap2Enterprise(
+        guard !wifiConfigurationService.checkForAlreadyAssociated(config: config) else {
+            return connectionCompletion(.success)
+        }
+
+        connectToWiFiWap2Enterprise(
             method: config.wpa2EnterpriseMethod,
             teamId: teamId,
             applyConfigCompletion: applyConfigCompletion,
@@ -597,7 +605,11 @@ private extension SWFServiceImpl {
         applyConfigCompletion: @escaping (EmptyResult) -> Void,
         connectionCompletion: @escaping (EmptyResult) -> Void
     ) {
-        self.connectToWiFiWap2(
+        guard !wifiConfigurationService.checkForAlreadyAssociated(config: config) else {
+            return connectionCompletion(.success)
+        }
+        
+        connectToWiFiWap2(
             method: config.wpa2Method,
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: { [weak self] (result) in
@@ -630,5 +642,5 @@ private extension SWFServiceImpl {
         )
         
     }
-
+    
 }

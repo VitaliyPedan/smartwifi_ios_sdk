@@ -47,6 +47,11 @@ protocol WiFiConfigurationService {
     func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void)
     func disconnect(domainName: String, completion: @escaping (WiFiDisconnectResult) -> Void)
     func removeConnections()
+    
+    func checkForAlreadyAssociated(config: SWFPasspointConfig) -> Bool
+    func checkForAlreadyAssociated(config: SWFWpa2EnterpriseConfig) -> Bool
+    func checkForAlreadyAssociated(config: SWFWpa2Config) -> Bool
+
 }
 
 final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
@@ -114,6 +119,20 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (ssids) in
             ssids.forEach { NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: $0) }
         }
+    }
+
+    func checkForAlreadyAssociated(config: SWFPasspointConfig) -> Bool {
+        return false
+    }
+
+    func checkForAlreadyAssociated(config: SWFWpa2EnterpriseConfig) -> Bool {
+        let networkSsid = currentWifiInfo()
+        return networkSsid == config.wpa2EnterpriseMethod.ssid
+    }
+
+    func checkForAlreadyAssociated(config: SWFWpa2Config) -> Bool {
+        let networkSsid = currentWifiInfo()
+        return networkSsid == config.wpa2Method.ssid
     }
 
     // MARK: - Private methods
