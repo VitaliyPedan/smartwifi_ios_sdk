@@ -44,8 +44,6 @@ public final class SWFWiFiSession {
     private var teamId: String
     private var priority: Int = 0
 
-    private let concurrentContactQueue = DispatchQueue(label: "com.test.contacts", attributes: .concurrent)
-
     private var status: WiFiSessionStatus = .initializing {
         didSet {
             switch self.status {
@@ -215,7 +213,8 @@ public final class SWFWiFiSession {
         status = .requestConfigs
         
         guard isWiFiOn() else {
-            status = .requestConfigsResult(.failure(SWFServiceError.needCheckOnWiFiModule))
+            let error = SWFSessionError.needSwitchOnWiFiModule(domain: #function)
+            status = .requestConfigsResult(.failure(error))
             return
         }
 
@@ -236,7 +235,8 @@ public final class SWFWiFiSession {
         status = .applyConfig
         
         guard isWiFiOn() else {
-            status = .applyConfigResult(nil, .failure(SWFServiceError.needCheckOnWiFiModule))
+            let error = SWFSessionError.needSwitchOnWiFiModule(domain: #function)
+            status = .applyConfigResult(nil, .failure(error))
             return
         }
 

@@ -7,11 +7,7 @@
 
 import Foundation
 
-enum SecuredStorageError: Error {
-    case cantBeConveted
-}
-
-enum SecuredStorageKey: String, CaseIterable {
+enum SWFSecuredStorageKey: String, CaseIterable {
     case appToken
     case appId
     case identity
@@ -20,38 +16,38 @@ enum SecuredStorageKey: String, CaseIterable {
     case credentials
     case authorizationInfo
     
-    static var removableKeys: [SecuredStorageKey] {
+    static var removableKeys: [SWFSecuredStorageKey] {
         [.credentials, .authorizationInfo, .identity]
     }
 }
 
-protocol SecuredStorageManagerType {
+protocol SWFSecuredStorageManagerType {
     @discardableResult
-    func save(key: SecuredStorageKey, data: Data) -> OSStatus
+    func save(key: SWFSecuredStorageKey, data: Data) -> OSStatus
     @discardableResult
-    func save<T: Encodable>(key: SecuredStorageKey, encodable: T) throws -> OSStatus
+    func save<T: Encodable>(key: SWFSecuredStorageKey, encodable: T) throws -> OSStatus
     
-    func load(key: SecuredStorageKey) -> Data?
-    func loadDecodable<T: Decodable>(key: SecuredStorageKey) -> T?
+    func load(key: SWFSecuredStorageKey) -> Data?
+    func loadDecodable<T: Decodable>(key: SWFSecuredStorageKey) -> T?
     
     func removeAll(completion: @escaping () -> ())
 }
 
-class SecuredStorageManager: SecuredStorageManagerType {
-    static let shared = SecuredStorageManager()
+class SWFSecuredStorageManager: SWFSecuredStorageManagerType {
+    static let shared = SWFSecuredStorageManager()
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
     private init() {}
     
     @discardableResult
-    func save<T: Encodable>(key: SecuredStorageKey, encodable: T) throws -> OSStatus {
+    func save<T: Encodable>(key: SWFSecuredStorageKey, encodable: T) throws -> OSStatus {
         let data = try encoder.encode(encodable)
         return save(key: key, data: data)
     }
     
     @discardableResult
-    func save(key: SecuredStorageKey, data: Data) -> OSStatus {
+    func save(key: SWFSecuredStorageKey, data: Data) -> OSStatus {
         let query = [
             kSecClass as String       : kSecClassGenericPassword as String,
             kSecAttrAccount as String : key.rawValue,
@@ -63,7 +59,7 @@ class SecuredStorageManager: SecuredStorageManagerType {
         return SecItemAdd(query as CFDictionary, nil)
     }
 
-    func load(key: SecuredStorageKey) -> Data? {
+    func load(key: SWFSecuredStorageKey) -> Data? {
         var dataTypeRef: AnyObject? = nil
         let query = [
             kSecClass as String       : kSecClassGenericPassword,
@@ -80,7 +76,7 @@ class SecuredStorageManager: SecuredStorageManagerType {
         }
     }
     
-    func loadDecodable<T: Decodable>(key: SecuredStorageKey) -> T? {
+    func loadDecodable<T: Decodable>(key: SWFSecuredStorageKey) -> T? {
         guard let data = load(key: key) else { return nil }
         
         return try? decoder.decode(T.self, from: data)
@@ -88,7 +84,7 @@ class SecuredStorageManager: SecuredStorageManagerType {
     
     func removeAll(completion: @escaping () -> ()) {
         DispatchQueue.global(qos: .userInitiated).async {
-            SecuredStorageKey.removableKeys.forEach { key in
+            SWFSecuredStorageKey.removableKeys.forEach { key in
                 let query = [
                     kSecClass as String : kSecClassGenericPassword,
                     kSecAttrAccount as String : key.rawValue

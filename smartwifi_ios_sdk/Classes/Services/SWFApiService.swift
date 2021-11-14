@@ -9,10 +9,23 @@ import UIKit
 
 protocol SWFApiService {
     
-    func register(userId: String, phoneNumber: String, _ completion: @escaping () -> Void)
-    func register(userId: String, channelId: String, projectId: String, _ completion: @escaping APIManagerRequestCallback)
+    func register(
+        userId: String,
+        phoneNumber: String,
+        _ completion: @escaping () -> Void
+    )
     
-    func saveIdentifier(with urlString: String, completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>)
+    func register(
+        userId: String,
+        channelId: String,
+        projectId: String,
+        _ completion: @escaping APIManagerRequestCallback
+    )
+    
+    func saveIdentifier(
+        with urlString: String,
+        completion: @escaping ResultCompletion<SWFSaveIdentifierResponse>
+    )
     
     func fullWifiAccess(
         time: Int,
@@ -209,13 +222,14 @@ extension SWFApiServiceImpl {
                 case .success(let data):
                     
                     guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
-                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
+                        completion(.failure(SWFSessionError.mappingFailure(domain: #function, data: data)))
                         return
                     }
                     completion(.success(saveIdentifierResponse))
                     
                 case .failure(let error):
-                    completion(.failure(error))
+                    let _error = SWFSessionError.saveIdentifierRequestFailure(domain: "saveIdentifier", description: error.localizedDescription)
+                    completion(.failure(_error))
                 }
             }
         }
@@ -295,13 +309,14 @@ extension SWFApiServiceImpl {
                 case .success(let data):
                     
                     guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
-                        completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
+                        completion(.failure(SWFSessionError.mappingFailure(domain: #function, data: data)))
                         return
                     }
                     completion(.success(saveIdentifierResponse))
                     
                 case .failure(let error):
-                    completion(.failure(error))
+                    let _error = SWFSessionError.fullWifiAccessRequestFailure(domain: "fullWifiAccess", description: error.localizedDescription)
+                    completion(.failure(_error))
                 }
             }
         }
@@ -398,14 +413,15 @@ extension SWFApiServiceImpl {
                     completion(.success(configs))
                     
                 } else if let configError = try? JSONDecoder().decode(ConfigError.self, from: data) {
-                    completion(.failure(SWFAPIError.configError(domain: #function, configError: configError)))
+                    completion(.failure(SWFSessionError.configError(domain: #function, configError: configError)))
                     
                 } else {
-                    completion(.failure(SWFAPIError.mappingFailure(domain: #function, data: data)))
+                    completion(.failure(SWFSessionError.mappingFailure(domain: #function, data: data)))
                 }
                 
             case .failure(let error):
-                completion(.failure(error))
+                let _error = SWFSessionError.getWiFiSettingsRequestFailure(domain: "getWiFiSettings", description: error.localizedDescription)
+                completion(.failure(_error))
             }
         }
     }

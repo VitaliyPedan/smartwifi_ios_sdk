@@ -22,6 +22,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		6447288527450F1000F6CAB9 /* SWFErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6447288427450F1000F6CAB9 /* SWFErrors.swift */; };
 		6499D01B26CB295F007C9481 /* smartwifi_ios_sdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6499D03626CB2973007C9481 /* SWFWiFiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02226CB2972007C9481 /* SWFWiFiConstants.swift */; };
 		6499D03726CB2973007C9481 /* SWFApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02426CB2973007C9481 /* SWFApiManager.swift */; };
@@ -30,15 +31,14 @@
 		6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02826CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift */; };
 		6499D03B26CB2973007C9481 /* SWFWiFiConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02926CB2973007C9481 /* SWFWiFiConfigs.swift */; };
 		6499D03C26CB2973007C9481 /* SWFWpa2Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02A26CB2973007C9481 /* SWFWpa2Config.swift */; };
-		6499D03D26CB2973007C9481 /* SWFAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02B26CB2973007C9481 /* SWFAPIError.swift */; };
+		6499D03D26CB2973007C9481 /* SWFSessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02B26CB2973007C9481 /* SWFSessionError.swift */; };
 		6499D03E26CB2973007C9481 /* SWFNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02D26CB2973007C9481 /* SWFNavigator.swift */; };
-		6499D03F26CB2973007C9481 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02F26CB2973007C9481 /* UserDefaultsManager.swift */; };
-		6499D04026CB2973007C9481 /* SecuredStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03026CB2973007C9481 /* SecuredStorageManager.swift */; };
+		6499D03F26CB2973007C9481 /* SWFUserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D02F26CB2973007C9481 /* SWFUserDefaultsManager.swift */; };
+		6499D04026CB2973007C9481 /* SWFSecuredStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03026CB2973007C9481 /* SWFSecuredStorageManager.swift */; };
 		6499D04126CB2973007C9481 /* SWFService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03326CB2973007C9481 /* SWFService.swift */; };
 		6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03426CB2973007C9481 /* SWFApiService.swift */; };
 		6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */; };
 		64CBB7A426E80363005485C2 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		64D3A9D426D45BAD001CB552 /* SWFServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */; };
 		64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +67,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6447288427450F1000F6CAB9 /* SWFErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFErrors.swift; sourceTree = "<group>"; };
 		6499D01626CB295F007C9481 /* smartwifi_ios_sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = smartwifi_ios_sdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6499D01926CB295F007C9481 /* smartwifi_ios_sdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = smartwifi_ios_sdk.h; sourceTree = "<group>"; };
 		6499D01A26CB295F007C9481 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -77,14 +78,13 @@
 		6499D02826CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWpa2EnterpriseConfig.swift; sourceTree = "<group>"; };
 		6499D02926CB2973007C9481 /* SWFWiFiConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWiFiConfigs.swift; sourceTree = "<group>"; };
 		6499D02A26CB2973007C9481 /* SWFWpa2Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFWpa2Config.swift; sourceTree = "<group>"; };
-		6499D02B26CB2973007C9481 /* SWFAPIError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFAPIError.swift; sourceTree = "<group>"; };
+		6499D02B26CB2973007C9481 /* SWFSessionError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFSessionError.swift; sourceTree = "<group>"; };
 		6499D02D26CB2973007C9481 /* SWFNavigator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFNavigator.swift; sourceTree = "<group>"; };
-		6499D02F26CB2973007C9481 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
-		6499D03026CB2973007C9481 /* SecuredStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecuredStorageManager.swift; sourceTree = "<group>"; };
+		6499D02F26CB2973007C9481 /* SWFUserDefaultsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFUserDefaultsManager.swift; sourceTree = "<group>"; };
+		6499D03026CB2973007C9481 /* SWFSecuredStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFSecuredStorageManager.swift; sourceTree = "<group>"; };
 		6499D03326CB2973007C9481 /* SWFService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFService.swift; sourceTree = "<group>"; };
 		6499D03426CB2973007C9481 /* SWFApiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFApiService.swift; sourceTree = "<group>"; };
 		6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiFiConfigurationService.swift; sourceTree = "<group>"; };
-		64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFServiceError.swift; sourceTree = "<group>"; };
 		64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFWiFiSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,6 +131,8 @@
 			children = (
 				64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */,
 				6499D02226CB2972007C9481 /* SWFWiFiConstants.swift */,
+				6499D02B26CB2973007C9481 /* SWFSessionError.swift */,
+				6447288427450F1000F6CAB9 /* SWFErrors.swift */,
 				6499D02326CB2973007C9481 /* Networking */,
 				6499D02C26CB2973007C9481 /* Navigation */,
 				6499D02E26CB2973007C9481 /* Storage */,
@@ -144,7 +146,6 @@
 			children = (
 				6499D02426CB2973007C9481 /* SWFApiManager.swift */,
 				6499D02526CB2973007C9481 /* Models */,
-				6499D02B26CB2973007C9481 /* SWFAPIError.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -172,8 +173,8 @@
 		6499D02E26CB2973007C9481 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				6499D02F26CB2973007C9481 /* UserDefaultsManager.swift */,
-				6499D03026CB2973007C9481 /* SecuredStorageManager.swift */,
+				6499D02F26CB2973007C9481 /* SWFUserDefaultsManager.swift */,
+				6499D03026CB2973007C9481 /* SWFSecuredStorageManager.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -182,7 +183,6 @@
 			isa = PBXGroup;
 			children = (
 				6499D03326CB2973007C9481 /* SWFService.swift */,
-				64D3A9D326D45BAD001CB552 /* SWFServiceError.swift */,
 				6499D03426CB2973007C9481 /* SWFApiService.swift */,
 				6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */,
 			);
@@ -304,18 +304,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				6499D04126CB2973007C9481 /* SWFService.swift in Sources */,
-				6499D03D26CB2973007C9481 /* SWFAPIError.swift in Sources */,
+				6499D03D26CB2973007C9481 /* SWFSessionError.swift in Sources */,
+				6447288527450F1000F6CAB9 /* SWFErrors.swift in Sources */,
 				64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */,
 				6499D03C26CB2973007C9481 /* SWFWpa2Config.swift in Sources */,
 				6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */,
 				6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */,
-				6499D04026CB2973007C9481 /* SecuredStorageManager.swift in Sources */,
-				64D3A9D426D45BAD001CB552 /* SWFServiceError.swift in Sources */,
+				6499D04026CB2973007C9481 /* SWFSecuredStorageManager.swift in Sources */,
 				6499D03826CB2973007C9481 /* SWFSaveIdentifierResponse.swift in Sources */,
 				6499D03626CB2973007C9481 /* SWFWiFiConstants.swift in Sources */,
 				6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */,
 				6499D03E26CB2973007C9481 /* SWFNavigator.swift in Sources */,
-				6499D03F26CB2973007C9481 /* UserDefaultsManager.swift in Sources */,
+				6499D03F26CB2973007C9481 /* SWFUserDefaultsManager.swift in Sources */,
 				6499D03B26CB2973007C9481 /* SWFWiFiConfigs.swift in Sources */,
 				6499D03926CB2973007C9481 /* SWFPasspointConfig.swift in Sources */,
 				6499D03726CB2973007C9481 /* SWFApiManager.swift in Sources */,

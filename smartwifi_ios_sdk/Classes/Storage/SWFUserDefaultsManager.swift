@@ -10,7 +10,7 @@ import Foundation
 /**
  Коллекция ошибок при работе с UserDefaultsManager
  */
-enum UserDefaultsError: Error, LocalizedError {
+enum SWFUserDefaultsError: Error, LocalizedError {
     case encodingError(message: String)
     case decodingError(message: String)
     case notFound
@@ -19,8 +19,8 @@ enum UserDefaultsError: Error, LocalizedError {
 /**
  Коллекция ключей для работы с UserDefaultsManager
  */
-enum UserDefaultsKey {
-    static var allCases: [UserDefaultsKey] {
+enum SWFUserDefaultsKey {
+    static var allCases: [SWFUserDefaultsKey] {
         return [
             .userId,
             .host,
@@ -61,21 +61,21 @@ enum UserDefaultsKey {
 /**
  Протокол, описывающий класс для работы с UserDefaults по предопреленным ключам
  */
-protocol UserDefaultsManagerType {
-    func storeEncodable<T: Encodable>(data: T?, key: UserDefaultsKey) throws
-    func getDecodable<T: Decodable>(by key: UserDefaultsKey) throws -> T
+protocol SWFUserDefaultsManagerType {
+    func storeEncodable<T: Encodable>(data: T?, key: SWFUserDefaultsKey) throws
+    func getDecodable<T: Decodable>(by key: SWFUserDefaultsKey) throws -> T
     
-    func store(string: String, key: UserDefaultsKey)
-    func getString(by key: UserDefaultsKey) -> String?
+    func store(string: String, key: SWFUserDefaultsKey)
+    func getString(by key: SWFUserDefaultsKey) -> String?
     
-    func store(int: Int, key: UserDefaultsKey)
-    func getInt(by key: UserDefaultsKey) -> Int?
+    func store(int: Int, key: SWFUserDefaultsKey)
+    func getInt(by key: SWFUserDefaultsKey) -> Int?
     
-    func store(date: Date, key: UserDefaultsKey)
-    func getDate(key: UserDefaultsKey) -> Date?
+    func store(date: Date, key: SWFUserDefaultsKey)
+    func getDate(key: SWFUserDefaultsKey) -> Date?
     
-    func store(bool: Bool, key: UserDefaultsKey)
-    func getBool(by key: UserDefaultsKey) -> Bool
+    func store(bool: Bool, key: SWFUserDefaultsKey)
+    func getBool(by key: SWFUserDefaultsKey) -> Bool
     
     func removeAll(completion: @escaping () -> ())
 }
@@ -83,14 +83,14 @@ protocol UserDefaultsManagerType {
 /**
  Класс для работы с UserDefaults по предопреленным ключам
  */
-class UserDefaultsManager {
-    static let shared = UserDefaultsManager()
+class SWFUserDefaultsManager {
+    static let shared = SWFUserDefaultsManager()
     
     private let container = UserDefaults.standard
 }
 
 // MARK: - UserDefaultsManagerType
-extension UserDefaultsManager: UserDefaultsManagerType {
+extension SWFUserDefaultsManager: SWFUserDefaultsManagerType {
     // MARK: - Codable
     /**
      Сохраняет Encodable модель в UserDefaults по указонному ключу.
@@ -105,12 +105,12 @@ extension UserDefaultsManager: UserDefaultsManagerType {
      - Important
         Выполняется синхронно
     */
-    func storeEncodable<T: Encodable>(data: T?, key: UserDefaultsKey) throws {
+    func storeEncodable<T: Encodable>(data: T?, key: SWFUserDefaultsKey) throws {
         do {
             let encodedData = try JSONEncoder().encode(data)
             container.setValue(encodedData, forKey: key.value)
         } catch {
-            throw UserDefaultsError.encodingError(message: error.localizedDescription)
+            throw SWFUserDefaultsError.encodingError(message: error.localizedDescription)
         }
     }
     
@@ -129,15 +129,15 @@ extension UserDefaultsManager: UserDefaultsManagerType {
      - Important:
         Выполняется синхронно
     */
-    func getDecodable<T: Decodable>(by key: UserDefaultsKey) throws -> T {
+    func getDecodable<T: Decodable>(by key: SWFUserDefaultsKey) throws -> T {
         guard let data = container.data(forKey: key.value) else {
-            throw UserDefaultsError.notFound
+            throw SWFUserDefaultsError.notFound
         }
         
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw UserDefaultsError.decodingError(message: error.localizedDescription)
+            throw SWFUserDefaultsError.decodingError(message: error.localizedDescription)
         }
     }
     
@@ -149,7 +149,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         - string: Строка для сохранения по ключу
         - key: Ключ, по которому будет сохранена строка
      */
-    func store(string: String, key: UserDefaultsKey) {
+    func store(string: String, key: SWFUserDefaultsKey) {
         container.set(string, forKey: key.value)
     }
     
@@ -162,7 +162,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
      - returns:
         - Строка, хранящаяся по указонному ключу. Возвращает nil, если строка по указанному ключу существует
      */
-    func getString(by key: UserDefaultsKey) -> String? {
+    func getString(by key: SWFUserDefaultsKey) -> String? {
         container.string(forKey: key.value)
     }
     
@@ -173,7 +173,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         - string: Число для сохранения по ключу
         - key: Ключ, по которому будет получено число строка
      */
-    func store(int: Int, key: UserDefaultsKey) {
+    func store(int: Int, key: SWFUserDefaultsKey) {
         container.set(int, forKey: key.value)
     }
     
@@ -186,23 +186,23 @@ extension UserDefaultsManager: UserDefaultsManagerType {
      - returns:
         - Число, хранящееся по указонному ключу. Возвращает nil, если числа по указанному ключу существует
      */
-    func getInt(by key: UserDefaultsKey) -> Int? {
+    func getInt(by key: SWFUserDefaultsKey) -> Int? {
         container.integer(forKey: key.value)
     }
     
-    func store(date: Date, key: UserDefaultsKey) {
+    func store(date: Date, key: SWFUserDefaultsKey) {
         container.set(date, forKey: key.value)
     }
     
-    func getDate(key: UserDefaultsKey) -> Date? {
+    func getDate(key: SWFUserDefaultsKey) -> Date? {
         container.object(forKey: key.value) as? Date
     }
     
-    func store(bool: Bool, key: UserDefaultsKey) {
+    func store(bool: Bool, key: SWFUserDefaultsKey) {
         container.set(bool, forKey: key.value)
     }
     
-    func getBool(by key: UserDefaultsKey) -> Bool {
+    func getBool(by key: SWFUserDefaultsKey) -> Bool {
         container.bool(forKey: key.value)
     }
     
@@ -219,7 +219,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
         
         DispatchQueue.global(qos: .userInitiated).async {
             keys.forEach { key in
-                let _key = UserDefaultsKey.dynamicKey(key)
+                let _key = SWFUserDefaultsKey.dynamicKey(key)
                 self.container.removeObject(forKey: _key.value)
             }
             
@@ -238,7 +238,7 @@ extension UserDefaultsManager: UserDefaultsManagerType {
     func removeAll(completion: @escaping () -> ()) {
         
         DispatchQueue.global(qos: .userInitiated).async {
-            UserDefaultsKey.allCases.forEach { key in
+            SWFUserDefaultsKey.allCases.forEach { key in
                 self.container.removeObject(forKey: key.value)
             }
             

@@ -7,12 +7,6 @@
 
 import Foundation
 
-//enum WiFiConnectionType {
-//    case wap2
-//    case wap2Enterprise
-//    case passpoint
-//}
-
 public protocol SWFService {
 
     var needToSaveWAP2Identifier: Bool { get set }
@@ -115,17 +109,16 @@ public final class SWFServiceImpl: SWFService {
         applyConfigCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void,
         connectionCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void
     ) {
-        
         guard let configKey = configKey else {
-            let error = SWFAPIError.errorWith(text: "Need to configure session")
+            let error = SWFSessionError.sessionIsNotConfigured(domain: #function)
             applyConfigCompletion(nil, .failure(error))
             return
         }
         
-        let storage: UserDefaultsManagerType = UserDefaultsManager.shared
+        let storage: SWFUserDefaultsManagerType = SWFUserDefaultsManager.shared
         
         guard let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey)) else {
-            let error = SWFAPIError.emptyConfigMethod(domain: "getWiFiSettings")
+            let error = SWFSessionError.configsNotSaved(domain: #function)
             applyConfigCompletion(nil, .failure(error))
             return
         }
@@ -182,18 +175,23 @@ public final class SWFServiceImpl: SWFService {
             )
 
         } else {
-            let _error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion")
+            let _error = SWFSessionError.configHasNoPriority(domain: #function)
             connectionCompletion(nil, .failure(_error))
         }
     }
     
     public func stopSession(completion: @escaping (EmptyResult) -> Void) {
-        let storage: UserDefaultsManagerType = UserDefaultsManager.shared
         
-        guard let configKey = configKey,
-                let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey))
-        else {
-            let error = SWFAPIError.emptyConfigMethod(domain: "stopSession")
+        guard let configKey = configKey else {
+            let error = SWFSessionError.sessionIsNotConfigured(domain: #function)
+            completion(.failure(error))
+            return
+        }
+        
+        let storage: SWFUserDefaultsManagerType = SWFUserDefaultsManager.shared
+        
+        guard let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey)) else {
+            let error = SWFSessionError.configsNotSaved(domain: #function)
             completion(.failure(error))
             return
         }
@@ -235,12 +233,9 @@ public final class SWFServiceImpl: SWFService {
             configs.wpa2EnterpriseConfig == nil &&
             configs.wpa2Config == nil
         {
-            let error = SWFAPIError.emptyConfigMethod(domain: "stopSession")
+            let error = SWFSessionError.emptyConfigs(domain: #function)
             completion(.failure(error))
         }
-//        storage.removeAll { [weak self] in
-//            self?.wifiConfigurationService.removeConnections()
-//        }
     }
 
 //    public func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void) {
@@ -456,7 +451,7 @@ private extension SWFServiceImpl {
                     
                 } else {
                     guard waitingConnectionTryNumber < LocalConstants.saveIdentifierWaitingConnectionTryCount else {
-                        let error = SWFAPIError.errorWith(text: identifierResponse.details ?? "saveIdentifier error")
+                        let error = SWFSessionError.saveIdentifier(domain: #function, description: identifierResponse.details)
                         completion(.failure(error))
                         return
                     }
@@ -475,10 +470,9 @@ private extension SWFServiceImpl {
                     }
                 }
                 
-            case .failure(_):
+            case .failure(let error):
                 
                 guard failureTryNumber < LocalConstants.saveIdentifierFailureTryCount else {
-                    let error = SWFAPIError.emptyData(domain: "saveIdentifier")
                     completion(.failure(error))
                     return
                 }
@@ -534,7 +528,7 @@ private extension SWFServiceImpl {
             case .success(let configs):
                 
                 guard let self = self else {
-                    let error = SWFAPIError.resourceDoNotExist(domain: "getWiFiSettings")
+                    let error = SWFSessionError.objectDoNotExist(domain: #function)
                     completion(.failure(error))
                     return
                 }
@@ -545,12 +539,12 @@ private extension SWFServiceImpl {
                     if configs.passpointConfig != nil || configs.wpa2EnterpriseConfig != nil || configs.wpa2Config != nil {
                         completion(.success)
                     } else {
-                        let error = SWFAPIError.emptyData(domain: "getWiFiSettings")
+                        let error = SWFSessionError.emptyConfigs(domain: #function)
                         completion(.failure(error))
                     }
                     
                 } catch {
-                    let error = SWFAPIError.savingData(domain: "getWiFiSettings")
+                    let error = SWFSessionError.savingData(domain: #function)
                     completion(.failure(error))
                 }
                 
@@ -561,7 +555,7 @@ private extension SWFServiceImpl {
     }
     
     func saveConfigs(_ config: SWFWiFiConfigs, key: String) throws {
-        try UserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
+        try SWFUserDefaultsManager.shared.storeEncodable(data: config, key: .dynamicKey(key))
     }
     
     func processPasspointConfig(
@@ -614,7 +608,7 @@ private extension SWFServiceImpl {
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: { [weak self] (result) in
                 guard let self = self else {
-                    let error = SWFAPIError.resourceDoNotExist(domain: "connectToWiFiWap2")
+                    let error = SWFSessionError.objectDoNotExist(domain: #function)
                     connectionCompletion(.failure(error))
                     return
                 }

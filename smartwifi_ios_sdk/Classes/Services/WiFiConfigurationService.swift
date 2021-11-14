@@ -160,7 +160,8 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
             
             if let error = error {
-                return completion(.failure(error))
+                let _error = SWFSessionError.applyConfigError(error)
+                return completion(.failure(_error))
             } else {
                 return completion(.success)
             }
@@ -197,7 +198,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
             NEHotspotNetwork.fetchCurrent { [weak self] (network) in
                 
                 guard let self = self, tryNumber < self.tryConnectCount else {
-                    let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios > 14.0")
+                    let error = SWFSessionError.unableToJoinNetwork(domain: #function)
                     return completion(.failure(error))
                 }
                 
@@ -207,7 +208,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         } else {
             
             guard tryNumber < tryConnectCount else {
-                let error = SWFAPIError.unableToJoinNetwork(domain: "wifi connetion ios < 14.0")
+                let error = SWFSessionError.unableToJoinNetwork(domain: #function)
                 return completion(.failure(error))
             }
 
