@@ -281,7 +281,6 @@ extension SWFApiServiceImpl {
             
             var request = URLRequest(url: requestUrl)
             request.httpMethod = method
-//            request.allHTTPHeaderFields = headers
             
             return request
         }

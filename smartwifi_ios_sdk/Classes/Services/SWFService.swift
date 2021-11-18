@@ -28,10 +28,6 @@ public protocol SWFService {
     )
     func stopSession(completion: @escaping (EmptyResult) -> Void)
     
-//    func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void)
-//    func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void)
-//    func connectWiFiWAP2(completion: @escaping (EmptyResult) -> Void)
-    
 }
 
 private extension SWFServiceImpl {
@@ -237,91 +233,6 @@ public final class SWFServiceImpl: SWFService {
             completion(.failure(error))
         }
     }
-
-//    public func connectWiFiPasspoint(completion: @escaping (EmptyResult) -> Void) {
-//
-//        let domainName: String = "vm-cbcc.smartregion.local"
-//        let username: String = "79267000000"
-//        let password: String = "2GhaLdT8Rk"
-//
-//        let trustedServerName: String = "hs20.smartregion.moscow"
-//
-//        let passpointMethod = SWFPasspointMethod(
-//            username: username,
-//            password: password,
-//            fqdn: trustedServerName,
-//            eapType: "21",
-//            nonEapInnerMethod: "MS-CHAP-V2",
-//            friendlyName: "SmartWiFi HS20 Operator",
-//            realm: domainName,
-//            caCertificate: ""
-//        )
-//
-//        self.connectToWiFiPasspoint(method: passpointMethod) { (result) in
-//
-//            switch result {
-//            case .success:
-//                completion(.success)
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-//
-//    public func connectWiFiWAP2Enterprise(completion: @escaping (EmptyResult) -> Void) {
-//
-//        let ssid: String = "HS20-AP"
-//        let username: String = "79267000000"
-//        let password: String = "2GhaLdT8Rk"
-//
-//        let wpa2EnterpriseMethod = SWFWpa2EnterpriseMethod(
-//            ssid: ssid,
-//            password: password,
-//            identity: username,
-//            caCertificate: ""
-//        )
-//
-//        self.connectToWiFiWap2Enterprise(method: wpa2EnterpriseMethod) { (result) in
-//
-//            switch result {
-//            case .success:
-//                completion(.success)
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-//
-//    public func connectWiFiWAP2(completion: @escaping (EmptyResult) -> Void) {
-//
-//        let ssid: String = "Smart UMICO"
-//        let password: String = "19130717"
-//        let ccUrl: String = "https://wifi-reg.smartcityinterface.com/user_id=pntr54355430-dfbdb43-43t34mmljbdf&project_id=1&channel_id=1"
-//
-//        let wpa2Method = SWFWpa2Method(
-//            ssid: ssid,
-//            password: password,
-//            ccUrl: ccUrl
-//        )
-//
-//        self.connectToWiFiWap2(method: wpa2Method) { [weak self] (result) in
-//            guard let self = self else {
-//                return
-//            }
-//
-//            switch result {
-//            case .success:
-//                if self.needToSaveWAP2Identifier {
-//                    self.saveIdentifier(with: wpa2Method.ccUrl, completion: completion)
-//                } else {
-//                    completion(.success)
-//                }
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//
-//    }
 
 }
 

@@ -161,7 +161,7 @@ class SWFSessionError {
         return self.error(
             domain: (error as NSError).domain,
             code: (ErrorCode.applyConfigError * 10) + (error as NSError).code,
-            description: error.localizedDescription //?? ErrorDescription.applyConfigError
+            description: error.localizedDescription
         )
     }
 

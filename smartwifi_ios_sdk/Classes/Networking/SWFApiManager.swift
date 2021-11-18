@@ -39,7 +39,8 @@ final class SWFApiManager {
             } else if let data2 = data2 {
                 completion(.success(data2))
             } else {
-//                completion(.failure(nil))
+                let error = SWFSessionError.errorWith(text: "Unexpected urlSession error")
+                completion(.failure(error))
             }
         }
         task.resume()
@@ -53,7 +54,8 @@ final class SWFApiManager {
             } else if let data = data {
                 completion(.success(data))
             } else {
-//                completion(.failure(nil))
+                let error = SWFSessionError.errorWith(text: "Unexpected urlSession error")
+                completion(.failure(error))
             }
         }
         task.resume()
