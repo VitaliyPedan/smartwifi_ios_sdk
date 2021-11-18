@@ -12,7 +12,7 @@ protocol SWFApiService {
     func register(
         userId: String,
         phoneNumber: String,
-        _ completion: @escaping () -> Void
+        _ completion: @escaping VoidCompletion
     )
     
     func register(
@@ -160,7 +160,7 @@ extension SWFApiServiceImpl {
 
     }
     
-    func register(userId: String, phoneNumber: String, _ completion: @escaping () -> Void) {
+    func register(userId: String, phoneNumber: String, _ completion: @escaping VoidCompletion) {
         
         let request = SmartWiFiRegistrationRequestOld(
             userId: userId,
@@ -222,14 +222,13 @@ extension SWFApiServiceImpl {
                 case .success(let data):
                     
                     guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
-                        completion(.failure(SWFSessionError.mappingFailure(domain: #function, data: data)))
+                        completion(.failure(.mappingModelFailure(data: data)))
                         return
                     }
                     completion(.success(saveIdentifierResponse))
                     
                 case .failure(let error):
-                    let _error = SWFSessionError.saveIdentifierRequestFailure(domain: "saveIdentifier", description: error.localizedDescription)
-                    completion(.failure(_error))
+                    completion(.failure(.saveIdentifierRequestFailure(serverError: error)))
                 }
             }
         }
@@ -308,14 +307,13 @@ extension SWFApiServiceImpl {
                 case .success(let data):
                     
                     guard let saveIdentifierResponse = try? JSONDecoder().decode(SWFSaveIdentifierResponse.self, from: data) else {
-                        completion(.failure(SWFSessionError.mappingFailure(domain: #function, data: data)))
+                        completion(.failure(.mappingModelFailure(data: data)))
                         return
                     }
                     completion(.success(saveIdentifierResponse))
                     
                 case .failure(let error):
-                    let _error = SWFSessionError.fullWifiAccessRequestFailure(domain: "fullWifiAccess", description: error.localizedDescription)
-                    completion(.failure(_error))
+                    completion(.failure(.fullWifiAccessRequestFailure(serverError: error)))
                 }
             }
         }
@@ -411,16 +409,15 @@ extension SWFApiServiceImpl {
                 if let configs = try? JSONDecoder().decode(SWFWiFiConfigs.self, from: data) {
                     completion(.success(configs))
                     
-                } else if let configError = try? JSONDecoder().decode(ConfigError.self, from: data) {
-                    completion(.failure(SWFSessionError.configError(domain: #function, configError: configError)))
+//                } else if let configError = try? JSONDecoder().decode(ConfigError.self, from: data) {
+//                    completion(.failure(SWFSessionError.configError(domain: #function, configError: configError)))
                     
                 } else {
-                    completion(.failure(SWFSessionError.mappingFailure(domain: #function, data: data)))
+                    completion(.failure(.mappingModelFailure(data: data)))
                 }
                 
             case .failure(let error):
-                let _error = SWFSessionError.getWiFiSettingsRequestFailure(domain: "getWiFiSettings", description: error.localizedDescription)
-                completion(.failure(_error))
+                completion(.failure(.getWiFiSettingsRequestFailure(serverError: error)))
             }
         }
     }

@@ -8,15 +8,6 @@
 import NetworkExtension
 import SystemConfiguration.CaptiveNetwork
 
-enum WiFiDisconnectResult {
-    case success
-    case failure(WiFiDisconnectError)
-}
-
-enum WiFiDisconnectError: Error {
-    case notConnected
-}
-
 protocol WiFiConfigurationService {
     
     typealias SSID = String
@@ -24,28 +15,28 @@ protocol WiFiConfigurationService {
     func connect(
         ssid: SSID,
         password: String,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
+        applyResult: @escaping EmptyCompletion,
+        connectionResult: @escaping EmptyCompletion
     )
     
     func connect(
         ssid: SSID,
         hotspotSettings: HotspotSettings,
         teamId: String,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
+        applyResult: @escaping EmptyCompletion,
+        connectionResult: @escaping EmptyCompletion
     )
     
     func connect(
         domainName: String,
         hotspotSettings: HotspotSettings,
         teamId: String,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
+        applyResult: @escaping EmptyCompletion,
+        connectionResult: @escaping EmptyCompletion
     )
     
-    func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void)
-    func disconnect(domainName: String, completion: @escaping (WiFiDisconnectResult) -> Void)
+    func disconnect(ssid: SSID, completion: @escaping EmptyCompletion)
+    func disconnect(domainName: String, completion: @escaping EmptyCompletion)
     func removeConnections()
     
     func checkForAlreadyAssociated(config: SWFPasspointConfig) -> Bool
@@ -65,8 +56,8 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     func connect(
         ssid: SSID,
         password: String,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
+        applyResult: @escaping EmptyCompletion,
+        connectionResult: @escaping EmptyCompletion
     ) {
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
         applyAndConnect(hotspotConfig, applyCompletion: applyResult, connectionCompletion: connectionResult)
@@ -76,8 +67,8 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         ssid: SSID,
         hotspotSettings: HotspotSettings,
         teamId: String,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
+        applyResult: @escaping EmptyCompletion,
+        connectionResult: @escaping EmptyCompletion
     ) {
         let eapSettings = hotspotSettings.hotspotEAPSettings(teamId: teamId)
         let hotspotConfig = NEHotspotConfiguration(ssid: ssid, eapSettings: eapSettings)
@@ -88,8 +79,8 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         domainName: String,
         hotspotSettings: HotspotSettings,
         teamId: String,
-        applyResult: @escaping (EmptyResult) -> Void,
-        connectionResult: @escaping (EmptyResult) -> Void
+        applyResult: @escaping EmptyCompletion,
+        connectionResult: @escaping EmptyCompletion
     ) {
         let hs20Settings = NEHotspotHS20Settings(domainName: domainName, roamingEnabled: false)
         hs20Settings.naiRealmNames = [domainName]
@@ -99,17 +90,21 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         applyAndConnect(hotspotConfig, applyCompletion: applyResult, connectionCompletion: connectionResult)
     }
     
-    func disconnect(ssid: SSID, completion: @escaping (WiFiDisconnectResult) -> Void) {
+    func disconnect(ssid: SSID, completion: @escaping EmptyCompletion) {
         NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (ssids) in
-            guard ssids.contains(ssid) else { return completion(.failure(.notConnected)) }
+            guard ssids.contains(ssid) else {
+                return completion(.failure(SWFError.notConnectedPreviously))
+            }
             NEHotspotConfigurationManager.shared.removeConfiguration(forSSID: ssid)
             completion(.success)
         }
     }
     
-    func disconnect(domainName: String, completion: @escaping (WiFiDisconnectResult) -> Void) {
+    func disconnect(domainName: String, completion: @escaping EmptyCompletion) {
         NEHotspotConfigurationManager.shared.getConfiguredSSIDs { (domainNames) in
-            guard domainNames.contains(domainName) else { return completion(.failure(.notConnected)) }
+            guard domainNames.contains(domainName) else {
+                return completion(.failure(SWFError.notConnectedPreviously))
+            }
             NEHotspotConfigurationManager.shared.removeConfiguration(forHS20DomainName: domainName)
             completion(.success)
         }
@@ -139,8 +134,8 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
 
     private func applyAndConnect(
         _ hotspotConfig: NEHotspotConfiguration,
-        applyCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
         apply(hotspotConfig, completion: { [weak self] (result) in
             applyCompletion(result)
@@ -155,13 +150,12 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
 
     private func apply(
         _ hotspotConfig: NEHotspotConfiguration,
-        completion: @escaping (EmptyResult) -> Void
+        completion: @escaping EmptyCompletion
     ) {
         NEHotspotConfigurationManager.shared.apply(hotspotConfig) { (error) in
             
             if let error = error {
-                let _error = SWFSessionError.applyConfigError(error)
-                return completion(.failure(_error))
+                return completion(.failure(SWFError.configErrorFrom(hotspotConfigurationError: error)))
             } else {
                 return completion(.success)
             }
@@ -171,7 +165,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
     private func checkConnection(
         _ hotspotConfig: NEHotspotConfiguration,
         tryNumber: Int,
-        completion: @escaping (EmptyResult) -> Void
+        completion: @escaping EmptyCompletion
     ) {
         
         func checkNetworkName(_ ssid: String?) {
@@ -198,8 +192,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
             NEHotspotNetwork.fetchCurrent { [weak self] (network) in
                 
                 guard let self = self, tryNumber < self.tryConnectCount else {
-                    let error = SWFSessionError.unableToJoinNetwork(domain: #function)
-                    return completion(.failure(error))
+                    return completion(.failure(.unableToJoinNetwork))
                 }
                 
                 checkNetworkName(network?.ssid)
@@ -208,8 +201,7 @@ final class WiFiConfigurationServiceImpl: WiFiConfigurationService {
         } else {
             
             guard tryNumber < tryConnectCount else {
-                let error = SWFSessionError.unableToJoinNetwork(domain: #function)
-                return completion(.failure(error))
+                return completion(.failure(.unableToJoinNetwork))
             }
 
             let networkSsid = currentWifiInfo()

@@ -1,0 +1,38 @@
+/* 
+  SWFLocalizable.strings
+  smartwifi_ios_sdk
+
+  Created by Vitaliy Pedan on 19.11.2021.
+  
+*/
+
+// SDK Errors Localization
+"mapping_object_data_error" = "Ошибка декодирования модели с data";
+"saving_data_error" = "Ошибка кодирования модели в data";
+"session_object_is_corrupted" = "Объект сессии поврежден";
+"wifi_module_switch_off" = "У вас выключен модуль Wi-Fi, откройте настройки и включите его";
+"session_is_not_configured" = "Сессия не настроена. Необходимо настроить сессию перед началом использования";
+"no_configs_in_cache_memory" = "Нет сохраненных конфигураций";
+"empty_response_configs_data" = "Полученный список конфигураций пустой";
+"priority_is_incorrect" = "Приоритет конфигурации отсутствует или неверный";
+"can_not_find_wifi_network" = "Устройство не подключилось к данной Wi-Fi сети";
+"unable_to_join_the_network" = "Wi-Fi сеть не обнаружена по близости";
+"not_connected_previously" = "Не был подключен ранее";
+"unknown_error" = "Произошла неизвестная ошибка";
+
+// NEHotspotConfigurationError
+"configuration_is_invalid" = "Конфигурация Wi-Fi недействительна";
+"ssid_string_is_invalid" = "Данная строка SSID недействительна";
+"wpa_wpa2_personal_passphrase_is_invalid" = "Персональный пароль WPA/WPA2 недействительный";
+"wep_passphrase_is_invalid" = "Данная WEP пароль недействительный";
+"invalid_eap_settings" = "Неверные EAP настройки";
+"invalid_hotspot_2_0_settings" = "Неверные Hotspot 2.0 настройки.";
+"hotspot_2_0_domain_name_is_invalid" = "Данное Hotspot 2.0 доменное имя недействительно";
+"failed_to_get_user_approval" = "Не удалось получить одобрение пользователя на добавление новой конфигурации";
+"internal_error" = "Произошла внутренняя ошибка";
+"previous_request_is_pending" = "Предыдущий запрос вызывающего приложения находится на рассмотрении";
+"application_cannot_modify_system_configuration" = "Вызывающее приложение не может изменять конфигурацию системы (MDM / оператор связи)";
+"joinOnce_option_is_not_support" = "Параметр JoinOnce не поддерживается EAP конфигурацией";
+"already_associated" = "Wi-Fi уже подключен";
+"application_is_not_in_foreground" = "Приложение не активное";
+"ssid_prefix_string_is_invalid" = "Данная строка префикса SSID недействительна";

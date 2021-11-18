@@ -14,7 +14,7 @@ public enum Result3<T,D,F> {
 
 public enum EmptyResult {
     case success
-    case failure(Error)
+    case failure(SWFError)
 }
 
 public func == (lhs: EmptyResult, rhs: EmptyResult) -> Bool {
@@ -37,7 +37,7 @@ public func mainThreadResultCompletion<T>(_ completion: @escaping ResultCompleti
 
 public typealias ConfigsResultCompletion<T,D,F> = (Result3<T,D,F>) -> Void
 
-public typealias ResultCompletion<T> = (Result<T,Error>) -> Void
+public typealias ResultCompletion<T> = (Result<T,SWFError>) -> Void
 public typealias VoidCompletion  = () -> Void
 public typealias EmptyCompletion = (EmptyResult) -> Void
 public typealias IntHandler = (Int) -> Void

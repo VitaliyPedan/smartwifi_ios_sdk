@@ -1,0 +1,38 @@
+/* 
+  SWFLocalizable.strings
+  smartwifi_ios_sdk
+
+  Created by Vitaliy Pedan on 19.11.2021.
+  
+*/
+
+// SDK Errors Localization
+"mapping_object_data_error" = "Mapping object data error";
+"saving_data_error" = "Saving data procces error. An error occurred while caching the configs";
+"session_object_is_corrupted" = "Session object is corrupted";
+"wifi_module_switch_off" = "You should switch on wifi module before connecting";
+"session_is_not_configured" = "Session is not configured. Please configure session before start";
+"no_configs_in_cache_memory" = "No configs in cache memory";
+"empty_response_configs_data" = "Empty response configs data";
+"priority_is_incorrect" = "Config has no priority or priority is incorrect";
+"can_not_find_wifi_network" = "The device did not connect to this Wi-Fi network";
+"unable_to_join_the_network" = "Unable to join the network";
+"not_connected_previously" = "Not connected previously";
+"unknown_error" = "An unknown error occurred";
+
+// NEHotspotConfigurationError
+"configuration_is_invalid" = "The Wi-Fi configuration is invalid";
+"ssid_string_is_invalid" = "The given SSID string is invalid";
+"wpa_wpa2_personal_passphrase_is_invalid" = "The given WPA/WPA2 Personal passphrase is invalid";
+"wep_passphrase_is_invalid" = "The given WEP passphrase is invalid";
+"invalid_eap_settings" = "Invalid EAP Settings";
+"invalid_hotspot_2_0_settings" = "Invalid Hotspot 2.0 Settings";
+"hotspot_2_0_domain_name_is_invalid" = "The given Hotspot 2.0 domain name is invalid";
+"failed_to_get_user_approval" = "Failed to get the user's approval to add a new configuration";
+"internal_error" = "An internal error was encountered";
+"previous_request_is_pending" = "Previous request by the calling application is pending";
+"application_cannot_modify_system_configuration" = "The calling application cannot modify the System(MDM/Carrier) configuration";
+"joinOnce_option_is_not_support" = "JoinOnce option is not support for EAP configuration";
+"already_associated" = "Wi-Fi is already associated";
+"application_is_not_in_foreground" = "The application is not in the foreground";
+"ssid_prefix_string_is_invalid" = "The given SSID Prefix string is invalid";

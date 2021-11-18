@@ -17,7 +17,7 @@ public protocol SWFService {
         channelId: String,
         projectId: String,
         apiDomain: String,
-        completion: @escaping (EmptyResult) -> Void
+        completion: @escaping EmptyCompletion
     )
     
     func startSession(
@@ -26,7 +26,7 @@ public protocol SWFService {
         applyConfigCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void,
         connectionCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void
     )
-    func stopSession(completion: @escaping (EmptyResult) -> Void)
+    func stopSession(completion: @escaping EmptyCompletion)
     
 }
 
@@ -85,7 +85,7 @@ public final class SWFServiceImpl: SWFService {
         channelId: String,
         projectId: String,
         apiDomain: String,
-        completion: @escaping (EmptyResult) -> Void
+        completion: @escaping EmptyCompletion
     ) {
         configKey = apiDomain + projectId + channelId
         
@@ -106,16 +106,14 @@ public final class SWFServiceImpl: SWFService {
         connectionCompletion: @escaping (SWFConfigType?, EmptyResult) -> Void
     ) {
         guard let configKey = configKey else {
-            let error = SWFSessionError.sessionIsNotConfigured(domain: #function)
-            applyConfigCompletion(nil, .failure(error))
+            applyConfigCompletion(nil, .failure(.sessionIsNotConfigured))
             return
         }
         
         let storage: SWFUserDefaultsManagerType = SWFUserDefaultsManager.shared
         
         guard let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey)) else {
-            let error = SWFSessionError.configsNotSaved(domain: #function)
-            applyConfigCompletion(nil, .failure(error))
+            applyConfigCompletion(nil, .failure(.configsNotSaved))
             return
         }
         
@@ -171,24 +169,21 @@ public final class SWFServiceImpl: SWFService {
             )
 
         } else {
-            let _error = SWFSessionError.configHasNoPriority(domain: #function)
-            connectionCompletion(nil, .failure(_error))
+            connectionCompletion(nil, .failure(.configHasNoPriority))
         }
     }
     
-    public func stopSession(completion: @escaping (EmptyResult) -> Void) {
+    public func stopSession(completion: @escaping EmptyCompletion) {
         
         guard let configKey = configKey else {
-            let error = SWFSessionError.sessionIsNotConfigured(domain: #function)
-            completion(.failure(error))
+            completion(.failure(.sessionIsNotConfigured))
             return
         }
         
         let storage: SWFUserDefaultsManagerType = SWFUserDefaultsManager.shared
         
         guard let configs: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey)) else {
-            let error = SWFSessionError.configsNotSaved(domain: #function)
-            completion(.failure(error))
+            completion(.failure(.configsNotSaved))
             return
         }
 
@@ -229,8 +224,7 @@ public final class SWFServiceImpl: SWFService {
             configs.wpa2EnterpriseConfig == nil &&
             configs.wpa2Config == nil
         {
-            let error = SWFSessionError.emptyConfigs(domain: #function)
-            completion(.failure(error))
+            completion(.failure(.emptyConfigs))
         }
     }
 
@@ -241,8 +235,8 @@ private extension SWFServiceImpl {
     func connectToWiFiPasspoint(
         method: SWFPasspointMethod,
         teamId: String,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
 
         let hotspotSettings = HotspotSettings(
@@ -266,8 +260,8 @@ private extension SWFServiceImpl {
     func connectToWiFiWap2Enterprise(
         method: SWFWpa2EnterpriseMethod,
         teamId: String,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
 
         let hotspotSettings = HotspotSettings(
@@ -290,8 +284,8 @@ private extension SWFServiceImpl {
 
     func connectToWiFiWap2(
         method: SWFWpa2Method,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
 
         wifiConfigurationService.connect(
@@ -349,7 +343,7 @@ private extension SWFServiceImpl {
         with url: String,
         waitingConnectionTryNumber: Int = 0,
         failureTryNumber: Int = 0,
-        completion: @escaping (EmptyResult) -> Void
+        completion: @escaping EmptyCompletion
     ) {
         
         smartWifiApiService.saveIdentifier(with: url) { result in
@@ -362,8 +356,7 @@ private extension SWFServiceImpl {
                     
                 } else {
                     guard waitingConnectionTryNumber < LocalConstants.saveIdentifierWaitingConnectionTryCount else {
-                        let error = SWFSessionError.saveIdentifier(domain: #function, description: identifierResponse.details)
-                        completion(.failure(error))
+                        completion(.failure(.saveIdentifierFailure(responceDescription: identifierResponse.details)))
                         return
                     }
                     
@@ -406,7 +399,7 @@ private extension SWFServiceImpl {
     }
     
     //    3) Запрос на полный доступ к интернету:
-    func fullWifiAccess(completion: @escaping (EmptyResult) -> Void) {
+    func fullWifiAccess(completion: @escaping EmptyCompletion) {
 
         smartWifiApiService.fullWifiAccess(
             time: 3600,
@@ -424,7 +417,7 @@ private extension SWFServiceImpl {
         channelId: String,
         projectId: String,
         apiDomain: String,
-        completion: @escaping (EmptyResult) -> Void
+        completion: @escaping EmptyCompletion
     ) {
         
         smartWifiApiService.getWiFiSettings(
@@ -439,8 +432,7 @@ private extension SWFServiceImpl {
             case .success(let configs):
                 
                 guard let self = self else {
-                    let error = SWFSessionError.objectDoNotExist(domain: #function)
-                    completion(.failure(error))
+                    completion(.failure(.objectDoNotExist))
                     return
                 }
                 
@@ -450,13 +442,11 @@ private extension SWFServiceImpl {
                     if configs.passpointConfig != nil || configs.wpa2EnterpriseConfig != nil || configs.wpa2Config != nil {
                         completion(.success)
                     } else {
-                        let error = SWFSessionError.emptyConfigs(domain: #function)
-                        completion(.failure(error))
+                        completion(.failure(.emptyConfigs))
                     }
                     
                 } catch {
-                    let error = SWFSessionError.savingData(domain: #function)
-                    completion(.failure(error))
+                    completion(.failure(.savingDataFailure))
                 }
                 
             case .failure(let error):
@@ -472,11 +462,12 @@ private extension SWFServiceImpl {
     func processPasspointConfig(
         _ config: SWFPasspointConfig,
         teamId: String,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
         guard !wifiConfigurationService.checkForAlreadyAssociated(config: config) else {
-            return connectionCompletion(.success)
+            connectionCompletion(.success)
+            return
         }
 
         connectToWiFiPasspoint(
@@ -490,11 +481,12 @@ private extension SWFServiceImpl {
     func processWAP2EnterpriseConfig(
         _ config: SWFWpa2EnterpriseConfig,
         teamId: String,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
         guard !wifiConfigurationService.checkForAlreadyAssociated(config: config) else {
-            return connectionCompletion(.success)
+            connectionCompletion(.success)
+            return
         }
 
         connectToWiFiWap2Enterprise(
@@ -507,11 +499,12 @@ private extension SWFServiceImpl {
 
     func processWAP2Config(
         _ config: SWFWpa2Config,
-        applyConfigCompletion: @escaping (EmptyResult) -> Void,
-        connectionCompletion: @escaping (EmptyResult) -> Void
+        applyConfigCompletion: @escaping EmptyCompletion,
+        connectionCompletion: @escaping EmptyCompletion
     ) {
         guard !wifiConfigurationService.checkForAlreadyAssociated(config: config) else {
-            return connectionCompletion(.success)
+            connectionCompletion(.success)
+            return
         }
         
         connectToWiFiWap2(
@@ -519,8 +512,7 @@ private extension SWFServiceImpl {
             applyConfigCompletion: applyConfigCompletion,
             connectionCompletion: { [weak self] (result) in
                 guard let self = self else {
-                    let error = SWFSessionError.objectDoNotExist(domain: #function)
-                    connectionCompletion(.failure(error))
+                    connectionCompletion(.failure(.objectDoNotExist))
                     return
                 }
 

@@ -108,9 +108,10 @@ Pod::Spec.new do |spec|
   #  non-essential files like tests, examples and documentation.
   #
 
-  # spec.resource  = "icon.png"
-  # spec.resources = "Resources/*.png"
-
+  # spec.resource  = "smartwifi_ios_sdk/Classes/*.{png,jpeg,jpg}"
+  # spec.resources = "smartwifi_ios_sdk/Classes/Localizations/**/*.{strings}"
+    spec.resource_bundle = { "smartwifi_ios_sdk" => ["smartwifi_ios_sdk/Classes/Localizations/*.lproj/*.strings"] }
+    
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 

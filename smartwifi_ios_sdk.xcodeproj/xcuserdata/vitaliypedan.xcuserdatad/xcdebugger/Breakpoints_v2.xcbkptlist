@@ -14,8 +14,8 @@
             filePath = "smartwifi_ios_sdk/Classes/Services/SWFApiService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "310"
-            endingLineNumber = "310"
+            startingLineNumber = "309"
+            endingLineNumber = "309"
             landmarkName = "fullWifiAccess(time:comment:pass:downBw:upBw:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,24 +30,8 @@
             filePath = "smartwifi_ios_sdk/Classes/Services/SWFApiService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
-            landmarkName = "fullWifiAccess(time:comment:pass:downBw:upBw:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1198D4AC-0376-4F91-98E2-89A37D53E0FE"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "smartwifi_ios_sdk/Classes/Services/SWFApiService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
             landmarkName = "fullWifiAccess(time:comment:pass:downBw:upBw:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +46,8 @@
             filePath = "smartwifi_ios_sdk/Classes/Services/SWFService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "497"
-            endingLineNumber = "497"
+            startingLineNumber = "489"
+            endingLineNumber = "489"
             landmarkName = "processWAP2EnterpriseConfig(_:teamId:applyConfigCompletion:connectionCompletion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +62,8 @@
             filePath = "smartwifi_ios_sdk/Classes/Services/SWFService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "514"
-            endingLineNumber = "514"
+            startingLineNumber = "507"
+            endingLineNumber = "507"
             landmarkName = "processWAP2Config(_:applyConfigCompletion:connectionCompletion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +78,8 @@
             filePath = "smartwifi_ios_sdk/Classes/SWFSessionError.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
             landmarkName = "applyConfigError(_:)"
             landmarkType = "7">
          </BreakpointContent>

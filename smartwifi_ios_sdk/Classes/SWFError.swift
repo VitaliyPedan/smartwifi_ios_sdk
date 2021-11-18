@@ -1,0 +1,232 @@
+//
+//  SWFError.swift
+//  smartwifi-ios-sdk
+//
+//  Created by Vitaliy Pedan on 12.08.2021.
+//
+
+import NetworkExtension
+
+/**
+ Описывает возможные ошибки при работе с SWFWiFiSession
+ */
+
+public enum SWFError: LocalizedError {
+    
+    /// - Данная ошибка означает – ошибку создания модели данных с data полученной от сервера.
+    /// - Возникает при попытке декодировать модель с Data.
+    case mappingModelFailure(data: Data?)
+    
+    /// - Данная ошибка означает - что произошла ошибка при кэшировании конфигураций.
+    /// - Возникает при попытке кодировать модель(конфигурацию) в data, для дальнейшего сохранения по ключу.
+    case savingDataFailure
+    
+    /// - Данная ошибка означает, что объект сессии поврежден или выгружен из памяти.
+    /// - Может возникнуть при запросе настроек(конфигураций), а также при добавлении/применении конфигурации.
+    case objectDoNotExist
+    
+    /// - Данная ошибка означает, что вы должны включить модуль Wi-Fi перед подключением.
+    /// - Она встречается в тех случаях, когда при подключении у пользователя отключен Wi-Fi модуль.
+    case wifiModuleSwitchOff
+    
+    /// - Данная ошибка означает, что сеанс не настроен. Необходимо настроить сеанс перед началом использования.
+    /// - Возникает при попытке запустить/остановить сессию, без предварительной настройки.
+    case sessionIsNotConfigured
+    
+    /// - Данная ошибка означает, что нет кэшированных конфигураций для подключения.
+    /// - Она встречается в тех случаях, когда запустили метод подключения/отключения, но конфигурации не были успешно сохранены.
+    case configsNotSaved
+    
+    /// - Данная ошибка означает, что список конфигураций для подключения пуст.
+    /// - Она встречается в тех случаях, когда с сервера приходят пустые конфигурации. В этом случае необходимо сообщить о проблеме.
+    case emptyConfigs
+    
+    /// - Данная ошибка означает, что полученные конфигурации не имеют приоритета или приоритет не верен
+    /// - Она встречается в тех случаях, когда от сервера неправильно приходят параметры для подключения. Возникает при попытке применить конфигурацию.
+    case configHasNoPriority
+    
+    /// - Данная ошибка означает, что не удается найти сеть Wi-Fi при подключении по wpa2 методу.
+    /// - Она встречается в тех случаях, когда пользователь находится вне зоны действия Wi-Fi или проблемы с роутером. В этом случае будет системная ошибка и SDK приступит к подключению по следующему по приоритету методу подключения.
+    case saveIdentifierFailure(responceDescription: String?)
+    
+    /// - Данная ошибка означает, что не удается найти сеть Wi-Fi.
+    /// - Возникает в случае успешного применения конфигурации, но невозможности подключится к сети. В этом случае будет системная ошибка и SDK приступит к подключению по следующему по приоритету методу подключения.
+    /// - Она встречается в тех случаях, когда пользователь находится вне зоны действия Wi-Fi.
+    case unableToJoinNetwork
+
+    /// - Данная ошибка означает, ошибку с сервера при запросе saveIdentifier
+    case saveIdentifierRequestFailure(serverError: Error)
+    
+    /// - Данная ошибка означает, ошибку с сервера при запросе fullWifiAccess
+    case fullWifiAccessRequestFailure(serverError: Error)
+    
+    /// - Данная ошибка означает, ошибку с сервера при запросе WiFiSettings
+    case getWiFiSettingsRequestFailure(serverError: Error)
+
+    case notConnectedPreviously
+    
+    /// - Данные ошибки означают,  ошибки при применении конфигурации.
+    case invalid
+    case invalidSSID
+    case invalidWPAPassphrase
+    case invalidWEPPassphrase
+    case invalidEAPSettings
+    case invalidHS20Settings
+    case invalidHS20DomainName
+    case userDenied
+    case `internal`
+    case pending
+    case systemConfiguration
+    case joinOnceNotSupported
+    case alreadyAssociated
+    case applicationIsNotInForeground
+    case invalidSSIDPrefix
+
+    /// - Неизвестная  ошибка
+    case unknownError
+    
+    
+    public var errorDescription: String? {
+        switch self {
+        case .mappingModelFailure: return "mapping_object_data_error".localized
+        case .savingDataFailure: return "saving_data_error".localized
+        case .objectDoNotExist: return "session_object_is_corrupted".localized
+        case .wifiModuleSwitchOff: return "wifi_module_switch_off".localized
+        case .sessionIsNotConfigured: return "session_is_not_configured".localized
+        case .configsNotSaved: return "no_configs_in_cache_memory".localized
+        case .emptyConfigs: return "empty_response_configs_data".localized
+        case .configHasNoPriority: return "priority_is_incorrect".localized
+        case .saveIdentifierFailure(let responceDescription): return responceDescription ?? "can_not_find_wifi_network".localized
+        case .unableToJoinNetwork: return "unable_to_join_the_network".localized
+        case .saveIdentifierRequestFailure(let serverError): return serverError.localizedDescription
+        case .fullWifiAccessRequestFailure(let serverError): return serverError.localizedDescription
+        case .getWiFiSettingsRequestFailure(let serverError): return serverError.localizedDescription
+        case .notConnectedPreviously: return "not_connected_previously".localized
+        case .unknownError: return "unknown_error".localized
+            /// - NEHotspotConfigurationError
+        case .invalid: return "configuration_is_invalid".localized
+        case .invalidSSID: return "ssid_string_is_invalid".localized
+        case .invalidWPAPassphrase: return "wpa_wpa2_personal_passphrase_is_invalid".localized
+        case .invalidWEPPassphrase: return "wep_passphrase_is_invalid".localized
+        case .invalidEAPSettings: return "invalid_eap_settings".localized
+        case .invalidHS20Settings: return "invalid_hotspot_2_0_settings".localized
+        case .invalidHS20DomainName: return "hotspot_2_0_domain_name_is_invalid".localized
+        case .userDenied: return "failed_to_get_user_approval".localized
+        case .`internal`: return "internal_error".localized
+        case .pending: return "previous_request_is_pending".localized
+        case .systemConfiguration: return "application_cannot_modify_system_configuration".localized
+        case .joinOnceNotSupported: return "joinOnce_option_is_not_support".localized
+        case .alreadyAssociated: return "already_associated".localized
+        case .applicationIsNotInForeground: return "application_is_not_in_foreground".localized
+        case .invalidSSIDPrefix: return "ssid_prefix_string_is_invalid".localized
+        }
+    }
+    
+    public var failureReason: String? {
+        switch self {
+        case .mappingModelFailure(let data):
+            if let data = data {
+                return String(decoding: data, as: UTF8.self)
+            } else {
+                return ""
+            }
+        case .savingDataFailure: return ""
+        case .objectDoNotExist: return ""
+        case .wifiModuleSwitchOff: return ""
+        case .sessionIsNotConfigured: return ""
+        case .configsNotSaved: return ""
+        case .emptyConfigs: return ""
+        case .configHasNoPriority: return ""
+        case .saveIdentifierFailure: return ""
+        case .unableToJoinNetwork: return ""
+        case .saveIdentifierRequestFailure(let serverError): return (serverError as NSError).localizedFailureReason
+        case .fullWifiAccessRequestFailure(let serverError): return (serverError as NSError).localizedFailureReason
+        case .getWiFiSettingsRequestFailure(let serverError): return (serverError as NSError).localizedFailureReason
+        case .notConnectedPreviously: return ""
+        case .unknownError: return ""
+            /// - NEHotspotConfigurationError
+        case .invalid: return ""
+        case .invalidSSID: return ""
+        case .invalidWPAPassphrase: return ""
+        case .invalidWEPPassphrase: return ""
+        case .invalidEAPSettings: return ""
+        case .invalidHS20Settings: return ""
+        case .invalidHS20DomainName: return ""
+        case .userDenied: return ""
+        case .`internal`: return ""
+        case .pending: return ""
+        case .systemConfiguration: return ""
+        case .joinOnceNotSupported: return ""
+        case .alreadyAssociated: return ""
+        case .applicationIsNotInForeground: return ""
+        case .invalidSSIDPrefix: return ""
+        }
+    }
+
+    public var recoverySuggestion: String? {
+        switch self {
+        case .mappingModelFailure: return ""
+        case .savingDataFailure: return ""
+        case .objectDoNotExist: return ""
+        case .wifiModuleSwitchOff: return ""
+        case .sessionIsNotConfigured: return ""
+        case .configsNotSaved: return ""
+        case .emptyConfigs: return ""
+        case .configHasNoPriority: return ""
+        case .saveIdentifierFailure: return ""
+        case .unableToJoinNetwork: return ""
+        case .saveIdentifierRequestFailure(let serverError): return (serverError as NSError).localizedRecoverySuggestion
+        case .fullWifiAccessRequestFailure(let serverError): return (serverError as NSError).localizedRecoverySuggestion
+        case .getWiFiSettingsRequestFailure(let serverError): return (serverError as NSError).localizedRecoverySuggestion
+        case .notConnectedPreviously: return ""
+        case .unknownError: return ""
+            /// - NEHotspotConfigurationError
+        case .invalid: return ""
+        case .invalidSSID: return ""
+        case .invalidWPAPassphrase: return ""
+        case .invalidWEPPassphrase: return ""
+        case .invalidEAPSettings: return ""
+        case .invalidHS20Settings: return ""
+        case .invalidHS20DomainName: return ""
+        case .userDenied: return ""
+        case .`internal`: return ""
+        case .pending: return ""
+        case .systemConfiguration: return ""
+        case .joinOnceNotSupported: return ""
+        case .alreadyAssociated: return ""
+        case .applicationIsNotInForeground: return ""
+        case .invalidSSIDPrefix: return ""
+        }
+    }
+
+    static func configErrorFrom(hotspotConfigurationError: Error) -> Self {
+        
+        let nsError = hotspotConfigurationError as NSError
+        
+        guard let configError = NEHotspotConfigurationError(rawValue: nsError.code) else {
+            return .unknownError
+        }
+        
+        switch configError {
+        case .invalid: return .invalid
+        case .invalidSSID: return .invalidSSID
+        case .invalidWPAPassphrase: return .invalidWPAPassphrase
+        case .invalidWEPPassphrase: return .invalidWEPPassphrase
+        case .invalidEAPSettings: return .invalidEAPSettings
+        case .invalidHS20Settings: return .invalidHS20Settings
+        case .invalidHS20DomainName: return .invalidHS20DomainName
+        case .userDenied: return .userDenied
+        case .`internal`: return .`internal`
+        case .pending: return .pending
+        case .systemConfiguration: return .systemConfiguration
+        case .unknown: return .unknownError
+        case .joinOnceNotSupported: return .joinOnceNotSupported
+        case .alreadyAssociated: return .alreadyAssociated
+        case .applicationIsNotInForeground: return .applicationIsNotInForeground
+        case .invalidSSIDPrefix: return .invalidSSIDPrefix
+        @unknown default:
+            return .unknownError
+        }
+    }
+    
+}

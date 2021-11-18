@@ -10,13 +10,13 @@ import Foundation
 public protocol SWFWiFiSessionDelegate {
     
     func willRequestConfigs(session: SWFWiFiSession)
-    func didRequestConfigs(session: SWFWiFiSession, error: Error?)
+    func didRequestConfigs(session: SWFWiFiSession, error: SWFError?)
 
     func willApplyConfig(session: SWFWiFiSession)
-    func didApplyConfig(type: SWFConfigType?, session: SWFWiFiSession, error: Error?)
+    func didApplyConfig(type: SWFConfigType?, session: SWFWiFiSession, error: SWFError?)
 
     func willConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession)
-    func didConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession, error: Error?)
+    func didConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession, error: SWFError?)
     
     func didStopWiFi(session: SWFWiFiSession)
 }
@@ -193,7 +193,7 @@ public final class SWFWiFiSession {
         self.apiDomain = apiDomain
     }
 
-    public func getSessionConfig(completion: @escaping (EmptyResult) -> Void) {
+    public func getSessionConfig(completion: @escaping EmptyCompletion) {
         getConfig(completion: completion)
     }
     
@@ -209,12 +209,11 @@ public final class SWFWiFiSession {
     
     // MARK: - Private Methods
     
-    private func getConfig(completion: @escaping (EmptyResult) -> Void) {
+    private func getConfig(completion: @escaping EmptyCompletion) {
         status = .requestConfigs
         
         guard isWiFiOn() else {
-            let error = SWFSessionError.needSwitchOnWiFiModule(domain: #function)
-            status = .requestConfigsResult(.failure(error))
+            status = .requestConfigsResult(.failure(.wifiModuleSwitchOff))
             return
         }
 
@@ -235,8 +234,7 @@ public final class SWFWiFiSession {
         status = .applyConfig
         
         guard isWiFiOn() else {
-            let error = SWFSessionError.needSwitchOnWiFiModule(domain: #function)
-            status = .applyConfigResult(nil, .failure(error))
+            status = .applyConfigResult(nil, .failure(.wifiModuleSwitchOff))
             return
         }
 
