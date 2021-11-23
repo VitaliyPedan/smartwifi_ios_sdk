@@ -32,6 +32,28 @@ enum WiFiSessionStatus {
     case cancel
 }
 
+public struct SWFSessionObject {
+    let apiKey: String
+    let userId: String
+    let channelId: String
+    let projectId: String
+    let apiDomain: String
+    
+    public init(
+        apiKey: String,
+        userId: String,
+        channelId: String,
+        projectId: String,
+        apiDomain: String
+    ) {
+        self.apiKey = apiKey
+        self.userId = userId
+        self.channelId = channelId
+        self.projectId = projectId
+        self.apiDomain = apiDomain
+    }
+    
+}
 
 public final class SWFWiFiSession {
     
@@ -178,25 +200,20 @@ public final class SWFWiFiSession {
     // MARK: - Public Methods
 
     public func createSession(
-        apiKey: String,
-        userId: String,
-        channelId: String,
-        projectId: String,
-        apiDomain: String
+        sessionObject: SWFSessionObject,
+        completion: @escaping EmptyCompletion
     ) {
         status = .initializing
         
-        self.apiKey = apiKey
-        self.userId = userId
-        self.channelId = channelId
-        self.projectId = projectId
-        self.apiDomain = apiDomain
-    }
-
-    public func getSessionConfig(completion: @escaping EmptyCompletion) {
+        apiKey = sessionObject.apiKey
+        userId = sessionObject.userId
+        channelId = sessionObject.channelId
+        projectId = sessionObject.projectId
+        apiDomain = sessionObject.apiDomain
+        
         getConfig(completion: completion)
     }
-    
+
     public func startSession() {
         startConnection()
     }
@@ -231,26 +248,27 @@ public final class SWFWiFiSession {
     }
     
     private func startConnection() {
+        
         status = .applyConfig
         
-        guard isWiFiOn() else {
+        guard self.isWiFiOn() else {
             status = .applyConfigResult(nil, .failure(.wifiModuleSwitchOff))
             return
         }
-
-        wifiService.startSession(
+        
+        self.wifiService.startSession(
             teamId: teamId,
             priority: priority
         ) { [weak self] (configType, result)  in
             
             self?.status = .applyConfigResult(configType, result)
-
+            
             if result == .success {
                 self?.status = .connecting(configType)
             } else {
                 self?.priority = 0
             }
-
+            
         } connectionCompletion: { [weak self] (configType, result) in
             self?.status = .connectionResult(configType, result)
             
