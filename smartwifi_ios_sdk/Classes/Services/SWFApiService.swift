@@ -414,7 +414,12 @@ extension SWFApiServiceImpl {
                 }
                 
             case .failure(let error):
-                completion(.failure(.getWiFiSettingsRequestFailure(serverError: error)))
+                let nsError = (error as NSError)
+                if (nsError.domain == "NSURLErrorDomain" && nsError.code == -1009) {
+                    completion(.failure(.noInternetConnection))
+                } else {
+                    completion(.failure(.getWiFiSettingsRequestFailure(serverError: error)))
+                }
             }
         }
     }

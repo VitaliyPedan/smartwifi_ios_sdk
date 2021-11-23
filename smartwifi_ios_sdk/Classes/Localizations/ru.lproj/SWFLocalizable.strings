@@ -19,6 +19,7 @@
 "unable_to_join_the_network" = "Wi-Fi сеть не обнаружена по близости";
 "not_connected_previously" = "Не был подключен ранее";
 "unknown_error" = "Произошла неизвестная ошибка";
+"no_internet_connection" = "Нет интернет соединения";
 
 // NEHotspotConfigurationError
 "configuration_is_invalid" = "Конфигурация Wi-Fi недействительна";

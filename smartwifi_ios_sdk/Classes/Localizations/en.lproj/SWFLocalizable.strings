@@ -19,6 +19,7 @@
 "unable_to_join_the_network" = "Unable to join the network";
 "not_connected_previously" = "Not connected previously";
 "unknown_error" = "An unknown error occurred";
+"no_internet_connection" = "No internet connection";
 
 // NEHotspotConfigurationError
 "configuration_is_invalid" = "The Wi-Fi configuration is invalid";

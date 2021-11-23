@@ -85,6 +85,9 @@ public enum SWFError: LocalizedError {
     /// - Неизвестная  ошибка
     case unknownError
     
+    /// - Нет  интернет соединения
+    case noInternetConnection
+
     
     public var errorDescription: String? {
         switch self {
@@ -103,6 +106,7 @@ public enum SWFError: LocalizedError {
         case .getWiFiSettingsRequestFailure(let serverError): return serverError.localizedDescription
         case .notConnectedPreviously: return "not_connected_previously".swfLocalized
         case .unknownError: return "unknown_error".swfLocalized
+        case .noInternetConnection: return "no_internet_connection".swfLocalized
             /// - NEHotspotConfigurationError
         case .invalid: return "configuration_is_invalid".swfLocalized
         case .invalidSSID: return "ssid_string_is_invalid".swfLocalized
@@ -134,7 +138,7 @@ public enum SWFError: LocalizedError {
         case .objectDoNotExist: return ""
         case .wifiModuleSwitchOff: return ""
         case .sessionIsNotConfigured: return ""
-        case .configsNotSaved: return ""
+        case .configsNotSaved: return "Возможно отсутствует интернет соединение"
         case .emptyConfigs: return ""
         case .configHasNoPriority: return ""
         case .saveIdentifierFailure: return ""
@@ -144,6 +148,7 @@ public enum SWFError: LocalizedError {
         case .getWiFiSettingsRequestFailure(let serverError): return (serverError as NSError).localizedFailureReason
         case .notConnectedPreviously: return ""
         case .unknownError: return ""
+        case .noInternetConnection: return ""
             /// - NEHotspotConfigurationError
         case .invalid: return ""
         case .invalidSSID: return ""
@@ -170,7 +175,7 @@ public enum SWFError: LocalizedError {
         case .objectDoNotExist: return ""
         case .wifiModuleSwitchOff: return ""
         case .sessionIsNotConfigured: return ""
-        case .configsNotSaved: return ""
+        case .configsNotSaved: return "Включите интернет соединение"
         case .emptyConfigs: return ""
         case .configHasNoPriority: return ""
         case .saveIdentifierFailure: return ""
@@ -180,6 +185,7 @@ public enum SWFError: LocalizedError {
         case .getWiFiSettingsRequestFailure(let serverError): return (serverError as NSError).localizedRecoverySuggestion
         case .notConnectedPreviously: return ""
         case .unknownError: return ""
+        case .noInternetConnection: return ""
             /// - NEHotspotConfigurationError
         case .invalid: return ""
         case .invalidSSID: return ""
