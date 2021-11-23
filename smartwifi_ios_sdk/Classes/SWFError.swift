@@ -88,37 +88,37 @@ public enum SWFError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .mappingModelFailure: return "mapping_object_data_error".localized
-        case .savingDataFailure: return "saving_data_error".localized
-        case .objectDoNotExist: return "session_object_is_corrupted".localized
-        case .wifiModuleSwitchOff: return "wifi_module_switch_off".localized
-        case .sessionIsNotConfigured: return "session_is_not_configured".localized
-        case .configsNotSaved: return "no_configs_in_cache_memory".localized
-        case .emptyConfigs: return "empty_response_configs_data".localized
-        case .configHasNoPriority: return "priority_is_incorrect".localized
-        case .saveIdentifierFailure(let responceDescription): return responceDescription ?? "can_not_find_wifi_network".localized
-        case .unableToJoinNetwork: return "unable_to_join_the_network".localized
+        case .mappingModelFailure: return "mapping_object_data_error".swfLocalized
+        case .savingDataFailure: return "saving_data_error".swfLocalized
+        case .objectDoNotExist: return "session_object_is_corrupted".swfLocalized
+        case .wifiModuleSwitchOff: return "wifi_module_switch_off".swfLocalized
+        case .sessionIsNotConfigured: return "session_is_not_configured".swfLocalized
+        case .configsNotSaved: return "no_configs_in_cache_memory".swfLocalized
+        case .emptyConfigs: return "empty_response_configs_data".swfLocalized
+        case .configHasNoPriority: return "priority_is_incorrect".swfLocalized
+        case .saveIdentifierFailure(let responceDescription): return responceDescription ?? "can_not_find_wifi_network".swfLocalized
+        case .unableToJoinNetwork: return "unable_to_join_the_network".swfLocalized
         case .saveIdentifierRequestFailure(let serverError): return serverError.localizedDescription
         case .fullWifiAccessRequestFailure(let serverError): return serverError.localizedDescription
         case .getWiFiSettingsRequestFailure(let serverError): return serverError.localizedDescription
-        case .notConnectedPreviously: return "not_connected_previously".localized
-        case .unknownError: return "unknown_error".localized
+        case .notConnectedPreviously: return "not_connected_previously".swfLocalized
+        case .unknownError: return "unknown_error".swfLocalized
             /// - NEHotspotConfigurationError
-        case .invalid: return "configuration_is_invalid".localized
-        case .invalidSSID: return "ssid_string_is_invalid".localized
-        case .invalidWPAPassphrase: return "wpa_wpa2_personal_passphrase_is_invalid".localized
-        case .invalidWEPPassphrase: return "wep_passphrase_is_invalid".localized
-        case .invalidEAPSettings: return "invalid_eap_settings".localized
-        case .invalidHS20Settings: return "invalid_hotspot_2_0_settings".localized
-        case .invalidHS20DomainName: return "hotspot_2_0_domain_name_is_invalid".localized
-        case .userDenied: return "failed_to_get_user_approval".localized
-        case .`internal`: return "internal_error".localized
-        case .pending: return "previous_request_is_pending".localized
-        case .systemConfiguration: return "application_cannot_modify_system_configuration".localized
-        case .joinOnceNotSupported: return "joinOnce_option_is_not_support".localized
-        case .alreadyAssociated: return "already_associated".localized
-        case .applicationIsNotInForeground: return "application_is_not_in_foreground".localized
-        case .invalidSSIDPrefix: return "ssid_prefix_string_is_invalid".localized
+        case .invalid: return "configuration_is_invalid".swfLocalized
+        case .invalidSSID: return "ssid_string_is_invalid".swfLocalized
+        case .invalidWPAPassphrase: return "wpa_wpa2_personal_passphrase_is_invalid".swfLocalized
+        case .invalidWEPPassphrase: return "wep_passphrase_is_invalid".swfLocalized
+        case .invalidEAPSettings: return "invalid_eap_settings".swfLocalized
+        case .invalidHS20Settings: return "invalid_hotspot_2_0_settings".swfLocalized
+        case .invalidHS20DomainName: return "hotspot_2_0_domain_name_is_invalid".swfLocalized
+        case .userDenied: return "failed_to_get_user_approval".swfLocalized
+        case .`internal`: return "internal_error".swfLocalized
+        case .pending: return "previous_request_is_pending".swfLocalized
+        case .systemConfiguration: return "application_cannot_modify_system_configuration".swfLocalized
+        case .joinOnceNotSupported: return "joinOnce_option_is_not_support".swfLocalized
+        case .alreadyAssociated: return "already_associated".swfLocalized
+        case .applicationIsNotInForeground: return "application_is_not_in_foreground".swfLocalized
+        case .invalidSSIDPrefix: return "ssid_prefix_string_is_invalid".swfLocalized
         }
     }
     
@@ -229,4 +229,28 @@ public enum SWFError: LocalizedError {
         }
     }
     
+}
+
+private extension String {
+
+    var swfLocalized: String {
+        let lang = Bundle.main.preferredLocalizations.first ?? "en"
+        
+        guard let path = Bundle.module.path(forResource: lang, ofType: "lproj") else { return self }
+        guard let bundle = Bundle(path: path) else { return self }
+        
+        return NSLocalizedString(self, tableName: "SWFLocalizable", bundle: bundle, value: "", comment: "")
+    }
+
+}
+
+private extension Bundle {
+
+    static var module: Bundle {
+        let bundle = Bundle(for: SWFWiFiSession.self)
+        
+        guard let path = bundle.resourcePath else { return .main }
+        return Bundle(path: path.appending("/smartwifi_ios_sdk.bundle")) ?? .main
+    }
+
 }

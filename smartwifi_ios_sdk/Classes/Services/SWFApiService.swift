@@ -409,9 +409,6 @@ extension SWFApiServiceImpl {
                 if let configs = try? JSONDecoder().decode(SWFWiFiConfigs.self, from: data) {
                     completion(.success(configs))
                     
-//                } else if let configError = try? JSONDecoder().decode(ConfigError.self, from: data) {
-//                    completion(.failure(SWFSessionError.configError(domain: #function, configError: configError)))
-                    
                 } else {
                     completion(.failure(.mappingModelFailure(data: data)))
                 }
