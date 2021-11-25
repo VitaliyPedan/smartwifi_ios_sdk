@@ -11,6 +11,7 @@
 "saving_data_error" = "Saving data procces error. An error occurred while caching the configs";
 "session_object_is_corrupted" = "Session object is corrupted";
 "wifi_module_switch_off" = "You should switch on wifi module before connecting";
+"session_is_not_created" = "Session is not created. Please create session before start";
 "session_is_not_configured" = "Session is not configured. Please configure session before start";
 "no_configs_in_cache_memory" = "No configs in cache memory";
 "empty_response_configs_data" = "Empty response configs data";

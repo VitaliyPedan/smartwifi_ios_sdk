@@ -9,13 +9,10 @@ import Foundation
 
 public protocol SWFWiFiSessionDelegate {
     
-    func willRequestConfigs(session: SWFWiFiSession)
-    func didRequestConfigs(session: SWFWiFiSession, error: SWFError?)
+    func willCreate(session: SWFWiFiSession)
+    func didCreate(session: SWFWiFiSession, error: SWFError?)
 
-    func willApplyConfig(session: SWFWiFiSession)
-    func didApplyConfig(type: SWFConfigType?, session: SWFWiFiSession, error: SWFError?)
-
-    func willConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession)
+    func willConnectToWiFi(session: SWFWiFiSession)
     func didConnectToWiFi(via configType: SWFConfigType?, session: SWFWiFiSession, error: SWFError?)
     
     func didStopWiFi(session: SWFWiFiSession)
@@ -73,11 +70,11 @@ public final class SWFWiFiSession {
                 break
             case .requestConfigs:
                 if Thread.isMainThread {
-                    self.delegate.willRequestConfigs(session: self)
+                    self.delegate.willCreate(session: self)
                 } else {
                     DispatchQueue.main.sync { [weak self] in
                         guard let self = self else { return }
-                        self.delegate.willRequestConfigs(session: self)
+                        self.delegate.willCreate(session: self)
                     }
                 }
                 
@@ -85,68 +82,52 @@ public final class SWFWiFiSession {
                 switch result {
                 case .success:
                     if Thread.isMainThread {
-                        self.delegate.didRequestConfigs(session: self, error: nil)
+                        self.delegate.didCreate(session: self, error: nil)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didRequestConfigs(session: self, error: nil)
+                            self.delegate.didCreate(session: self, error: nil)
                         }
                     }
 
                 case .failure(let error):
                     if Thread.isMainThread {
-                        self.delegate.didRequestConfigs(session: self, error: error)
+                        self.delegate.didCreate(session: self, error: error)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didRequestConfigs(session: self, error: error)
+                            self.delegate.didCreate(session: self, error: error)
                         }
                     }
                 }
             
             case .applyConfig:
                 if Thread.isMainThread {
-                    self.delegate.willApplyConfig(session: self)
+                    self.delegate.willConnectToWiFi(session: self)
                 } else {
                     DispatchQueue.main.sync { [weak self] in
                         guard let self = self else { return }
-                        self.delegate.willApplyConfig(session: self)
+                        self.delegate.willConnectToWiFi(session: self)
                     }
                 }
                 
             case .applyConfigResult(let type, let result):
                 switch result {
                 case .success:
-                    if Thread.isMainThread {
-                        self.delegate.didApplyConfig(type: type, session: self, error: nil)
-                    } else {
-                        DispatchQueue.main.sync { [weak self] in
-                            guard let self = self else { return }
-                            self.delegate.didApplyConfig(type: type, session: self, error: nil)
-                        }
-                    }
-
+                    break
                 case .failure(let error):
                     if Thread.isMainThread {
-                        self.delegate.didApplyConfig(type: type, session: self, error: error)
+                        self.delegate.didConnectToWiFi(via: type, session: self, error: error)
                     } else {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
-                            self.delegate.didApplyConfig(type: type, session: self, error: error)
+                            self.delegate.didConnectToWiFi(via: type, session: self, error: error)
                         }
                     }
                 }
 
-            case .connecting(let configType):
-                if Thread.isMainThread {
-                    self.delegate.willConnectToWiFi(via: configType, session: self)
-                } else {
-                    DispatchQueue.main.sync { [weak self] in
-                        guard let self = self else { return }
-                        self.delegate.willConnectToWiFi(via: configType, session: self)
-                    }
-                }
-                
+            case .connecting(_):
+                break
             case .connectionResult(let configType, let result):
                 switch result {
                 case .success:
@@ -183,11 +164,7 @@ public final class SWFWiFiSession {
         }
     }
     
-    private(set) var apiKey: String = ""
-    private(set) var userId: String = ""
-    private(set) var channelId: String = ""
-    private(set) var projectId: String = ""
-    private(set) var apiDomain: String = ""
+    private(set) var sessionObject: SWFSessionObject?
 
     // MARK: - Init
 
@@ -205,11 +182,7 @@ public final class SWFWiFiSession {
     ) {
         status = .initializing
         
-        apiKey = sessionObject.apiKey
-        userId = sessionObject.userId
-        channelId = sessionObject.channelId
-        projectId = sessionObject.projectId
-        apiDomain = sessionObject.apiDomain
+        self.sessionObject = sessionObject
         
         getConfig(completion: completion)
     }
@@ -234,13 +207,12 @@ public final class SWFWiFiSession {
             return
         }
 
-        wifiService.configure(
-            apiKey: apiKey,
-            userId: userId,
-            channelId: channelId,
-            projectId: projectId,
-            apiDomain: apiDomain
-        ) { [weak self] (result) in
+        guard let sessionObject = sessionObject else {
+            status = .requestConfigsResult(.failure(.sessionIsNotCreated))
+            return
+        }
+        
+        wifiService.configure(sessionObject: sessionObject) { [weak self] (result) in
             
             self?.status = .requestConfigsResult(result)
             completion(result)

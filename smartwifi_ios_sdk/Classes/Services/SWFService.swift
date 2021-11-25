@@ -12,11 +12,7 @@ public protocol SWFService {
     var needToSaveWAP2Identifier: Bool { get set }
     
     func configure(
-        apiKey: String,
-        userId: String,
-        channelId: String,
-        projectId: String,
-        apiDomain: String,
+        sessionObject: SWFSessionObject,
         completion: @escaping EmptyCompletion
     )
     
@@ -80,21 +76,13 @@ public final class SWFServiceImpl: SWFService {
     }
     
     public func configure(
-        apiKey: String,
-        userId: String,
-        channelId: String,
-        projectId: String,
-        apiDomain: String,
+        sessionObject: SWFSessionObject,
         completion: @escaping EmptyCompletion
     ) {
-        configKey = apiDomain + projectId + channelId
+        configKey = sessionObject.apiDomain + sessionObject.projectId + sessionObject.channelId
         
         getWiFiSettings(
-            apiKey: apiKey,
-            userId: userId,
-            channelId: channelId,
-            projectId: projectId,
-            apiDomain: apiDomain,
+            sessionObject: sessionObject,
             completion: completion
         )
     }
@@ -412,20 +400,16 @@ private extension SWFServiceImpl {
     }
 
     func getWiFiSettings(
-        apiKey: String,
-        userId: String,
-        channelId: String,
-        projectId: String,
-        apiDomain: String,
+        sessionObject: SWFSessionObject,
         completion: @escaping EmptyCompletion
     ) {
         
         smartWifiApiService.getWiFiSettings(
-            apiKey: apiKey,
-            userId: userId,
-            channelId: channelId,
-            projectId: projectId,
-            apiDomain: apiDomain
+            apiKey: sessionObject.apiKey,
+            userId: sessionObject.userId,
+            channelId: sessionObject.channelId,
+            projectId: sessionObject.projectId,
+            apiDomain: sessionObject.apiDomain
         ) { [weak self] (result) in
             
             switch result {

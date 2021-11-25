@@ -29,6 +29,10 @@ public enum SWFError: LocalizedError {
     /// - Она встречается в тех случаях, когда при подключении у пользователя отключен Wi-Fi модуль.
     case wifiModuleSwitchOff
     
+    /// - Данная ошибка означает, что сеанс не создан. Необходимо создать сеанс перед началом использования.
+    /// - Возникает при попытке запросить/получить настройки.
+    case sessionIsNotCreated
+
     /// - Данная ошибка означает, что сеанс не настроен. Необходимо настроить сеанс перед началом использования.
     /// - Возникает при попытке запустить/остановить сессию, без предварительной настройки.
     case sessionIsNotConfigured
@@ -95,6 +99,7 @@ public enum SWFError: LocalizedError {
         case .savingDataFailure: return localize(errorString: "saving_data_error")
         case .objectDoNotExist: return localize(errorString: "session_object_is_corrupted")
         case .wifiModuleSwitchOff: return localize(errorString: "wifi_module_switch_off")
+        case .sessionIsNotCreated: return localize(errorString: "session_is_not_created")
         case .sessionIsNotConfigured: return localize(errorString: "session_is_not_configured")
         case .configsNotSaved: return localize(errorString: "no_configs_in_cache_memory")
         case .emptyConfigs: return localize(errorString: "empty_response_configs_data")
@@ -137,6 +142,7 @@ public enum SWFError: LocalizedError {
         case .savingDataFailure: return ""
         case .objectDoNotExist: return ""
         case .wifiModuleSwitchOff: return ""
+        case .sessionIsNotCreated: return ""
         case .sessionIsNotConfigured: return ""
         case .configsNotSaved: return "Возможно отсутствует интернет соединение"
         case .emptyConfigs: return ""
@@ -174,6 +180,7 @@ public enum SWFError: LocalizedError {
         case .savingDataFailure: return ""
         case .objectDoNotExist: return ""
         case .wifiModuleSwitchOff: return ""
+        case .sessionIsNotCreated: return ""
         case .sessionIsNotConfigured: return ""
         case .configsNotSaved: return "Включите интернет соединение"
         case .emptyConfigs: return ""
