@@ -20,6 +20,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
     let wifiSession: SWFWiFiSession
 
 // Create new session instance
+
     wifiSession = SWFWiFiSession(teamId:<TeamIdentifier>, delegate: <delegate>)
 
 2. Создайте эĸземпляр WiFi сессии с SWFSessionObject: Где:
@@ -29,6 +30,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
  - apiDomain - Доменной имя сервеа API (https://...)
 
   // Create session object
+  
     let sessionObject = SWFSessionObject(
       apiKey: apiKey,
       userId: userId,
@@ -38,6 +40,7 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
   )
 
   // Configuration of session
+  
        wifiSession.createSession(sessionObject: sessionObject)
   
   При создании сессии автоматически запращиваются ĸонфигурации(при успешном ответе, кэшируется)
