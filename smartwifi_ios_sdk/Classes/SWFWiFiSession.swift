@@ -32,6 +32,7 @@ enum WiFiSessionStatus {
 public struct SWFSessionObject {
     let apiKey: String
     let userId: String
+    let payloadId: String
     let channelId: String
     let projectId: String
     let apiDomain: String
@@ -39,12 +40,14 @@ public struct SWFSessionObject {
     public init(
         apiKey: String,
         userId: String,
+        payloadId: String,
         channelId: String,
         projectId: String,
         apiDomain: String
     ) {
         self.apiKey = apiKey
         self.userId = userId
+        self.payloadId = userId
         self.channelId = channelId
         self.projectId = projectId
         self.apiDomain = apiDomain
@@ -62,6 +65,7 @@ public final class SWFWiFiSession {
     
     private var teamId: String
     private var priority: Int = 0
+    private var numbersOfPriorities: Int = 0
 
     private var status: WiFiSessionStatus = .initializing {
         didSet {
@@ -214,8 +218,16 @@ public final class SWFWiFiSession {
         
         wifiService.configure(sessionObject: sessionObject) { [weak self] (result) in
             
-            self?.status = .requestConfigsResult(result)
-            completion(result)
+            switch result {
+            case .success(let numberOfPriorities):
+                self?.numbersOfPriorities = numberOfPriorities
+                self?.status = .requestConfigsResult(.success)
+                completion(.success)
+                
+            case .failure(let error):
+                self?.status = .requestConfigsResult(.failure(error))
+                completion(.failure(error))
+            }
         }
     }
     
@@ -242,19 +254,37 @@ public final class SWFWiFiSession {
             }
             
         } connectionCompletion: { [weak self] (configType, result) in
-            self?.status = .connectionResult(configType, result)
             
-            if result == .success {
-                self?.priority = 0
-            } else {
-                self?.priority += 1
-                self?.startConnection()
+            guard let self = self else {
+                return
+            }
+            
+            switch result {
+            case .success:
+                self.status = .connectionResult(configType, result)
+                self.priority = 0
+                
+            case .failure(let error):
+                if case .configHasNoPriority = error {
+                    self.status = .connectionResult(configType, result)
+                    
+                } else if self.priority + 1 >= self.numbersOfPriorities {
+                    self.status = .connectionResult(configType, result)
+                    
+                } else {
+                    #if DEBUG
+                    self.status = .connectionResult(configType, result)
+                    #endif
+
+                    self.priority += 1
+                    self.startConnection()
+                }
             }
         }
     }
     
     private func isWiFiOn() -> Bool {
-
+        
         var ifaddr : UnsafeMutablePointer<ifaddrs>? = nil
         
         if getifaddrs(&ifaddr) == 0 {

@@ -13,7 +13,7 @@ public protocol SWFService {
     
     func configure(
         sessionObject: SWFSessionObject,
-        completion: @escaping EmptyCompletion
+        completion: @escaping ResultCompletion<Int>
     )
     
     func startSession(
@@ -77,7 +77,7 @@ public final class SWFServiceImpl: SWFService {
     
     public func configure(
         sessionObject: SWFSessionObject,
-        completion: @escaping EmptyCompletion
+        completion: @escaping ResultCompletion<Int>
     ) {
         configKey = sessionObject.apiDomain + sessionObject.projectId + sessionObject.channelId
         
@@ -401,12 +401,13 @@ private extension SWFServiceImpl {
 
     func getWiFiSettings(
         sessionObject: SWFSessionObject,
-        completion: @escaping EmptyCompletion
+        completion: @escaping ResultCompletion<Int>
     ) {
         
         smartWifiApiService.getWiFiSettings(
             apiKey: sessionObject.apiKey,
             userId: sessionObject.userId,
+            payloadId: sessionObject.payloadId,
             channelId: sessionObject.channelId,
             projectId: sessionObject.projectId,
             apiDomain: sessionObject.apiDomain
@@ -424,7 +425,12 @@ private extension SWFServiceImpl {
                     try self.saveConfigs(configs, key: self.configKey!)
                     
                     if configs.passpointConfig != nil || configs.wpa2EnterpriseConfig != nil || configs.wpa2Config != nil {
-                        completion(.success)
+
+                        let allConfigs: [SWFConfigTypeProtocol?] = [configs.passpointConfig,
+                                                                    configs.wpa2EnterpriseConfig,
+                                                                    configs.wpa2Config]
+                        let numberOfPriorities: Int = allConfigs.compactMap {$0}.count
+                        completion(.success(numberOfPriorities))
                     } else {
                         completion(.failure(.emptyConfigs))
                     }

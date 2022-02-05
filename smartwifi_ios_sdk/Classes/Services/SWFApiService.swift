@@ -39,6 +39,7 @@ protocol SWFApiService {
     func getWiFiSettings(
         apiKey: String,
         userId: String,
+        payloadId: String,
         channelId: String,
         projectId: String,
         apiDomain: String,
@@ -337,6 +338,7 @@ extension SWFApiServiceImpl {
         
         private let apiKey: String
         private let userId: String
+        private let payloadId: String
         private let channelId: String
         private let projectId: String
         private let apiDomain: String
@@ -344,12 +346,14 @@ extension SWFApiServiceImpl {
         init(
             apiKey: String,
             userId: String,
+            payloadId: String,
             channelId: String,
             projectId: String,
             apiDomain: String
         ) {
             self.apiKey = apiKey
             self.userId = userId
+            self.payloadId = payloadId
             self.channelId = channelId
             self.projectId = projectId
             self.apiDomain = apiDomain
@@ -373,6 +377,7 @@ extension SWFApiServiceImpl {
             
             request.httpBody = try? JSONSerialization.data(withJSONObject: [
                 "user_id": userId,
+                "payload_id" : payloadId,
                 "user_field": ["platform": UIDevice.current.systemName,
                                "platform_version": iosVersion,
                                "model": UIDevice.current.model]
@@ -384,6 +389,7 @@ extension SWFApiServiceImpl {
     func getWiFiSettings(
         apiKey: String,
         userId: String,
+        payloadId: String,
         channelId: String,
         projectId: String,
         apiDomain: String,
@@ -392,6 +398,7 @@ extension SWFApiServiceImpl {
         let request = SmartWiFiSettingsRequest(
             apiKey: apiKey,
             userId: userId,
+            payloadId: payloadId,
             channelId: channelId,
             projectId: projectId,
             apiDomain: apiDomain
