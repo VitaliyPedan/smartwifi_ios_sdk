@@ -375,13 +375,18 @@ extension SWFApiServiceImpl {
             
             let iosVersion: String = iosVersionComponents.prefix(2).joined(separator: ".")
             
-            request.httpBody = try? JSONSerialization.data(withJSONObject: [
+            var body: [String : Any] = [
                 "user_id": userId,
-                "payload_id" : payloadId ?? "",
                 "user_field": ["platform": UIDevice.current.systemName,
                                "platform_version": iosVersion,
                                "model": UIDevice.current.model]
-            ])
+            ]
+            
+            if let payloadId = payloadId {
+                body["payload_id"] = payloadId
+            }
+            
+            request.httpBody = try? JSONSerialization.data(withJSONObject: body)
             return request
         }
     }
