@@ -225,8 +225,21 @@ public final class SWFWiFiSession {
                 completion(.success)
                 
             case .failure(let error):
-                self?.status = .requestConfigsResult(.failure(error))
-                completion(.failure(error))
+                
+                // try use cashed configs
+                let storage: SWFUserDefaultsManagerType = SWFUserDefaultsManager.shared
+
+                guard let configKey = self?.wifiService.configKey,
+                        let _: SWFWiFiConfigs = try? storage.getDecodable(by: .dynamicKey(configKey))
+                else {
+                    self?.status = .requestConfigsResult(.failure(error))
+                    completion(.failure(error))
+                    return
+                }
+                //
+                
+                self?.status = .requestConfigsResult(.success)
+                completion(.success)
             }
         }
     }

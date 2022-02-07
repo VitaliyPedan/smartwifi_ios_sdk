@@ -10,7 +10,8 @@ import Foundation
 public protocol SWFService {
 
     var needToSaveWAP2Identifier: Bool { get set }
-    
+    var configKey: String? { get }
+
     func configure(
         sessionObject: SWFSessionObject,
         completion: @escaping ResultCompletion<Int>
@@ -50,7 +51,7 @@ public final class SWFServiceImpl: SWFService {
     
     private var registrationCounter: Int = 1
 
-    private var configKey: String?
+    public var configKey: String?
 
     public var needToSaveWAP2Identifier: Bool = true
     
