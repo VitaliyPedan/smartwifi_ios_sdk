@@ -41,9 +41,14 @@ pod 'smartwifi_ios_sdk', :git => 'https://github.com/VitaliyPedan/smartwifi_ios_
 
   // Configuration of session
   
-       wifiSession.createSession(sessionObject: sessionObject)
+        wifiSession.createSession(sessionObject: sessionObject) { [weak self] (result) in
+            if case .success = result {
+                self?.wifiSession.startSession()
+            }
+        }
+
   
-  При создании сессии автоматически запращиваются ĸонфигурации(при успешном ответе, кэшируется)
+  При создании сессии автоматически запращиваются ĸонфигурации(при успешном ответе, кэшируется). При успешном сохранении конфигурации можно сразу запустить сессию или отложенно как описано в пункте 3.
     
 3. Запустите сессию Wi-Fi (подĸлючитесь ĸ Wi-Fi): При подключении конфигурация берется из кэша, ранее сохраненная при вызове метода createSession(sessionObject:), в противном случае получаем ошибку отсутствия конфигурации. Делегат будет проинформирован о результате подключения в соответствующем методе.
   
