@@ -32,7 +32,7 @@ enum WiFiSessionStatus {
 public struct SWFSessionObject {
     let apiKey: String
     let userId: String
-    let payloadId: String
+    let payloadId: String?
     let channelId: String
     let projectId: String
     let apiDomain: String
@@ -40,14 +40,14 @@ public struct SWFSessionObject {
     public init(
         apiKey: String,
         userId: String,
-        payloadId: String,
+        payloadId: String?,
         channelId: String,
         projectId: String,
         apiDomain: String
     ) {
         self.apiKey = apiKey
         self.userId = userId
-        self.payloadId = userId
+        self.payloadId = payloadId
         self.channelId = channelId
         self.projectId = projectId
         self.apiDomain = apiDomain
