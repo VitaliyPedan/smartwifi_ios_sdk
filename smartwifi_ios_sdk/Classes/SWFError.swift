@@ -86,6 +86,9 @@ public enum SWFError: LocalizedError {
     case applicationIsNotInForeground
     case invalidSSIDPrefix
 
+    /// - Ошибка сервера
+    case serverError(serverError: SWFServerError)
+
     /// - Неизвестная  ошибка
     case unknownError
     
@@ -110,6 +113,7 @@ public enum SWFError: LocalizedError {
         case .fullWifiAccessRequestFailure(let serverError): return serverError.localizedDescription
         case .getWiFiSettingsRequestFailure(let serverError): return serverError.localizedDescription
         case .notConnectedPreviously: return localize(errorString: "not_connected_previously")
+        case .serverError(let serverError): return serverError.detail
         case .unknownError: return localize(errorString: "unknown_error")
         case .noInternetConnection: return localize(errorString: "no_internet_connection")
             /// - NEHotspotConfigurationError
@@ -154,6 +158,7 @@ public enum SWFError: LocalizedError {
         case .getWiFiSettingsRequestFailure(let serverError): return (serverError as NSError).localizedFailureReason
         case .notConnectedPreviously: return ""
         case .unknownError: return ""
+        case .serverError(let serverError): return serverError.title
         case .noInternetConnection: return ""
             /// - NEHotspotConfigurationError
         case .invalid: return ""
@@ -192,6 +197,7 @@ public enum SWFError: LocalizedError {
         case .getWiFiSettingsRequestFailure(let serverError): return (serverError as NSError).localizedRecoverySuggestion
         case .notConnectedPreviously: return ""
         case .unknownError: return ""
+        case .serverError(_): return "Попробуйте позже!"
         case .noInternetConnection: return ""
             /// - NEHotspotConfigurationError
         case .invalid: return ""

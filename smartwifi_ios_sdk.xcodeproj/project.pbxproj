@@ -37,6 +37,7 @@
 		6499D04126CB2973007C9481 /* SWFService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03326CB2973007C9481 /* SWFService.swift */; };
 		6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03426CB2973007C9481 /* SWFApiService.swift */; };
 		6499D04326CB2973007C9481 /* WiFiConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */; };
+		64BB4A9E27B126FD00334D2F /* SWFServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BB4A9D27B126FD00334D2F /* SWFServerError.swift */; };
 		64CBB7A426E80363005485C2 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		64F4A24D26CBDE98003FD07C /* SWFWiFiSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */; };
 /* End PBXBuildFile section */
@@ -84,6 +85,7 @@
 		6499D03326CB2973007C9481 /* SWFService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFService.swift; sourceTree = "<group>"; };
 		6499D03426CB2973007C9481 /* SWFApiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWFApiService.swift; sourceTree = "<group>"; };
 		6499D03526CB2973007C9481 /* WiFiConfigurationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WiFiConfigurationService.swift; sourceTree = "<group>"; };
+		64BB4A9D27B126FD00334D2F /* SWFServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFServerError.swift; sourceTree = "<group>"; };
 		64F4A24C26CBDE98003FD07C /* SWFWiFiSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWFWiFiSession.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,6 +166,7 @@
 				6499D02726CB2973007C9481 /* SWFPasspointConfig.swift */,
 				6499D02826CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift */,
 				6499D02A26CB2973007C9481 /* SWFWpa2Config.swift */,
+				64BB4A9D27B126FD00334D2F /* SWFServerError.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				6499D03A26CB2973007C9481 /* SWFWpa2EnterpriseConfig.swift in Sources */,
 				6499D04026CB2973007C9481 /* SWFSecuredStorageManager.swift in Sources */,
 				6499D03826CB2973007C9481 /* SWFSaveIdentifierResponse.swift in Sources */,
+				64BB4A9E27B126FD00334D2F /* SWFServerError.swift in Sources */,
 				6499D03626CB2973007C9481 /* SWFWiFiConstants.swift in Sources */,
 				6499D04226CB2973007C9481 /* SWFApiService.swift in Sources */,
 				6499D03F26CB2973007C9481 /* SWFUserDefaultsManager.swift in Sources */,
